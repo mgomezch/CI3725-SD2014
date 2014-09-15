@@ -1,0 +1,19 @@
+% $LANGNAME
+% Especificación del lenguaje
+% Borrador 1 — \today
+
+- - -
+
+# Introducción
+
+*Esta sección es informativa.*
+
+1.  Este documento especifica <!-- TODO -->
+
+# Especificación
+
+*Esta sección es normativa.*
+
+## Objetos del lenguaje
+
+1.  <!-- TODO -->
