@@ -1,4 +1,4 @@
-% $LANGNAME
+% Trinity
 % Especificación del lenguaje
 % Borrador 1 — \today
 
@@ -8,12 +8,225 @@
 
 *Esta sección es informativa.*
 
-1.  Este documento especifica <!-- TODO -->
+1.  Este documento define el lenguaje de programación *Trinity* y especifica requerimientos para sus implantaciones.
+
+2.  Trinity es un lenguaje de programación imperativo con alcance y tipos estáticos enfocado en conceptos básicos de álgebra lineal sobre los números reales, y con soporte directo para operaciones entre escalares, vectores y matrices.  Su influencia principal es el lenguaje *Octave*<!-- TODO: referencia -->.
+
+<!-- TODO: describir la estructura de este documento -->
+
+
+
 
 # Especificación
 
 *Esta sección es normativa.*
 
-## Objetos del lenguaje
 
-1.  <!-- TODO -->
+
+## Objetos
+
+1.  Las expresiones `false` y `true` en *Trinity* denotan los dos únicos valores con el tipo `boolean`.  Los dos son iguales a sí mismos y distintos entre sí.
+
+2.  Las cantidades escalares en *Trinity* corresponden al tipo `number` y se implementan como números de punto flotante según el estándar IEEE 754<!-- TODO: reference -->, incluyendo a la noción de igualdad.
+
+3.  Un literal numérico está formado por secuencias de dígitos en notación posicional decimal, con una parte fraccional opcional separada por un punto (`.`) de la parte entera.  Por ejemplo, `42` y [`6.2831853`](http://www.tauday.com/) son literales numéricos.  Los literales numéricos son expresiones que denotan cantidades escalares y tienen el tipo `number`.
+
+4.  Las cantidades matriciales en *Trinity* son arreglos bidimensionales rectangulares de cantidades escalares.  Las cantidades matriciales de `n` filas y `m` columnas corresponden al tipo `matrix(n, m)`.  Dos cantidades matriciales del mismo tipo se consideran iguales cuando las cantidades escalares correspondientes en cada posición son iguales.
+
+5.  Las cantidades vectoriales son cantidades matriciales de una sola fila o una sola columna.  Los vectores fila de `m` dimensiones correspondel al tipo `row(m)`, y los vectores columna de `n` dimensiones corresponden al tipo `col(n)`.  `col(n)` y `row(m)` denotan los mismos tipos que `matrix(n, 1)` y `matrix(1, m)`, respectivamente — son simples atajos en la notación, y no representan conceptos distintos.
+
+6.  Un literal matricial es una secuencia de filas separadas por el símbolo punto y coma (`;`) y encerrada toda entre corchetes curvos (`{` y `}`), siendo cada fila una secuencia de igual número de expresiones separadas por espacios<!-- TODO: o comas? -->, cada una de las cuales debe tener el tipo `number`.  Los literales matriciales son expresiones que denotan cantidades matriciales y tienen el tipo `matrix(n, m)`, donde `n` es el número de filas en el literal matricial, y `m` el número de expresiones en cada una de las filas.  Por ejemplo, `{1 2 3}` es un literal matricial y denota un valor con el tipo `matrix(1, 3)`, que también puede escribirse `row(3)`, y `{4 5; 6 7; 8 9}` es otro literal matricial y denota un valor con el tipo `matrix(3, 2)`.
+
+7.  Los tipos de las cantidades escalares y matriciales se denominan *tipos aritméticos*.
+
+8.  El tipo `matrix(1, 1)` **no** se considera equivalente al tipo `number`.  Por ejemplo, las expresiones `42` y `{42}` no tienen el mismo tipo, ya que la primera es del tipo `number` y la segunda es del tipo `matrix(1, 1)`.  Como no son del mismo tipo, ni siquiera pueden considerarse iguales ni distintas.
+
+
+
+## Composición
+
+1.  A partir de una expresión `e` de cualquier tipo, se puede formar la expresión `(e)` del mismo tipo, cuyo valor será el valor de `e`.  Por ejemplo, `42`, `(42)` y `((42))` son expresiones que valen lo mismo, al igual que `true` y `(true)`, y al igual que `{1 2 3}` y `({1 (2) ((3))})`.  La evaluación de `(e)` procede con la evaluación de `e`, y al ésta producir su valor, se calcula y produce el resultado correspondiente, que en este caso es el mismo.  Esta forma de evaluación será referida en el resto de este documento como «estricta».
+
+
+### Operadores lógicos
+
+1.  A partir de una expresión `e` del tipo `boolean`, se puede formar la expresión `not e` del tipo `boolean`, cuyo valor será el contrario del valor de `e`.  Por ejemplo, `not true` es una expresión del tipo `boolean` y su valor es `false`.  La evaluación de `not e` es estricta.
+
+2.  A partir de dos expresiones `e₁` y `e₂` del tipo `boolean`, se pueden formar las expresiones `e₁ & e₂` y `e₁ | e₂`, ambas del tipo `boolean`, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e₁` y `e₂`.  Ambos operadores tienen asociatividad izquierda y tienen menor precedencia que el operador `not`.  El operador `&` tiene mayor precedencia que el operador `|`.  Por ejemplo, <!-- TODO -->.
+
+3.  La evaluación de `e₁ & e₂` procede con la evaluación de `e₁`, y si ésta produce el valor `false`, la evaluación de `e₁ & e₂` produce `false` de inmediato, sin evaluar `e₂`; si, en cambio, si la evaluación de `e₁` produce el valor `true`, entonces se evalúa `e₂` y la evaluación de `e₁ & e₂` produce finalmente el valor que produce la evaluación de `e₂`.
+
+3.  La evaluación de `e₁ | e₂` procede con la evaluación de `e₁`, y si ésta produce el valor `true`, la evaluación de `e₁ | e₂` produce `true` de inmediato, sin evaluar `e₂`; si, en cambio, si la evaluación de `e₁` produce el valor `false`, entonces se evalúa `e₂` y la evaluación de `e₁ | e₂` produce finalmente el valor que produce la evaluación de `e₂`.
+
+5.  A partir de dos expresiones `e₁` y `e₂` del mismo tipo cualquiera[^homoeq], se pueden formar las expresiones `e₁ == e₂` y `e₁ /= e₂`, ambas del tipo `boolean`, cuyos valores serán, respectivamente, `true` y `false` si los valores de `e₁` y `e₂` son iguales.  Ninguno de los dos operadores es asociativo y ambos tienen igual precedencia.  Por ejemplo, <!-- TODO -->.
+
+6.  La evaluación de `e₁ == e₂` y `e₁ /= e₂` procede con la evaluación de `e₁`; al terminarla, procede a evaluar `e₂`; al terminarla, verifica si ambos valores producidos por las subexpresiones son iguales, y produce el resultado final.  El mecanismo de evaluación análogo para expresiones formadas por otros operadores binarios será referido en el resto de este documento como estricta de izquierda a derecha.
+
+[^homoeq]: La igualdad en *Trinity* es homogénea.  No se puede formar una expresión con los operadores `==` y `/=` entre dos expresiones con tipos diferentes.  Por lo tanto, dos valores de tipos diferentes no pueden compararse entre sí ni siquiera para resultar en que son distintos.  La forma `42 == {54}` **no** es una expresión con valor `false`, sino un fragmento de programa mal formado que debe ser detectado estáticamente.
+
+7.  A partir de dos expresiones `e₁` y `e₂` del tipo `number`, se pueden formar las expresiones `e₁ <= e₂`, `e₁ < e₂`, `e₁ >= e₂` y `e₁ > e₂`, todas del tipo `boolean`, cuyos valores serán `true` únicamente si el valor de `e₁` es, respectivamente, menor or igual, menor, mayor o igual o mayor que el valor de `e₂`.  Ninguno de los cuatro operadores es asociativo y todos tienen precedencia igual a la de `==` y `/=`.  Por ejemplo, <!-- TODO -->.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+
+
+### Operadores aritméticos
+
+1.  A partir de dos expresiones `e₁` y `e₂` de un mismo tipo aritmético, se pueden formar las expresiones `e₁ + e₂` y `e₁ - e₂`, ambas del mismo tipo aritmético original, cuyos valores serán, respectivamente, la suma y la resta de los valores de `e₁` y `e₂`.  Ambos operadores tienen asociatividad izquierda y tienen igual precedencia.  Por ejemplo, <!-- TODO -->.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+
+2.  A partir de una expresión `e` de un tipo aritmético, se puede formar la expresión `- e` del mismo tipo, cuyo valor será el inverso aditivo de `e`.  Por ejemplo, <!-- TODO -->.  La evaluación de `- e` es estricta.
+
+3.  A partir de expresiones `e₁` del tipo `matrix(n, m)` y `e₂` del tipo `matrix(m, p)`, se puede formar la expresión `e₁ * e₂` del tipo `matrix(n, p)`, cuyo valor se calculará como el producto matricial de los valores de `e₁` y `e₂`.  Por otra parte, a partir de expresiones `e₁` y `e₂` del tipo `number`, se puede formar la expresión `e₁ * e₂` del tipo `number`, cuyo valor será el producto (escalar) de los valores de `e₁` y `e₂`.  El operador `*` tiene asociatividad izquierda y mayor precedencia que los operadores `+` y `-`.  Por ejemplo, <!-- TODO -->.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+
+4.  A partir de expresiones `e₁` y `e₂` del tipo `number`, se pueden formar las expresiones `e₁ / e₂` y `e₁ % e₂`, ambas del tipo `number`, cuyos valores serán, respectivamente, la división exacta y el resto exacto de la división entera entre los valores de `e₁` y `e₂`.  Los operadores `/` y `%` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  Por ejemplo, <!-- TODO -->.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+
+5.  A partir de expresiones `e₁` y `e₂` del tipo `number`, se pueden formar las expresiones `e₁ div e₂` y `e₁ mod e₂`, ambas del tipo `number`, cuyos valores serán, respectivamente, la división entera y el resto entero de la división entre los valores de `e₁` y `e₂`.  Los operadores `div` y `mod` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  Por ejemplo, <!-- TODO -->.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+
+6.  A partir de una expresión `e` del tipo `matrix(n, m)`, se puede formar la expresión `e'` del tipo `matrix(m, n)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene mayor precedencia que el operador `*`.  Por ejemplo, `{1 2 3; 4 5 6}'` es una expresión del tipo `matrix(3, 2)` y su valor es igual al de la expresión `{1 4; 2 5; 3 6}`.  La evaluación de estas expresiones es estricta.
+
+7.  Todos los operadores aritméticos tienen mayor precedencia que todos los operadores lógicos.
+
+
+### Operadores cruzados
+
+1.  *Trinity* soporta operaciones cruzadas entre cantidades escalares y matriciales.  Estas operaciones aplican a cada elemento de una cantidad matricial una misma operación con una cantidad escalar.
+
+2.  Cada operador binario entre cantidades escalares que resulte en otra cantidad escalar tiene un operador cruzado correspondiente.  Los operadores cruzados `.+.`, `.-.`, `.*.`, `./.`, `.%.`, `.div.` y `.mod.` corresponden a los operadores escalares `+`, `-`, `*`, `/`, `%`, `div` y `mod`, respectivamente.
+
+3.  A partir de expresiones `e₁` del tipo `number` y `e₂` de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e₁ .op. e₂` y `e₂ .op. e₁` del mismo tipo de `e₂`, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `xᵤᵥ` de `e₂` por `e₁ op xᵤᵥ` o `xij op e₁`, respectivamente, donde `op` es el operador escalar correspondiente de `.op.`.
+
+4.  Por ejemplo, `{1 2 3} .*. 10` es una expresión del tipo `matrix(2, 3)` y su valor es igual al de la expresión `{(1*10) (2*10) (3*10)}`.  De igual manera, `12 ./. {2 3; 4 8}` es una expresión del tipo `matrix(2, 2)` y su valor es igual al de la expresión `{6 4; 3 1.5}`.
+
+
+### Proyección de componentes
+
+1.  TODO: M[2, 3]
+
+
+
+
+## Abstracción y control
+
+### Impresión
+
+1.  A partir de una expresión `e` de cualquier tipo, se puede formar la instrucción `print e;`, cuyo efecto al ejecutarse es evaluar `e`  producir en la salida del programa una representación textual del valor de la expresión `e`
+
+### Variables y alcances
+
+TODO: alcances, variables, asignación, valor/referencia
+
+### Lectura
+
+### Funciones
+
+TODO: funciones
+
+
+
+---
+
+
+
+## Estructura de un programa
+
+Un programa de Trinity tiene la siguiente estructura:
+
+    program
+    <instrucción>
+
+Es decir, la palabra clave `program` seguida de una instrucción. Un programa simple de Trinity podría verse así:
+
+    program
+    <programa ejemplo aquí>
+
+## Identificadores
+
+Un identificador es una cadena de caracteres no vacía compuesta por letras de la `A` hasta la `Z` (minúscula o mayúscula), los dígitos del `0` al `9` y el caracter *underscore* `_`. Los identificadores deben comenzar por letras, no pueden comenzar ni por dígitos ni por `_` y son sensibles a mayúsculas; por ejemplo, la variable `var` y la variable `Var` son distintas en un programa. No es necesario que reconozca caracteres acentuados ni la letra eñe *(solo ASCII)*.
+
+## Instrucciones
+
+### Asignación
+
+    <variable> = <expresión>
+
+Ejecutar esta instrucción tiene el efecto de evaluar la expresión del lado derecho y almacenarla en la variable del lado izquierdo. La variable tiene que haber sido declarada previamente y su tipo debe coincidir con el tipo de la expresión, en caso contrario debe arrojarse un error.
+
+### Bloque
+
+begin
+    <declaración de variables>
+    <instrucción 1> ;
+    <instrucción 2> ;
+    ...
+    <instrucción n-1> ;
+    <instrucción n> ;
+end
+
+El bloque consiste de una sección de declaración de variables, la cual es opcional, y una secuencia de instrucciones finalizadas por el caracter `;`. Nótese que se utiliza el caracter `;` como finalizador, por lo que todas las instrucciones deben terminar con `;`.
+
+La sintaxis de la declaración de variables es:
+
+    declare
+      <tipo> x1, x2, x3, ... , xn ;
+      <tipo> y1, y2, y3, ... , xn ;
+      ...
+      <tipo> z1, z2, z3, ... , xn ;
+
+Estas variables sólo serán visibles a las instrucciones y expresiones del bloque. Se considera un error declarar más de una vez la misma variable en el mismo bloque.
+
+La declaración de variables puede verse como una secuencia de declaraciones de un mismo tipo terminadas por el caracter `;`.
+
+### Entrada
+
+    read <variable>
+
+Permite obtener entrada escrita para escalares por parte del usuario. Para ejecutar esta instrucción el interpretador debe solicitar al usuario que introduzca un valor, y posteriormente se debe validar y almacenar lo que sea introducido. Si la entrada es inválida debe arrojarse un error. Sólo se puede pedir entrada para variables de tipo `number`. Puede haber cualquier cantidad de espacio en blanco antes o después del dato introducido.
+
+### Print
+
+    print x1, x2, ..., xn
+
+Donde `x1, x2, ..., xn` pueden ser expresiones de cualquier tipo o cadenas de caracteres encerradas en comillas dobles. El interpretador debe recorrer los elementos en orden e imprimirlos en pantalla. La instrucción `print` **no imprime un salto de línea** después de haber impreso la lista completa de argumentos.
+
+Las cadenas de caracteres deben estar encerradas entre comillas dobles (`"`) y sólo debe contener caracteres imprimibles. No se permite que tenga saltos de línea, comillas dobles o backslashes (`\`) a menos que sean escapados. Las secuencias de escape correspondientes son `\n`, `\"` y `\\`, respectivamente.
+
+Un ejemplo de `print` válido es el siguiente:
+
+    print "Hello world!\nA string inside a string: \"this is so \\meta\""
+
+Que imprimiría lo siguiente en consola:
+
+    Hello world!
+    A string inside a string: "this is so \meta"
+
+### Condicional `if then else`
+
+    if <condición> then <instrucción 1> else <instrucción 2>
+    if <condición> then <instrucción>
+
+La condición debe ser una expresión de tipo `boolean`, de lo contrario debe arrojarse un error.
+
+Ejecutar está instrucción tiene el efecto de evaluar la condición y si su valor es `true` se ejecuta la `<instrucción 1>`; si su valor es `false` se ejecuta la `<instrucción 2>`. Es posible omitir la palabra clave `else` y la `<instrucción 2>` asociada, de manera que si la expresión vale `false` no se ejecuta ninguna instrucción.
+
+### Iteración determinada
+
+    for <identificador> in <vector/matrix> do <instrucción>
+
+Para ejecutar esta instrucción se evalúa la expresión `<vector/matrix>` que puede ser tanto una vector como una matriz, su tipo debe ser `row`, `col` o `matrix`, y a la variable `<identificador>` se le asigna cada valor dentro de la matriz, avanzando de izquierda a derecha y de arriba hacia abajo. Para cada valor de `<identificador>` se ejecuta `<instrucción>`. Note que cambiar el valor de la variable `<identificador>` **no cambiará el valor** de la posición representada por éste de la matriz.
+
+La instrucción declara automáticamente una variable llamada `<identificador>` de tipo `number` y local al cuerpo de la iteración.
+
+### Iteración indeterminada
+
+    while <condición> do <instrucción>
+
+La condición debe ser una expresión de tipo `bool`. Para ejecutar la `<instrucción>` se evalúa la `<condición>`, si es igual a `false` termina la iteración; si es `true` se ejecuta la `<instrucción>` del cuerpo y se repite el proceso.
+
+    unless <condición> do <instrucción>
+
+Es equivalente a la instrucción de `while`, pero aplicando la *negación booleana* a la `<condición>`.
+
+## Comentarios y espacion en blanco
+
+    print "Hello Wordl!" # esto es un comentario
+
+En Trinity se pueden escribir comentarios de una línea, al estilo de Ruby. Al escribir `#` se ignorarán todos los caracteres hasta el siguiente salto de línea.
+
+El espacio en blanco es ignorado de manera similar a otros lenguajes de programación, es decir, el programador es libre de colocar cualquier cantidad de espacio en blanco entre los elementos sintácticos del lenguaje.
