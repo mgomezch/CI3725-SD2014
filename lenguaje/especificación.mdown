@@ -148,20 +148,26 @@ Un programa de Trinity tiene la siguiente estructura:
 
 Es decir, la palabra clave `program` seguida de una instrucción. Un programa simple de Trinity podría verse así:
 
-    # Program bouncer
     program begin
     use
         number x;
     in
-        print "How old are you?\n";
+        print "How old are you?\n> ";
         read x;
 
         if x < 18 then
             print "You can't be here.";
         else 
-            print "Oh,", x, "? come right in.";
+            print "Oh, ", x, "? come right in.";
         ;
     end;
+
+Que se correría así:
+
+    $ ./trinity bouncer.ty
+    How old are you?
+    > 22
+    Oh, 22? come right in.
 
 ## Identificadores
 
