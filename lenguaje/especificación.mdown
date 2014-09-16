@@ -35,7 +35,7 @@
 
 5.  Las cantidades vectoriales son cantidades matriciales de una sola fila o una sola columna.  Los vectores fila de `m` dimensiones correspondel al tipo `row(m)`, y los vectores columna de `n` dimensiones corresponden al tipo `col(n)`.  `col(n)` y `row(m)` denotan los mismos tipos que `matrix(n, 1)` y `matrix(1, m)`, respectivamente — son simples atajos en la notación, y no representan conceptos distintos.
 
-6.  Un literal matricial es una secuencia de filas separadas por el símbolo punto y coma (`;`) y encerrada toda entre corchetes curvos (`{` y `}`), siendo cada fila una secuencia de igual número de expresiones separadas por espacios<!-- TODO: o comas? -->, cada una de las cuales debe tener el tipo `number`.  Los literales matriciales son expresiones que denotan cantidades matriciales y tienen el tipo `matrix(n, m)`, donde `n` es el número de filas en el literal matricial, y `m` el número de expresiones en cada una de las filas.  Por ejemplo, `{1 2 3}` es un literal matricial y denota un valor con el tipo `matrix(1, 3)`, que también puede escribirse `row(3)`, y `{4 5; 6 7; 8 9}` es otro literal matricial y denota un valor con el tipo `matrix(3, 2)`.
+6.  Un literal matricial es una secuencia de filas separadas por el símbolo coma (`,`) y encerrada toda entre corchetes curvos (`{` y `}`), siendo cada fila una secuencia de igual número de expresiones separadas por espacios, cada una de las cuales debe tener el tipo `number`.  Los literales matriciales son expresiones que denotan cantidades matriciales y tienen el tipo `matrix(n, m)`, donde `n` es el número de filas en el literal matricial, y `m` el número de expresiones en cada una de las filas.  Por ejemplo, `{1 2 3}` es un literal matricial y denota un valor con el tipo `matrix(1, 3)`, que también puede escribirse `row(3)`, y `{4 5, 6 7, 8 9}` es otro literal matricial y denota un valor con el tipo `matrix(3, 2)`.
 
 7.  Los tipos de las cantidades escalares y matriciales se denominan *tipos aritméticos*.
 
@@ -54,9 +54,9 @@
 
 2.  A partir de dos expresiones `e₁` y `e₂` del tipo `boolean`, se pueden formar las expresiones `e₁ & e₂` y `e₁ | e₂`, ambas del tipo `boolean`, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e₁` y `e₂`.  Ambos operadores tienen asociatividad izquierda y tienen menor precedencia que el operador `not`.  El operador `&` tiene mayor precedencia que el operador `|`.  Por ejemplo, la expresión `false & true | true` es del tipo `boolean` y tiene el mismo valor que la expresión `(false & true) | true` debido a que la precedencia de `&` es major que la de `|`.
 
-3.  La evaluación de `e₁ & e₂` procede con la evaluación de `e₁`, y si ésta produce el valor `false`, la evaluación de `e₁ & e₂` produce `false` de inmediato, sin evaluar `e₂`; si, en cambio, si la evaluación de `e₁` produce el valor `true`, entonces se evalúa `e₂` y la evaluación de `e₁ & e₂` produce finalmente el valor que produce la evaluación de `e₂`.
+3.  La evaluación de `e₁ & e₂` procede con la evaluación de `e₁`, y si ésta produce el valor `false`, la evaluación de `e₁ & e₂` produce `false` de inmediato, sin evaluar `e₂`; si, en cambio, la evaluación de `e₁` produce el valor `true`, entonces se evalúa `e₂` y la evaluación de `e₁ & e₂` produce finalmente el valor que produce la evaluación de `e₂`.
 
-3.  La evaluación de `e₁ | e₂` procede con la evaluación de `e₁`, y si ésta produce el valor `true`, la evaluación de `e₁ | e₂` produce `true` de inmediato, sin evaluar `e₂`; si, en cambio, si la evaluación de `e₁` produce el valor `false`, entonces se evalúa `e₂` y la evaluación de `e₁ | e₂` produce finalmente el valor que produce la evaluación de `e₂`.
+3.  La evaluación de `e₁ | e₂` procede con la evaluación de `e₁`, y si ésta produce el valor `true`, la evaluación de `e₁ | e₂` produce `true` de inmediato, sin evaluar `e₂`; si, en cambio, la evaluación de `e₁` produce el valor `false`, entonces se evalúa `e₂` y la evaluación de `e₁ | e₂` produce finalmente el valor que produce la evaluación de `e₂`.
 
 5.  A partir de dos expresiones `e₁` y `e₂` del mismo tipo cualquiera[^homoeq], se pueden formar las expresiones `e₁ == e₂` y `e₁ /= e₂`, ambas del tipo `boolean`, cuyos valores serán, respectivamente, `true` y `false` si los valores de `e₁` y `e₂` son iguales.  Ninguno de los dos operadores es asociativo y ambos tienen igual precedencia.  Por ejemplo, <!-- TODO -->.
 
@@ -79,7 +79,7 @@
 
 5.  A partir de expresiones `e₁` y `e₂` del tipo `number`, se pueden formar las expresiones `e₁ div e₂` y `e₁ mod e₂`, ambas del tipo `number`, cuyos valores serán, respectivamente, la división entera y el resto entero de la división entre los valores de `e₁` y `e₂`.  Los operadores `div` y `mod` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  Por ejemplo, <!-- TODO -->.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
-6.  A partir de una expresión `e` del tipo `matrix(n, m)`, se puede formar la expresión `e'` del tipo `matrix(m, n)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene mayor precedencia que el operador `*`.  Por ejemplo, `{1 2 3; 4 5 6}'` es una expresión del tipo `matrix(3, 2)` y su valor es igual al de la expresión `{1 4; 2 5; 3 6}`.  La evaluación de estas expresiones es estricta.
+6.  A partir de una expresión `e` del tipo `matrix(n, m)`, se puede formar la expresión `e'` del tipo `matrix(m, n)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene mayor precedencia que el operador `*`.  Por ejemplo, `{1 2 3, 4 5 6}'` es una expresión del tipo `matrix(3, 2)` y su valor es igual al de la expresión `{1 4, 2 5, 3 6}`.  La evaluación de estas expresiones es estricta.
 
 7.  Todos los operadores aritméticos tienen mayor precedencia que todos los operadores lógicos.
 
@@ -92,7 +92,7 @@
 
 3.  A partir de expresiones `e₁` del tipo `number` y `e₂` de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e₁ .op. e₂` y `e₂ .op. e₁` del mismo tipo de `e₂`, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `xᵤᵥ` de `e₂` por `e₁ op xᵤᵥ` o `xᵤᵥ op e₁`, respectivamente, donde `op` es el operador escalar correspondiente de `.op.`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
-4.  Por ejemplo, `{1 2 3} .*. 10` es una expresión del tipo `matrix(2, 3)` y su valor es igual al de la expresión `{(1*10) (2*10) (3*10)}`.  De igual manera, `12 ./. {2 3; 4 8}` es una expresión del tipo `matrix(2, 2)` y su valor es igual al de la expresión `{6 4; 3 1.5}`.
+4.  Por ejemplo, `{1 2 3} .*. 10` es una expresión del tipo `matrix(2, 3)` y su valor es igual al de la expresión `{(1*10) (2*10) (3*10)}`.  De igual manera, `12 ./. {2 3, 4 8}` es una expresión del tipo `matrix(2, 2)` y su valor es igual al de la expresión `{6 4, 3 1.5}`.
 
 
 ### Proyección de componentes
@@ -144,12 +144,23 @@ TODO: funciones
 Un programa de Trinity tiene la siguiente estructura:
 
     program
-    <instrucción>
+    <instrucción> ;
 
 Es decir, la palabra clave `program` seguida de una instrucción. Un programa simple de Trinity podría verse así:
 
-    program
-    <programa ejemplo aquí>
+    program begin   # bouncer
+    use
+        number x;
+    in
+        print "How old are you?\n";
+        read x;
+
+        if x < 18 then
+            print "You can't be here.";
+        else 
+            print "Oh,", x, "? come right in.";
+        ;
+    end;
 
 ## Identificadores
 
@@ -192,7 +203,7 @@ La declaración de variables puede verse como una secuencia de declaraciones de
 
     read <variable>
 
-Permite obtener entrada escrita para escalares por parte del usuario. Para ejecutar esta instrucción el interpretador debe solicitar al usuario que introduzca un valor, y posteriormente se debe validar y almacenar lo que sea introducido. Si la entrada es inválida debe arrojarse un error. Sólo se puede pedir entrada para variables de tipo `number`. Puede haber cualquier cantidad de espacio en blanco antes o después del dato introducido.
+Permite obtener entrada escrita para escalares por parte del usuario. Para ejecutar esta instrucción el interpretador debe solicitar al usuario que introduzca un valor, y posteriormente se debe validar y almacenar lo que sea introducido. Si la entrada es inválida debe arrojarse un error. Sólo se puede pedir entrada para variables de tipo `number` y `boolean`. Puede haber cualquier cantidad de espacio en blanco antes o después del dato introducido.
 
 ### Condicional `if then else`
 
@@ -215,7 +226,7 @@ La instrucción declara automáticamente una variable llamada `<identificador>
 
     while <condición> do <instrucción>
 
-La condición debe ser una expresión de tipo `bool`. Para ejecutar la `<instrucción>` se evalúa la `<condición>`, si es igual a `false` termina la iteración; si es `true` se ejecuta la `<instrucción>` del cuerpo y se repite el proceso.
+La condición debe ser una expresión de tipo `boolean`. Para ejecutar la `<instrucción>` se evalúa la `<condición>`, si es igual a `false` termina la iteración; si es `true` se ejecuta la `<instrucción>` del cuerpo y se repite el proceso.
 
     unless <condición> do <instrucción>
 
@@ -232,30 +243,30 @@ El espacio en blanco es ignorado de manera similar a otros lenguajes de programa
 ## Programas ejemplo
 
     program begin
-      use
+    use
         matrix(2,2) m;  # se inicializa todas en '0'
         number x;       # se inicializa en '0'
         boolean b;      # se inicializa en 'false'
-      in
-      m = [ 1 2 
-          ; 3 4 ];
-
-      read x;
-
-      for i in m do
-        if i % 2 == 0 then
-          # si 'i' es par
-          print i;
-        else begin
-          print x;
-          read x;
-          b = not b;
-        end;
-      ;
-
-      if b then
-        print i;
-      else
-        print "b is a lie";
-      ;
+    in
+        m = { 1 2 
+            , 3 4 };
+  
+        read x;
+  
+        for i in m do
+            if i % 2 == 0 then
+                # si 'i' es par
+                print i;
+            else begin
+                print x;
+                read x;
+                b = not b;
+            end;
+        ;
+  
+        if b then
+            print i;
+        else
+            print "b is a lie";
+        ;
     end;
