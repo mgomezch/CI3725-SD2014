@@ -10,7 +10,7 @@
 
 1.  Este documento define el lenguaje de programación *Trinity* y especifica requerimientos para sus implantaciones.
 
-2.  Trinity es un lenguaje de programación imperativo con alcance y tipos estáticos enfocado en conceptos básicos de álgebra lineal sobre los números reales, y con soporte directo para operaciones entre escalares, vectores y matrices.  Su influencia principal es el lenguaje *Octave*<!-- TODO: referencia -->.
+2.  Trinity es un lenguaje de programación imperativo con alcance y tipos estáticos enfocado en conceptos básicos de álgebra lineal sobre los números reales, y con soporte directo para operaciones entre escalares, vectores y matrices.  Su influencia principal es el lenguaje [*Octave*](http://www.gnu.org/software/octave/).
 
 <!-- TODO: describir la estructura de este documento -->
 
@@ -27,7 +27,7 @@
 
 1.  Las expresiones `false` y `true` en *Trinity* denotan los dos únicos valores con el tipo `boolean`.  Los dos son iguales a sí mismos y distintos entre sí.
 
-2.  Las cantidades escalares en *Trinity* corresponden al tipo `number` y se implementan como números de punto flotante según el estándar IEEE 754<!-- TODO: reference -->, incluyendo a la noción de igualdad.
+2.  Las cantidades escalares en *Trinity* corresponden al tipo `number` y se implementan como números de punto flotante según el [estándar IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point), incluyendo a la noción de igualdad.
 
 3.  Un literal numérico está formado por secuencias de dígitos en notación posicional decimal, con una parte fraccional opcional separada por un punto (`.`) de la parte entera.  Por ejemplo, `42` y [`6.2831853`](http://www.tauday.com/) son literales numéricos.  Los literales numéricos son expresiones que denotan cantidades escalares y tienen el tipo `number`.
 
