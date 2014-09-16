@@ -25,21 +25,31 @@
 
 ## Objetos
 
-1.  Las expresiones `false` y `true` en *Trinity* denotan los dos únicos valores con el tipo `boolean`.  Los dos son iguales a sí mismos y distintos entre sí.  Los lexemas `boolean`, `false` y `true` son palabras reservadas.
+1.  Las expresiones `false` y `true` en *Trinity* denotan los dos únicos valores con el tipo booleano, cuya especificación de tipo es `boolean`.  Los dos son iguales a sí mismos y distintos entre sí.  Los lexemas `boolean`, `false` y `true` son palabras reservadas.
 
-2.  Las cantidades escalares en *Trinity* corresponden al tipo `number` y se implementan como números de punto flotante según el estándar [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point), incluyendo a la noción de igualdad.  El lexema `number` es una palabra reservada.
+2.  Las cantidades escalares en *Trinity* corresponden al tipo numérico, cuya especificación de tipo es `number`, y se implementan como números de punto flotante según el estándar [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point), incluyendo a la noción de igualdad.  El lexema `number` es una palabra reservada.
 
-3.  Un literal numérico está formado por secuencias de dígitos en notación posicional decimal, con una parte fraccional opcional separada por un punto (`.`) de la parte entera.  Por ejemplo, `42` y [`6.2831853`](http://www.tauday.com/) son literales numéricos.  Los literales numéricos son expresiones que denotan cantidades escalares y tienen el tipo `number`.
+3.  Un literal numérico está formado por secuencias de dígitos en notación posicional decimal, con una parte fraccional opcional separada por un punto (`.`) de la parte entera.  Por ejemplo, `42` y [`6.2831853`](http://www.tauday.com/) son literales numéricos.  Los literales numéricos son expresiones que denotan cantidades escalares y tienen el tipo numérico.
 
-4.  Las cantidades matriciales en *Trinity* son arreglos bidimensionales, rectangulares, discretos y finitos de cantidades escalares.  Las cantidades matriciales de `n` filas y `m` columnas corresponden al tipo `matrix(n, m)`.  Dos cantidades matriciales del mismo tipo se consideran iguales cuando las cantidades escalares correspondientes en cada posición son iguales.  El lexema `matrix` es una palabra reservada.
+4.  Las cantidades matriciales en *Trinity* son arreglos bidimensionales, rectangulares, discretos y finitos de cantidades escalares.  Las cantidades matriciales de `n` filas y `m` columnas corresponden al tipo especificado por `matrix(n, m)`.  Dos cantidades matriciales del mismo tipo se consideran iguales cuando las cantidades escalares correspondientes en cada posición son iguales.  El lexema `matrix` es una palabra reservada.
 
-5.  Las cantidades vectoriales son cantidades matriciales de una sola fila o una sola columna.  Los vectores fila de `m` dimensiones correspondel al tipo `row(m)`, y los vectores columna de `n` dimensiones corresponden al tipo `col(n)`.  `col(n)` y `row(m)` denotan los mismos tipos que `matrix(n, 1)` y `matrix(1, m)`, respectivamente — son simples atajos en la notación, y no representan conceptos distintos.  Los lexemas `row` y `col` son palabras reservadas.
+5.  Las cantidades vectoriales son cantidades matriciales de una sola fila o una sola columna.  Los vectores fila de `m` dimensiones tienen el tipo especificado por `row(m)`, y los vectores columna de `n` dimensiones tienen el tipo especificado por `col(n)`.  `col(n)` y `row(m)` denotan los mismos tipos que `matrix(n, 1)` y `matrix(1, m)`, respectivamente — son simples atajos en la notación, y no representan conceptos distintos.  Los lexemas `row` y `col` son palabras reservadas.
 
-6.  Un literal matricial es una secuencia de filas separadas por el símbolo dos puntos (`:`) y encerrada toda entre corchetes curvos (`{` y `}`), siendo cada fila una secuencia de igual número de expresiones separadas por el símbolo coma (`,`), cada una de las cuales debe tener el tipo `number`.  Los literales matriciales son expresiones que denotan cantidades matriciales y tienen el tipo `matrix(n, m)`, donde `n` es el número de filas en el literal matricial, y `m` el número de expresiones en cada una de las filas.  Por ejemplo, `{ 1, 2, 3 }` es un literal matricial y denota un valor con el tipo `matrix(1, 3)`, que también puede escribirse `row(3)`, y `{ 4, 5 : 6, 7 : 8, 9 }` es otro literal matricial y denota un valor con el tipo `matrix(3, 2)`.
+6.  Un literal matricial es una secuencia de filas separadas por el símbolo dos puntos (`:`) y encerrada toda entre corchetes curvos (`{` y `}`), siendo cada fila una secuencia de igual número de expresiones separadas por el símbolo coma (`,`), cada una de las cuales debe tener el tipo numérico.  Los literales matriciales son expresiones que denotan cantidades matriciales y tienen el tipo especificado por `matrix(n, m)`, donde `n` es el número de filas en el literal matricial, y `m` el número de expresiones en cada una de las filas.
+
+    Por ejemplo,
+
+        { 1, 2, 3 }
+
+    es un literal matricial y denota un valor con el tipo especificado por `matrix(1, 3)`, que también puede escribirse `row(3)`, y
+
+        { 4, 5 : 6, 7 : 8, 9 }
+
+    es otro literal matricial y denota un valor con el tipo especificado por `matrix(3, 2)`.
 
 7.  Los tipos de las cantidades escalares y matriciales se denominan *tipos aritméticos*.
 
-8.  El tipo `matrix(1, 1)` **no** se considera equivalente al tipo `number`.  Por ejemplo, las expresiones `42` y `{ 42 }` no tienen el mismo tipo, ya que la primera es del tipo `number` y la segunda es del tipo `matrix(1, 1)`.  Como no son del mismo tipo, ni siquiera pueden considerarse iguales ni distintas.
+8.  El tipo especificado por `matrix(1, 1)` **no** se considera equivalente al tipo numérico.  Por ejemplo, las expresiones `42` y `{ 42 }` no tienen el mismo tipo, ya que la primera es del tipo numérico y la segunda es del tipo especificado por `matrix(1, 1)`.  Como no son del mismo tipo, ni siquiera pueden considerarse iguales ni distintas.
 
 
 
@@ -50,21 +60,21 @@
 
 ### Operadores lógicos
 
-1.  A partir de una expresión `e` del tipo `boolean`, se puede formar la expresión `not e` del tipo `boolean`, cuyo valor será el contrario del valor de `e`.  La evaluación de `not e` es estricta.  El lexema `not` es una palabra reservada.
+1.  A partir de una expresión `e` del tipo booleano, se puede formar la expresión `not e` del tipo booleano, cuyo valor será el contrario del valor de `e`.  La evaluación de `not e` es estricta.  El lexema `not` es una palabra reservada.
 
     Por ejemplo,
 
         not true
 
-    es una expresión del tipo `boolean` y tiene el mismo valor que la expresión `false`.
+    es una expresión del tipo booleano y tiene el mismo valor que la expresión `false`.
 
-2.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo `boolean`, se pueden formar las expresiones `e₁ & e₂` y `e₁ | e₂`, ambas del tipo `boolean`, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e`~1~ y `e`~2~.  Ambos operadores tienen asociatividad izquierda y tienen menor precedencia que el operador `not`.  El operador `&` tiene mayor precedencia que el operador `|`.
+2.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo booleano, se pueden formar las expresiones `e₁ & e₂` y `e₁ | e₂`, ambas del tipo booleano, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e`~1~ y `e`~2~.  Ambos operadores tienen asociatividad izquierda y tienen menor precedencia que el operador `not`.  El operador `&` tiene mayor precedencia que el operador `|`.
 
     Por ejemplo, la expresión
 
         false & true | true
 
-    es del tipo `boolean` y tiene el mismo valor que la expresión
+    es del tipo  booleano y tiene el mismo valor que la expresión
 
         (false & true) | true
 
@@ -74,7 +84,7 @@
 
 4.  La evaluación de `e₁ | e₂` procede con la evaluación de `e`~1~, y si ésta produce el valor `true`, la evaluación de `e₁ | e₂` produce `true` de inmediato, sin evaluar `e`~2~; si, en cambio, la evaluación de `e`~1~ produce el valor `false`, entonces se evalúa `e`~2~ y la evaluación de `e₁ | e₂` produce finalmente el valor que produce la evaluación de `e`~2~.
 
-5.  A partir de dos expresiones `e`~1~ y `e`~2~ del mismo tipo cualquiera[^homoeq], se pueden formar las expresiones `e₁ == e₂` y `e₁ /= e₂`, ambas del tipo `boolean`, cuyos valores serán, respectivamente, `true` y `false` si los valores de `e`~1~ y `e`~2~ son iguales. Ninguno de los dos operadores es asociativo y ambos tienen igual precedencia.
+5.  A partir de dos expresiones `e`~1~ y `e`~2~ del mismo tipo cualquiera[^homoeq], se pueden formar las expresiones `e₁ == e₂` y `e₁ /= e₂`, ambas del tipo booleano, cuyos valores serán, respectivamente, `true` y `false` si los valores de `e`~1~ y `e`~2~ son iguales. Ninguno de los dos operadores es asociativo y ambos tienen igual precedencia.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -88,7 +98,7 @@
 
 [^homoeq]: La igualdad en *Trinity* es homogénea.  No se puede formar una expresión con los operadores `==` y `/=` entre dos expresiones con tipos diferentes.  Por lo tanto, dos valores de tipos diferentes no pueden compararse entre sí ni siquiera para resultar en que son distintos.  La forma `42 == { 54 }` **no** es una expresión con valor `false`, sino un fragmento de programa mal formado que debe arrojar un error estáticamente.
 
-7.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo `number`, se pueden formar las expresiones `e₁ <= e₂`, `e₁ < e₂`, `e₁ >= e₂` y `e₁ > e₂`, todas del tipo `boolean`, cuyos valores serán `true` únicamente si el valor de `e`~1~ es, respectivamente, menor or igual, menor, mayor o igual o mayor que el valor de `e`~2~.  Ninguno de los cuatro operadores es asociativo y todos tienen precedencia igual a la de `==` y `/=`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+7.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e₁ <= e₂`, `e₁ < e₂`, `e₁ >= e₂` y `e₁ > e₂`, todas del tipo booleano, cuyos valores serán `true` únicamente si el valor de `e`~1~ es, respectivamente, menor or igual, menor, mayor o igual o mayor que el valor de `e`~2~.  Ninguno de los cuatro operadores es asociativo y todos tienen precedencia igual a la de `==` y `/=`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
     Por ejemplo, la siguiente expresión tiene el mismo valor que la expresión `true`:
 
@@ -107,7 +117,7 @@
 
 2.  A partir de una expresión `e` de un tipo aritmético, se puede formar la expresión `- e` del mismo tipo, cuyo valor será el inverso aditivo de `e`.  Por ejemplo, `- (3 * (- 3)) == 9`.  La evaluación de `- e` es estricta.
 
-3.  A partir de expresiones `e`~1~ del tipo `matrix(n, m)` y `e`~2~ del tipo `matrix(m, p)`, se puede formar la expresión `e₁ * e₂` del tipo `matrix(n, p)`, cuyo valor se calculará como el producto matricial de los valores de `e`~1~ y `e`~2~.  Por otra parte, a partir de expresiones `e`~1~ y `e`~2~ del tipo `number`, se puede formar la expresión `e₁ * e₂` del tipo `number`, cuyo valor será el producto (escalar) de los valores de `e`~1~ y `e`~2~.  El operador `*` tiene asociatividad izquierda y mayor precedencia que los operadores `+` y `-`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+3.  A partir de expresiones `e`~1~ del tipo especificado por `matrix(n, m)` y `e`~2~ del tipo especificado por `matrix(m, p)`, se puede formar la expresión `e₁ * e₂` del tipo especificado por `matrix(n, p)`, cuyo valor se calculará como el producto matricial de los valores de `e`~1~ y `e`~2~.  Por otra parte, a partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se puede formar la expresión `e₁ * e₂` del tipo numérico, cuyo valor será el producto (escalar) de los valores de `e`~1~ y `e`~2~.  El operador `*` tiene asociatividad izquierda y mayor precedencia que los operadores `+` y `-`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -115,7 +125,7 @@
 
         2 * 3 == 6
 
-4.  A partir de expresiones `e`~1~ y `e`~2~ del tipo `number`, se pueden formar las expresiones `e₁ / e₂` y `e₁ % e₂`, ambas del tipo `number`, cuyos valores serán, respectivamente, la división exacta y el resto exacto de la división entera entre los valores de `e`~1~ y `e`~2~.  Los operadores `/` y `%` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+4.  A partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e₁ / e₂` y `e₁ % e₂`, ambas del tipo numérico, cuyos valores serán, respectivamente, la división exacta y el resto exacto de la división entera entre los valores de `e`~1~ y `e`~2~.  Los operadores `/` y `%` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -123,7 +133,7 @@
 
         10.2 % 2 == 0.2
 
-5.  A partir de expresiones `e`~1~ y `e`~2~ del tipo `number`, se pueden formar las expresiones `e₁ div e₂` y `e₁ mod e₂`, ambas del tipo `number`, cuyos valores serán, respectivamente, la división entera y el resto entero de la división entre los valores de `e`~1~ y `e`~2~.  Los operadores `div` y `mod` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+5.  A partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e₁ div e₂` y `e₁ mod e₂`, ambas del tipo numérico, cuyos valores serán, respectivamente, la división entera y el resto entero de la división entre los valores de `e`~1~ y `e`~2~.  Los operadores `div` y `mod` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -131,13 +141,13 @@
 
         10.2 mod 2 == 0
 
-6.  A partir de una expresión `e` del tipo `matrix(n, m)`, se puede formar la expresión `e'` del tipo `matrix(m, n)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene mayor precedencia que el operador `*`.  La evaluación de estas expresiones es estricta.
+6.  A partir de una expresión `e` del tipo especificado `matrix(n, m)`, se puede formar la expresión `e'` del tipo especificado por `matrix(m, n)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene mayor precedencia que el operador `*`.  La evaluación de estas expresiones es estricta.
 
     Por ejemplo,
 
         { 1, 2, 3 : 4, 5, 6 }'
 
-    es una expresión del tipo `matrix(3, 2)` y su valor es igual al de la expresión
+    es una expresión del tipo especificado por `matrix(3, 2)` y su valor es igual al de la expresión
 
         { 1, 4 : 2, 5 : 3, 6 }
 
@@ -150,13 +160,13 @@
 
 2.  Cada operador binario entre cantidades escalares que resulte en otra cantidad escalar tiene un operador cruzado correspondiente.  Los operadores cruzados `.+.`, `.-.`, `.*.`, `./.`, `.%.`, `.div.` y `.mod.` corresponden a los operadores escalares `+`, `-`, `*`, `/`, `%`, `div` y `mod`, respectivamente.
 
-3.  A partir de expresiones `e`~1~ del tipo `number` y `e`~2~ de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e₁ .op. e₂` y `e₂ .op. e₁` del mismo tipo de `e`~2~, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `xᵤᵥ` de `e`~2~ por `e₁ op xᵤᵥ` o `xᵤᵥ op e₁`, respectivamente, donde `op` es el operador escalar correspondiente de `.op.`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+3.  A partir de expresiones `e`~1~ del tipo numérico y `e`~2~ de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e₁ .op. e₂` y `e₂ .op. e₁` del mismo tipo de `e`~2~, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `xᵤᵥ` de `e`~2~ por `e₁ op xᵤᵥ` o `xᵤᵥ op e₁`, respectivamente, donde `op` es el operador escalar correspondiente de `.op.`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
 4.  Por ejemplo,
 
         { 1, 2, 3 } .*. 10
 
-    es una expresión del tipo `matrix(2, 3)` y su valor es igual al de la expresión
+    es una expresión del tipo especificado por `matrix(2, 3)` y su valor es igual al de la expresión
 
         { 1*10, 2*10, 3*10 }
 
@@ -164,14 +174,14 @@
 
         12 ./. { 2, 3 : 4, 8 }
 
-    es una expresión del tipo `matrix(2, 2)` y su valor es igual al de la expresión
+    es una expresión del tipo especificado por `matrix(2, 2)` y su valor es igual al de la expresión
 
         { 6, 4 : 3, 1.5 }
 
 
 ### Proyección de componentes
 
-1.  A partir de una expresión `e` del tipo `matrix(n, m)`, y dos expresiones `i` y `j` del tipo `number`, se puede formar la expresión `e[i, j]` del tipo `number`, cuyo valor será la componente del valor de `e` en la fila cuyo índice sea el valor de la expresión `i`, y en la columna cuyo índice sea el valor de la expresión `j`.  Esta operación tiene la máxima precedencia.
+1.  A partir de una expresión `e` del tipo especificado por `matrix(n, m)`, y dos expresiones `i` y `j` del tipo numérico, se puede formar la expresión `e[i, j]` del tipo numérico, cuyo valor será la componente del valor de `e` en la fila cuyo índice sea el valor de la expresión `i`, y en la columna cuyo índice sea el valor de la expresión `j`.  Esta operación tiene la máxima precedencia.
 
 2.  La evaluación de `e[i, j]` sigue los siguientes pasos:
 
@@ -233,7 +243,9 @@
 
 3.  Una variable es una ubicación de memoria modificable que hace referencia a un valor.  Pueden hacerse disponibles variables en las instrucciones contenidas directa o indirectamente en una secuencia de instrucciones particular, así como en las expresiones que éstas contengan.  Para hacerlo, la secuencia de instrucciones se incluye en una instrucción de bloque que declare esa variable y la asocie a un nombre.  Las instrucciones incluidas en ese bloque, y las expresiones que contengan, podrán referirse a la variable a través del nombre que se le asoció en el bloque donde fue declarada.
 
-4.  A partir de una secuencia de instrucciones `s`, se puede formar una
+4.  A partir de un identificador `i` y un
+
+4.  A partir de una secuencia de instrucciones `s`, se puede formar una instrucción de
 
 <!-- FIXME --> 2.  Las funciones de *Trinity* abstraen sobre secuencias de instrucciones, y permiten que éstas sean ejecutadas como parte de la evaluación de una expresión.
 
@@ -258,7 +270,7 @@ El siguiente ejemplo es válido en *Trinity* y pone en evidencia las reglas de 
         in
             x = { 1 , 2 , 3 };
             y = { 1 : 2 : 3 };
-            write "Write 1", x; # x sera´ de tipo matrix(1,3)
+            write "Write 1", x; # x será del tipo especificado por matrix(1,3)
         end;
 
         begin
@@ -368,14 +380,14 @@ La declaración de variables puede verse como una secuencia de declaraciones de
 
     read <variable>
 
-Permite obtener entrada escrita para escalares por parte del usuario. Para ejecutar esta instrucción el interpretador debe solicitar al usuario que introduzca un valor, y posteriormente se debe validar y almacenar lo que sea introducido. Si la entrada es inválida debe arrojarse un error. Sólo se puede pedir entrada para variables de tipo `number` y `boolean`. Puede haber cualquier cantidad de espacio en blanco antes o después del dato introducido.
+Permite obtener entrada escrita para escalares por parte del usuario. Para ejecutar esta instrucción el interpretador debe solicitar al usuario que introduzca un valor, y posteriormente se debe validar y almacenar lo que sea introducido. Si la entrada es inválida debe arrojarse un error. Sólo se puede pedir entrada para variables de tipo numérico y booleano. Puede haber cualquier cantidad de espacio en blanco antes o después del dato introducido.
 
 ### Condicional `if then else`
 
     if <condición> then <instrucción 1> else <instrucción 2>
     if <condición> then <instrucción>
 
-La condición debe ser una expresión de tipo `boolean`, de lo contrario debe arrojarse un error.
+La condición debe ser una expresión de tipo booleano, de lo contrario debe arrojarse un error.
 
 Ejecutar está instrucción tiene el efecto de evaluar la condición y si su valor es `true` se ejecuta la `<instrucción 1>`; si su valor es `false` se ejecuta la `<instrucción 2>`. Es posible omitir la palabra clave `else` y la `<instrucción 2>` asociada, de manera que si la expresión vale `false` no se ejecuta ninguna instrucción.
 
@@ -383,15 +395,15 @@ Ejecutar está instrucción tiene el efecto de evaluar la condición y si su 
 
     for <identificador> in <vector/matrix> do <instrucción>
 
-Para ejecutar esta instrucción se evalúa la expresión `<vector/matrix>` que puede ser tanto una vector como una matriz, su tipo debe ser `row`, `col` o `matrix`, y a la variable `<identificador>` se le asigna cada valor dentro de la matriz, avanzando de izquierda a derecha y de arriba hacia abajo. Para cada valor de `<identificador>` se ejecuta `<instrucción>`. Note que cambiar el valor de la variable `<identificador>` **no cambiará el valor** de la posición representada por éste de la matriz.
+Para ejecutar esta instrucción se evalúa la expresión `<vector/matrix>` que puede ser tanto una vector como una matriz, su tipo debe ser matricial, y a la variable `<identificador>` se le asigna cada valor dentro de la matriz, avanzando de izquierda a derecha y de arriba hacia abajo. Para cada valor de `<identificador>` se ejecuta `<instrucción>`. Note que cambiar el valor de la variable `<identificador>` **no cambiará el valor** de la posición representada por éste de la matriz.
 
-La instrucción declara automáticamente una variable llamada `<identificador>` de tipo `number` y local al cuerpo de la iteración.
+La instrucción declara automáticamente una variable llamada `<identificador>` de tipo numérico y local al cuerpo de la iteración.
 
 ### Iteración indeterminada
 
     while <condición> do <instrucción>
 
-La condición debe ser una expresión de tipo `boolean`. Para ejecutar la `<instrucción>` se evalúa la `<condición>`, si es igual a `false` termina la iteración; si es `true` se ejecuta la `<instrucción>` del cuerpo y se repite el proceso.
+La condición debe ser una expresión de tipo booleano. Para ejecutar la `<instrucción>` se evalúa la `<condición>`, si es igual a `false` termina la iteración; si es `true` se ejecuta la `<instrucción>` del cuerpo y se repite el proceso.
 
     unless <condición> do <instrucción>
 
