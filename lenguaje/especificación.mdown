@@ -160,25 +160,26 @@ Ejecutar esta instrucción tiene el efecto de evaluar la expresión del lado d
 
 ### Bloque
 
-begin
-    <declaración de variables>
-    <instrucción 1> ;
-    <instrucción 2> ;
-    ...
-    <instrucción n-1> ;
-    <instrucción n> ;
-end
+    begin
+        <declaración de variables>
+        <instrucción 1> ;
+        <instrucción 2> ;
+        ...
+        <instrucción n-1> ;
+        <instrucción n> ;
+    end
 
 El bloque consiste de una sección de declaración de variables, la cual es opcional, y una secuencia de instrucciones finalizadas por el caracter `;`. Nótese que se utiliza el caracter `;` como finalizador, por lo que todas las instrucciones deben terminar con `;`.
 
 La sintaxis de la declaración de variables es:
 
-    declare
+    use
       <tipo> x1, x2, x3, ... , xn ;
       <tipo> y1, y2, y3, ... , xn ;
       ...
       <tipo> z1, z2, z3, ... , xn ;
-
+    in
+    
 Estas variables sólo serán visibles a las instrucciones y expresiones del bloque. Se considera un error declarar más de una vez la misma variable en el mismo bloque.
 
 La declaración de variables puede verse como una secuencia de declaraciones de un mismo tipo terminadas por el caracter `;`.
