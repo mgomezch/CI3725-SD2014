@@ -90,7 +90,7 @@
 
 2.  Cada operador binario entre cantidades escalares que resulte en otra cantidad escalar tiene un operador cruzado correspondiente.  Los operadores cruzados `.+.`, `.-.`, `.*.`, `./.`, `.%.`, `.div.` y `.mod.` corresponden a los operadores escalares `+`, `-`, `*`, `/`, `%`, `div` y `mod`, respectivamente.
 
-3.  A partir de expresiones `e₁` del tipo `number` y `e₂` de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e₁ .op. e₂` y `e₂ .op. e₁` del mismo tipo de `e₂`, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `xᵤᵥ` de `e₂` por `e₁ op xᵤᵥ` o `xij op e₁`, respectivamente, donde `op` es el operador escalar correspondiente de `.op.`.
+3.  A partir de expresiones `e₁` del tipo `number` y `e₂` de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e₁ .op. e₂` y `e₂ .op. e₁` del mismo tipo de `e₂`, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `xᵤᵥ` de `e₂` por `e₁ op xᵤᵥ` o `xᵤᵥ op e₁`, respectivamente, donde `op` es el operador escalar correspondiente de `.op.`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
 4.  Por ejemplo, `{1 2 3} .*. 10` es una expresión del tipo `matrix(2, 3)` y su valor es igual al de la expresión `{(1*10) (2*10) (3*10)}`.  De igual manera, `12 ./. {2 3; 4 8}` es una expresión del tipo `matrix(2, 2)` y su valor es igual al de la expresión `{6 4; 3 1.5}`.
 
@@ -106,7 +106,22 @@
 
 ### Impresión
 
-1.  A partir de una expresión `e` de cualquier tipo, se puede formar la instrucción `print e;`, cuyo efecto al ejecutarse es evaluar `e`  producir en la salida del programa una representación textual del valor de la expresión `e`
+1.  A partir de expresiones `e₁`, `e₂` … `eᵢ` de tipos cualesquiera, o literales de cadena de caracteres, se puede formar la instrucción `print e₁, e₂ … eᵢ;`.  La ejecución de esta instrucción procede con la evaluación de `e₁`, `e₂` … `eᵢ` en el orden de aparición, exceptuando aquellas que no sean expresiones sino literales de cadena de caracteres,  y al todas haber producido sus valores, se escribe a la salida estándar del programa una representación textual de los valores obtenidos, o el texto representado por los literales de cadena de caracteres, en el mismo orden de aparición.
+
+2.  La instrucción de impresión **no imprime un salto de línea** después de haber impreso la lista completa de argumentos, ni entre la impresión correspondiente a cada uno de sus argumentos.
+
+3.  En un literal de cadena de caracteres, el caracter *backslash* solo puede ocurrir como parte de una secuencia de escape.  Una secuencia de escape es un caracter *backslash* seguido de una `n` (`\n`), otro *backslash* (`\\`), o una comilla doble (`\"`).  Una secuencia de escape representa texto: `\n` representa un fin de línea, `\\` representa un caracter *backslash*, y `\"` representa una comilla doble.
+
+4.  Un literal de cadena de caracteres es una secuencia de caracteres encerrada entre comillas dobles (`"`) y que no contiene fines de linea ni comillas dobles, salvo como parte de una secuencia de escape.  Las comillas dobles que delimitan a un literal de cadena de caracteres no pueden ser parte de una secuencia de escape.  El texto representado por un literal de cadena de caracteres es el mismo texto que lo compone, sin sus delimitadores, y sustituyendo las secuencias de escape por el texto que representan.
+
+4.  Por ejemplo, al ejecutarse la instrucción de impresión
+
+        print "Hello world!\nA string inside a string: \"this is so \\meta\""
+
+    el programa escribiría esto a su salida estándar:
+
+        Hello world!
+        A string inside a string: "this is so \meta"
 
 ### Variables y alcances
 
@@ -178,23 +193,6 @@ La declaración de variables puede verse como una secuencia de declaraciones de
     read <variable>
 
 Permite obtener entrada escrita para escalares por parte del usuario. Para ejecutar esta instrucción el interpretador debe solicitar al usuario que introduzca un valor, y posteriormente se debe validar y almacenar lo que sea introducido. Si la entrada es inválida debe arrojarse un error. Sólo se puede pedir entrada para variables de tipo `number`. Puede haber cualquier cantidad de espacio en blanco antes o después del dato introducido.
-
-### Print
-
-    print x1, x2, ..., xn
-
-Donde `x1, x2, ..., xn` pueden ser expresiones de cualquier tipo o cadenas de caracteres encerradas en comillas dobles. El interpretador debe recorrer los elementos en orden e imprimirlos en pantalla. La instrucción `print` **no imprime un salto de línea** después de haber impreso la lista completa de argumentos.
-
-Las cadenas de caracteres deben estar encerradas entre comillas dobles (`"`) y sólo debe contener caracteres imprimibles. No se permite que tenga saltos de línea, comillas dobles o backslashes (`\`) a menos que sean escapados. Las secuencias de escape correspondientes son `\n`, `\"` y `\\`, respectivamente.
-
-Un ejemplo de `print` válido es el siguiente:
-
-    print "Hello world!\nA string inside a string: \"this is so \\meta\""
-
-Que imprimiría lo siguiente en consola:
-
-    Hello world!
-    A string inside a string: "this is so \meta"
 
 ### Condicional `if then else`
 
