@@ -89,10 +89,21 @@
 
 2.  Cada operador binario entre cantidades escalares que resulte en otra cantidad escalar tiene un operador cruzado correspondiente.  Los operadores cruzados `.+.`, `.-.`, `.*.`, `./.`, `.%.`, `.div.` y `.mod.` corresponden a los operadores escalares `+`, `-`, `*`, `/`, `%`, `div` y `mod`, respectivamente.
 
-3.  A partir de expresiones `e₁` del tipo `number` y `e₂` de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e₁ .op. e₂` y `e₂ .op. e₁` del mismo tipo de `e₂`, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `xᵤᵥ` de `e₂` por `e₁ op xᵤᵥ` o `xij op e₁`, respectivamente, donde `op` es el operador escalar correspondiente de `.op.`.
+3.  A partir de expresiones `e₁` del tipo `number` y `e₂` de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e₁ .op. e₂` y `e₂ .op. e₁` del mismo tipo de `e₂`, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `xᵤᵥ` de `e₂` por `e₁ op xᵤᵥ` o `xᵤᵥ op e₁`, respectivamente, donde `op` es el operador escalar correspondiente de `.op.`.
 
 4.  Por ejemplo, `{1 2 3} .*. 10` es una expresión del tipo `matrix(2, 3)` y su valor es igual al de la expresión `{(1*10) (2*10) (3*10)}`.  De igual manera, `12 ./. {2 3; 4 8}` es una expresión del tipo `matrix(2, 2)` y su valor es igual al de la expresión `{6 4; 3 1.5}`.
 
+### Lista de precedencia
+
+1. (`'`)
+2. (`*`) (`/`) (`%`) (`div`) (`mod`)
+3. (`+`) (`-`)
+4. (`.*.`) (`./.`) (`.%.`) (`.div.`) (`.mod.`)
+5. (`.+.`) (`.-.`)
+6. (`==`) (`/=`) (`<=`) (`<`) (`>=`) (`>`)
+7. (`not`)
+8. (`&`)
+9. (`|`)
 
 ### Proyección de componentes
 
