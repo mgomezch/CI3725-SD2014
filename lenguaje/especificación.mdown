@@ -10,7 +10,7 @@
 
 1.  Este documento define el lenguaje de programación *Trinity* y especifica requerimientos para sus implantaciones.
 
-2.  Trinity es un lenguaje de programación imperativo con alcance y tipos estáticos enfocado en conceptos básicos de álgebra lineal sobre los números reales, y con soporte directo para operaciones entre escalares, vectores y matrices.  Su influencia principal es el lenguaje *Octave*<!-- TODO: referencia -->.
+2.  Trinity es un lenguaje de programación imperativo con alcance y tipos estáticos enfocado en conceptos básicos de álgebra lineal sobre los números reales, y con soporte directo para operaciones entre escalares, vectores y matrices.  Su influencia principal es el lenguaje [*Octave*](http://www.gnu.org/software/octave/).
 
 <!-- TODO: describir la estructura de este documento -->
 
