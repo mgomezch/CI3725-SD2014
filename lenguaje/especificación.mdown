@@ -148,7 +148,8 @@ Un programa de Trinity tiene la siguiente estructura:
 
 Es decir, la palabra clave `program` seguida de una instrucción. Un programa simple de Trinity podría verse así:
 
-    program begin   # bouncer
+    # Program bouncer
+    program begin
     use
         number x;
     in
