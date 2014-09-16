@@ -240,4 +240,35 @@ Es equivalente a la instrucción de `while`, pero aplicando la *negación boolea
 
 En Trinity se pueden escribir comentarios de una línea, al estilo de Ruby. Al escribir `#` se ignorarán todos los caracteres hasta el siguiente salto de línea.
 
-El espacio en blanco es ignorado de manera similar a otros lenguajes de programación, es decir, el programador es libre de colocar cualquier cantidad de espacio en blanco entre los elementos sintácticos del lenguaje.
+El espacio en blanco es ignorado de manera similar a otros lenguajes de programación, es decir, el programador es libre de colocar cualquier cantidad de espacio en blanco, saltos de línea, etc. entre los elementos sintácticos del lenguaje.
+
+## Programas ejemplo
+
+    program begin
+      use
+        matrix(2,2) m;  # se inicializa todas en '0'
+        number x;       # se inicializa en '0'
+        boolean b;      # se inicializa en 'false'
+      in
+      m = [ 1 2 
+          ; 3 4 ];
+
+      read x;
+
+      for i in m do
+        if i % 2 == 0 then
+          # si 'i' es par
+          print i;
+        else begin
+          print x;
+          read x;
+          b = not b;
+        end;
+      ;
+
+      if b then
+        print i;
+      else
+        print "b is a lie";
+      ;
+    end;
