@@ -52,7 +52,7 @@
 
 1.  A partir de una expresión `e` del tipo `boolean`, se puede formar la expresión `not e` del tipo `boolean`, cuyo valor será el contrario del valor de `e`.  Por ejemplo, `not true` es una expresión del tipo `boolean` y su valor es `false`.  La evaluación de `not e` es estricta.
 
-2.  A partir de dos expresiones `e₁` y `e₂` del tipo `boolean`, se pueden formar las expresiones `e₁ & e₂` y `e₁ | e₂`, ambas del tipo `boolean`, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e₁` y `e₂`.  Ambos operadores tienen asociatividad izquierda y tienen menor precedencia que el operador `not`.  El operador `&` tiene mayor precedencia que el operador `|`.  Por ejemplo, <!-- TODO -->.
+2.  A partir de dos expresiones `e₁` y `e₂` del tipo `boolean`, se pueden formar las expresiones `e₁ & e₂` y `e₁ | e₂`, ambas del tipo `boolean`, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e₁` y `e₂`.  Ambos operadores tienen asociatividad izquierda y tienen menor precedencia que el operador `not`.  El operador `&` tiene mayor precedencia que el operador `|`.  Por ejemplo, `false & true | true ` se evalúa al valor `true`, ya que por precedencia se evalúa el `&` primero y el `|` después: `(false & true) | true`.
 
 3.  La evaluación de `e₁ & e₂` procede con la evaluación de `e₁`, y si ésta produce el valor `false`, la evaluación de `e₁ & e₂` produce `false` de inmediato, sin evaluar `e₂`; si, en cambio, si la evaluación de `e₁` produce el valor `true`, entonces se evalúa `e₂` y la evaluación de `e₁ & e₂` produce finalmente el valor que produce la evaluación de `e₂`.
 
@@ -62,10 +62,9 @@
 
 6.  La evaluación de `e₁ == e₂` y `e₁ /= e₂` procede con la evaluación de `e₁`; al terminarla, procede a evaluar `e₂`; al terminarla, verifica si ambos valores producidos por las subexpresiones son iguales, y produce el resultado final.  El mecanismo de evaluación análogo para expresiones formadas por otros operadores binarios será referido en el resto de este documento como estricta de izquierda a derecha.
 
-[^homoeq]: La igualdad en *Trinity* es homogénea.  No se puede formar una expresión con los operadores `==` y `/=` entre dos expresiones con tipos diferentes.  Por lo tanto, dos valores de tipos diferentes no pueden compararse entre sí ni siquiera para resultar en que son distintos.  La forma `42 == {54}` **no** es una expresión con valor `false`, sino un fragmento de programa mal formado que debe ser detectado estáticamente.
+[^homoeq]: La igualdad en *Trinity* es homogénea.  No se puede formar una expresión con los operadores `==` y `/=` entre dos expresiones con tipos diferentes.  Por lo tanto, dos valores de tipos diferentes no pueden compararse entre sí ni siquiera para resultar en que son distintos.  La forma `42 == {54}` **no** es una expresión con valor `false`, sino un fragmento de programa mal formado que debe arrojar un error estáticamente.
 
 7.  A partir de dos expresiones `e₁` y `e₂` del tipo `number`, se pueden formar las expresiones `e₁ <= e₂`, `e₁ < e₂`, `e₁ >= e₂` y `e₁ > e₂`, todas del tipo `boolean`, cuyos valores serán `true` únicamente si el valor de `e₁` es, respectivamente, menor or igual, menor, mayor o igual o mayor que el valor de `e₂`.  Ninguno de los cuatro operadores es asociativo y todos tienen precedencia igual a la de `==` y `/=`.  Por ejemplo, <!-- TODO -->.  La evaluación de estas expresiones es estricta de izquierda a derecha.
-
 
 ### Operadores aritméticos
 
