@@ -66,6 +66,7 @@ tokens :-
 
         -- Statements
         -- -- Declarations
+        "set"           { lex' TkSet             }
         "="             { lex' TkAssign          }
 
         -- -- In/Out
@@ -138,7 +139,7 @@ data Token
     | TkReturn
 
     -- -- Blocks
-    | TkBegin | TkUse | TkIn | TkEnd
+    | TkBegin | TkUse | TkIn | TkEnd | TkProgram | TkFunction
 
     -- -- Brackets
     | TkLParen | TkRParen | TkLBrackets | TkRBrackets | TkLBraces | TkRBraces
@@ -147,6 +148,7 @@ data Token
     | TkNumber | TkBoolean | TkMatrix | TkRow | TkCol
 
     -- Statements
+    | TkSet
     | TkAssign
 
     -- -- I/O
@@ -181,7 +183,7 @@ data Token
     | TkEOF
     | TkError       { unTkError :: Char }
     | TkStringError { unTkStringError :: String }
-    deriving (Eq, Show)
+    deriving (Eq, Read, Show)
 
 --------------------------------------------------------------------------------
 

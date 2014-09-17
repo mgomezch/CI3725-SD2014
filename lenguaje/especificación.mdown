@@ -1,6 +1,6 @@
 % Trinity
 % Especificación del lenguaje
-% Borrador 1 — \today
+% Versión 2 — \today
 
 - - -
 
@@ -14,6 +14,65 @@
 
 3.  Este documento describe el lenguaje de programación *Trinity* a través de los elementos fundamentales de todo lenguaje: sus **objetos**, sus mecanismos de **composición** para hacer objetos complejos a partir de otros simples, y sus mecanismos de **abstracción y control**.  No se presenta una gramática exacta para el lenguaje ni una especificación formal de su semántica, pero sí se especifica lo necesario para construir una gramática y un intérprete.
 
+## Sinopsis
+
+1.  Un programa simple de *Trinity* podría verse así:
+
+        program
+        use
+            number x;
+        in
+            print "How old are you?\n> ";
+            read x;
+
+            if x < 18 then
+                print "You can't be here.";
+            else
+                print "Oh, ", x, "? come right in.";
+            end;
+        end;
+
+2.  Ese programa se ejecutaría así:
+
+        $ ./trinity bouncer.ty
+        How old are you?
+        > 22
+        Oh, 22? come right in.
+
+3.  Un ejemplo más extenso de programa en *Trinity*:
+
+        program
+        use
+          matrix(2,2) m;  # se inicializa todas en '0'
+          number x;       # se inicializa en '0'
+          boolean b;      # se inicializa en 'false'
+        in
+          set m = { 1, 2
+                  : 3, 4 };
+
+          read x;
+
+          for i in m do
+            if i % 2 == 0 then
+              # si 'i' es par
+              print i;
+            else
+              print x;
+              read x;
+              set b = not b;
+            end;
+          end;
+
+          if b then
+            print i;
+          else
+            print "b is a lie";
+          end;
+        end;
+
+
+
+- - -
 
 
 
@@ -23,13 +82,21 @@
 
 
 
+## Estructura lexicográfica
+
+1.  El espacio en blanco en *Trinity* se utiliza para delimitar lexemas, y es ignorado.  Se considera espacio en blanco a cualquier caracter espacio, al fin de línea y a los *tabs*.
+
+2.  A menos que ocurra dentro de un literal de cadena de caracteres, todos los caracteres desde un caracter numeral (`#`) hasta el final de la línea se consideran espacio en blanco.
+
+
+
 ## Objetos
 
 1.  Las expresiones `false` y `true` en *Trinity* denotan los dos únicos valores con el tipo booleano, cuya especificación de tipo es `boolean`.  Los dos son iguales a sí mismos y distintos entre sí.  Los lexemas `boolean`, `false` y `true` son palabras reservadas.
 
 2.  Las cantidades escalares en *Trinity* corresponden al tipo numérico, cuya especificación de tipo es `number`, y se implementan como números de punto flotante según el estándar [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point), incluyendo a la noción de igualdad.  El lexema `number` es una palabra reservada.
 
-3.  Un literal numérico está formado por secuencias de dígitos en notación posicional decimal, con una parte fraccional opcional separada por un punto (`.`) de la parte entera.  Por ejemplo, `42` y [`6.2831853`](http://www.tauday.com/) son literales numéricos.  Los literales numéricos son expresiones que denotan cantidades escalares y tienen el tipo numérico.
+3.  Un literal numérico está formado por secuencias de dígitos en notación posicional decimal, con una parte fraccional opcional separada por un punto (`.`) de la parte entera.  Por ejemplo, `42` y [`6.2831853`](http://www.tauday.com/) son literales numéricos.  Los literales numéricos son expresiones que denotan cantidades escalares y tienen el tipo numérico.  <!-- TODO: La correspondencia entre un literal numérico y el valor de tipo numérico que denota se hace según las reglas de …? -->
 
 4.  Las cantidades matriciales en *Trinity* son arreglos bidimensionales, rectangulares, discretos y finitos de cantidades escalares.  Las cantidades matriciales de `n` filas y `m` columnas corresponden al tipo especificado por `matrix(n, m)`.  Dos cantidades matriciales del mismo tipo se consideran iguales cuando las cantidades escalares correspondientes en cada posición son iguales.  El lexema `matrix` es una palabra reservada.
 
@@ -195,15 +262,29 @@
 
     6.  Una vez terminada y producido su valor, se verifica si ese valor es un entero entre 1 y el número de columnas del tipo de la expresión `e`.
 
-    7.  Si esta condición no se cumple, la ejecución del programa abortará.  Si la condición sí se cumple, se produce como resultado final de la evaluación de `e[i, j]` el valor en la posición del valor producido al evaluar `e` en la fila y la columna dadas por los valores producidos al evaluar `i` y `j`.
+    7.  Si esta condición no se cumple, la ejecución del programa abortará.  Si la condición sí se cumple, se produce como resultado final de la evaluación de `e[i, j]` el valor en la posición del valor producido al evaluar `e` en la fila y la columna especificadas por los valores producidos al evaluar `i` y `j`.
 
 3.  Por ejemplo, la expresión
 
         { 1, 2 : 3, 4 }[1 + 1, 2 - 1]
 
-    tiene el mismo valor que la expresión `3`.
+    tiene el mismo valor que la expresión `3`, mientras que la expresión
 
-<!-- TODO: proyección de componentes con una sola dimensión, para vectores -->
+        { 1, 2 : 3, 4 }[30, 1]
+
+    aborta el programa al ser evaluada.
+
+4.  A partir de una expresión `e` del tipo especificado por `row(n)` o `col(m)`, y una expresión `i` del tipo numérico, se puede formar la expresión `e[i]` del tipo numérico.  Si `e` tiene el tipo especificado por `row(n)`, entonces `e[i]` tiene el mismo significado que `e[1, i]`, y si `e` tiene el tipo especificado por `col(m)`, entonces `e[i]` tiene el mismo significado que `e[i, 1]`.
+
+    Por ejemplo, todas estas expresiones tienen el mismo significado:
+
+        { 10 , 20 , 30 }[2]
+
+        { 10 , 20 , 30 }[1, 2]
+
+        { 10 : 20 : 30 }[2]
+
+        { 10 : 20 : 30 }[2, 1]
 
 
 
@@ -250,11 +331,11 @@
 
     Por ejemplo, `print` y `not` no son identificadores, porque son palabras reservadas, pero `pRint` sí es un identificador.
 
-3.  No es necesario que se reconozcan letras con tildes ni la letra eñe — *Trinity* solo requiere identificadores hechos de caracteres imprimibles definidos por el estándar ASCII<!-- TODO: reference -->.
+3.  No es necesario que se reconozcan letras con tildes ni la letra eñe — *Trinity* solo requiere identificadores hechos de caracteres definidos por *Unicode* en el *script* [*Basic Latin*](http://www.unicode.org/charts/PDF/U0000.pdf) (equivalente a ASCII).
 
 4.  Una variable es una ubicación de memoria modificable que hace referencia a un valor.  Pueden hacerse disponibles variables en las instrucciones contenidas directa o indirectamente en una secuencia de instrucciones particular, así como en las expresiones que éstas contengan.  Para hacerlo, la secuencia de instrucciones se incluye en una instrucción de bloque que declare esa variable y la asocie a un nombre.  Las instrucciones incluidas en ese bloque, y las expresiones que contengan, podrán referirse a la variable a través del nombre que se le asoció en el bloque donde fue declarada.
 
-5.  A partir de un identificador `i`, una especificación de tipo `t` y una expresión `e` del tipo especificado por `t`, se puede formar una declaración de variable `t i;` o una declaración de variable con inicialización `t i = e;`.  A partir de una o más declaraciones `d`~1~, `d`~2~, …, `d`~n~, se puede formar una secuencia de declaraciones `d`~1~ `d`~2~ … `d`~n~ simplemente escribiéndolas en secuencia.
+5.  A partir de un identificador `i`, una especificación de tipo `t` y una expresión `e` del tipo especificado por `t`, se puede formar una declaración de variable `t i;` o una declaración de variable con inicialización `t i = e;`.  A partir de una o más declaraciones `d`~1~, `d`~2~, …, `d`~n~ donde no se declare el mismo identificador en más de una declaración, se puede formar una secuencia de declaraciones `d`~1~ `d`~2~ … `d`~n~ simplemente escribiéndolas en secuencia.
 
     Por ejemplo,
 
@@ -267,7 +348,7 @@
 
     es una secuencia de declaraciones en la cual hay dos declaraciones de variable con inicialización (las de los identificadores `i` y `F_5`), y una declaración de variable regular sin inicialización (la del identificador `b`).
 
-6.  A partir de una secuencia de instrucciones `is` y una secuencia de declaraciones `ds`, se puede formar una instrucción de bloque `use ds in is end;`, si los identificadores en las declaraciones en `ds` no se repiten en la secuencia.
+6.  A partir de una secuencia de instrucciones `is` y una secuencia de declaraciones `ds`, se puede formar una instrucción de bloque `use ds in is end;`.
 
     Por ejemplo, esta es una instrucción de bloque:
 
@@ -310,9 +391,9 @@
 
     *   Las instrucciones que imprimen 5 y 6 están dentro de la extensión del contexto antes mencionado, y también dentro de la extensión del contexto establecido por la declaración `boolean foo;`.
 
-    Debido a la regla de sustitución, en el alcance del contexto interior (establecido por la declaración `boolean foo;`), la asociación del identificador `foo` con una variable de tipo booleano *sustituye* a la asociación del contexto exterior de `foo` con una variable de tipo numérico.  Esa sustitución *únicamente* aplica para las instrucciones que imprimen 5 y 6.
+    Debido a la regla de sustitución, en el alcance del contexto interior (establecido por la declaración `boolean foo;`), la asociación del identificador `foo` con una variable del tipo booleano *sustituye* a la asociación del contexto exterior de `foo` con una variable del tipo numérico.  Esa sustitución *únicamente* aplica para las instrucciones que imprimen 5 y 6.
 
-8.  A partir de un identificador `i`, puede utilizarse `i` como una expresión de uso de variable, que es de tipo `t`, en la extensión de un contexto producido por una declaración que asocie al identificador `i` con el tipo `t`.
+8.  A partir de un identificador `i`, puede utilizarse `i` como una expresión de uso de variable, que es del tipo `t`, en la extensión de un contexto producido por una declaración que asocie al identificador `i` con el tipo `t`.
 
     Por ejemplo, el programa
 
@@ -322,7 +403,7 @@
           print foo + 27;
         end;
 
-    está bien formado, porque el uso del identificador `foo` como una expresión de tipo numérico ocurre en la extensión del contexto establecido por la declaración `number foo = 10 + 5;`, que asocia el identificador `foo` a una variable de tipo numérico (y además le asocia el valor de la expresión `10 + 5`).
+    está bien formado, porque el uso del identificador `foo` como una expresión del tipo numérico ocurre en la extensión del contexto establecido por la declaración `number foo = 10 + 5;`, que asocia el identificador `foo` a una variable del tipo numérico (y además le asocia el valor de la expresión `10 + 5`).
 
 9.  Un programa en *Trinity* está mal formado si un identificador `i` se utiliza como expresión fuera de la extensión de un contexto de alguna declaración que asocie ese identificador con algún tipo.  En otras palabras: un identificador solo puede usarse como expresión en la extensión de su declaración.
 
@@ -353,11 +434,48 @@
     es un programa mal formado, porque aunque `foo` se usa como identificador dentro de la extensión del contexto establecido por una declaración que lo asocia a un tipo, se usa `foo` con el tipo numérico, pero está asociado al tipo booleano en la declaración relevante.
 
 
-### Asignación, valores y referencias
+### Asignación
 
-1.  *Trinity* es un lenguaje imperativo con variables mutables por referencia.  Asignar a una variable hace que el valor asignado esté disponible al consultar la variable, y si una variable se asigna al valor de otra, ambas serán referencias al mismo valor compartido, así que las modificaciones hechas sobre una de las variables serán visibles usando la otra.  Además, las variables que no se inicialicen explícitamente son inicializadas con ceros.  Esta sección define con precisión el funcionamiento de la asignación en el lenguaje.
+1.  *Trinity* es un lenguaje imperativo con variables con el modelo de valor.  Esta sección define con precisión el funcionamiento de la asignación en el lenguaje.
 
-2.  A partir de un identificador `i` y una expresión `e` de tipo `t`, puede utilizarse la instrucción de asignación `i = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `i` con el tipo `t`.  La ejecución de esta instrucción procede con la evaluación de `e`, y al producir su valor, lo asocia al identificador `i` en toda la extensión de la asociación de la declaración correspondiente.
+    El siguiente ejemplo es válido en *Trinity* y pone en evidencia las reglas de alcance:
+
+        program
+          use
+            number x, y; # inicializados en 0
+          in
+            use
+              row(3) x;
+              col(3) y;
+            in
+              set x = { 1 , 2 , 3 };
+              set y = { 1 : 2 : 3 };
+              print "Print 1", x; # x es del tipo especificado por matrix(1, 3)
+            end;
+
+            use
+              boolean x, y;
+            in
+              set x = true;
+              print "Print 2", x; # x es del tipo booleano
+            end;
+
+            print "Print 3", x; # x es del tipo numérico
+
+            for x in
+              { 1, 2, 3 : 4, 5, 6 }
+            do
+              use
+                bool x; # esconde la x declarada en el for y se inicializa en 'false'
+              in
+                set x = not x;
+                print "Print 4", x; # x es del tipo booleano
+              end;
+            end;
+          end;
+        end;
+
+2.  A partir de un identificador `i` y una expresión `e` del tipo `t`, puede utilizarse la instrucción de asignación `set i = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `i` con el tipo `t`.  La ejecución de esta instrucción procede con la evaluación de `e`, y al producir su valor, lo asocia al identificador `i` en toda la extensión de la asociación de la declaración correspondiente.  El lexema `set` es una palabra reservada.
 
     Por ejemplo, en
 
@@ -368,7 +486,7 @@
             go
           do
             print 1;
-            go = false & true;
+            set go = false & true;
             print 2;
           end;
         end;
@@ -386,118 +504,142 @@
           use
             boolean r = q[p] == 0;
           in
-            print "inalcanzable!"
+            print "inalcanzable!";
           end;
         end;
 
-    el programa aborta antes de imprimir, ya que se ejecuta la asignación `r = q[p] == 0`, lo cual evalúa la expresión `q[p] == 0`, que comienza por evaluar `q[r]`, pero `p` está asociada al valor de la expresión `42`, que sobrepasa los límites de la cantidad matricial de la cual se desea obtener un elemento..
+    el programa aborta antes de imprimir, ya que se ejecuta la asignación `set r = q[p] == 0`, lo cual evalúa la expresión `q[p] == 0`, que comienza por evaluar `q[r]`, pero `p` está asociada al valor de la expresión `42`, que sobrepasa los límites de la cantidad matricial de la cual se desea obtener un elemento..
 
 5.  Las declaraciones de variable sin inicialización se comportan como declaraciones de variable con inicialización donde la expresión de inicialización es un literal del tipo apropiado con valores por defecto.  La inicialización por defecto para el tipo booleano es con el literal `false`, para el tipo numérico es con el literal `0`, y para tipos matriciales, es un literal matricial de las dimensiones adecuadas al tipo y con `0` en todas las componentes.
 
-    Por ejemplo, <!-- TODO -->
+    Por ejemplo, en
 
-6.  La ejecución de una instrucción de uso de variable con el identificador `i` produce como valor el último valor que se asociara a `i` en una instrucción de asignación, sea implícita o explícita.
-
-    Por ejemplo, <!-- TODO -->
-
-<!-- TODO: asignaciones a posiciones de matrices -->
-
-
-
-- - -
-
-
-
-0.  Las funciones de *Trinity* abstraen sobre secuencias de instrucciones, y permiten que éstas sean ejecutadas como parte de la evaluación de una expresión. <!-- TODO -->
-
-El siguiente ejemplo es válido en *Trinity* y pone en evidencia las reglas de alcance:
-
-    program
-    begin
-    use
-        number x, y; # inicializados en 0
-    in
-        begin
         use
-            row(3) x;
-            col(3) y;
+          boolean b;
+          number n;
+          matrix(3, 2) m;
         in
-            x = { 1 , 2 , 3 };
-            y = { 1 : 2 : 3 };
-            write "Write 1", x; # x será del tipo especificado por matrix(1,3)
+          print b, n, m;
         end;
 
-        begin
+    el programa imprime `false`, `0`, y un representación textual de una matriz 3×2 llena de ceros.
+
+6.  La ejecución de una instrucción de uso de variable con el identificador `i` produce como valor el último valor que se asociara a `i` en una instrucción de asignación, sea implícita o explícita, y no tiene otros efectos.
+
+    Por ejemplo, en
+
         use
-            boolean x, y;
+          number n;
         in
-            x = true;
-            write "Write 2", x; // x será de tipo bool
+          print n;
+          set n = 42;
+          print n;
         end;
 
-        write "Write 3", x; // x será de tipo int
+    el programa imprime `0` (porque al momento de la primera impresión, la última instrucción de asignación ejecutada fue la asignación implícita `set n = 0;` en la declaración sin inicialización `number n;`, y *luego* de la asignación explícita `set n = 42;`, el programa imprime `42`.
 
-        for x in { 1, 2, 3 : 4, 5, 6 } do
-        begin
+7.  A partir de un identificador `m`, dos expresiones `i` y `j` del tipo numérico, y una expresión `e` del tipo `t`, puede utilizarse la instrucción de asignación matricial `set m[i, j] = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `m` con el tipo especificado por `matrix(n, m)`.
+
+    Por ejemplo,
+
         use
-            bool x; # esconde la x declarada en el for y se inicializa en 'false'
+          number n;
         in
-            x = not x;
-            write "Write 4", x; // x será de tipo bool
+          set n[1] = 2;
         end;
-    end;
 
+    es un programa mal formado, porque el identificador `n` se asocia con el tipo numérico en el contexto establecido por la declaración `number n;`, pero el tipo numérico no es especificado por una especificación de tipo de la forma `matrix(n, m)` —es decir, no es una variable matricial— así que no puede utilizarse en una instrucción de asignación matricial en la extensión de ese contexto.
 
+    En cambio,
 
-## Estructura de un programa
-
-Un programa de *Trinity* tiene la siguiente estructura:
-
-    program
-    <instrucción> ;
-
-Es decir, la palabra clave `program` seguida de una instrucción. Un programa simple de *Trinity* podría verse así:
-
-    program begin
-    use
-        number x;
-    in
-        print "How old are you?\n> ";
-        read x;
-
-        if x < 18 then
-            print "You can't be here.";
-        else
-            print "Oh, ", x, "? come right in.";
+        use
+          matrix(2, 3) n;
+        in
+          set n[1] = 2;
         end;
-    end;
 
-Que se correría así:
+    sí es un programa bien formado.
 
-    $ ./trinity bouncer.ty
-    How old are you?
-    > 22
-    Oh, 22? come right in.
+8.  La ejecución de `set m[i, j] = e` sigue los siguientes pasos:
+
+    2.  Se procede con la evaluación de `i`.
+
+    3.  Una vez terminada y producido su valor, se verifica si ese valor es un entero entre 1 y el número de filas del tipo asociado al identificador `m`.
+
+    4.  Si esta condición no se cumple, la ejecución del programa abortará.  Si la condición sí se cumple, se procede con la evaluación de `j`.
+
+    6.  Una vez terminada y producido su valor, se verifica si ese valor es un entero entre 1 y el número de columnas del tipo asociado al identificador `m`.
+
+    7.  Si esta condición no se cumple, la ejecución del programa abortará.  Si la condición sí se cumple, se procede con la evaluación de `e`.
+
+    8.  Una vez terminada y producido su valor, se asocia al identificador `m` un valor igual al que tuviera asociado en el momento de la asignación, salvo por el valor en la componente en la fila y columna especificadas por los valores producidos en la evaluación de las expresiones `i` y `j`.  El valor de esa componente del valor nuevo asociado a `m` será el valor producido por la evaluación de la expresión `e`.
+
+9.  Por ejemplo, en
+
+        use
+          matrix(2, 3) m = { 1, 2, 3 : 4, 5, 6 };
+        in
+          print m;
+          set m[2, 3] = 42;
+          print m;
+        end;
+
+    la primera impresión escribe
+
+        |  1  2  3 |
+        |  4  5  6 |
+
+    a la salida estándar del programa, mientras que la segunda escribe
+
+        |  1  2  3 |
+        |  4  5 42 |
+
+10. Esta definición de asignación tiene como consecuencia que *Trinity* utiliza el modelo de valor.  Por ejemplo, en
+
+        use
+          row(1) box1;
+          row(1) box2;
+        in
+          set box1[1] = 27;
+          set box2 = box1;
+          set box1[1] = 42;
+          print box2;
+        end;
+
+    la instrucción `set box2 = box1` evalúa la expresión `box1` y asocia el **valor** de esa expresión a `box2`.  Por lo tanto, `box2` tendrá una **copia** del estado de `box1` al momento de realizar la asignación, que será igual al de la expresión `{ 27 }`.
+
+    Luego, la instrucción `set box1[1] = 42;` no tiene efecto alguno sobre el valor asociado al identificador `box2`, así que el programa imprime
+
+        | 27 |
 
 
-## Instrucciones
+### Lectura de entrada
 
-### Entrada
+1.  A partir de un identificador `i`, puede utilizarse la instrucción de lectura de entrada `read i;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `i` con el tipo numérico o booleano.  La ejecución de esta instrucción procede con la lectura de una línea de la entrada estándar del programa y la conversión de los datos leídos en un valor del tipo asociado al identificador `i`; el valor convertido se asocia con el identificador `i` en toda la extensión de la asociación de la declaración correspondiente.
 
-    read <variable>;
+2.  La conversión de datos de entrada a un valor del tipo booleano solo es exitosa si los datos de entrada son exactamente `false` o `true`, y el valor convertido es el de la expresión `false` o `true`, respectivamente.  La conversión de datos de entrada a un valor del tipo numérico solo es exitosa si los datos de entrada tienen el formato exacto de un literal numérico de *Trinity*, y el valor convertido es el que ese literal numérico denota en *Trinity*.
 
-Permite obtener entrada escrita para escalares por parte del usuario. Para ejecutar esta instrucción el interpretador debe solicitar al usuario que introduzca un valor, y posteriormente se debe validar y almacenar lo que sea introducido. Si la entrada es inválida debe arrojarse un error. Sólo se puede pedir entrada para variables de tipo numérico y booleano. Puede haber cualquier cantidad de espacio en blanco antes o después del dato introducido.
+3.  Si la conversión de los datos de entrada no es exitosa, la instrucción de lectura de entrada produce un mensaje de error en la salida estándar del programa y aborta su ejecución.
 
-### Condicional `if then else`
+<!-- TODO: ejemplo -->
+
+
+### Instrucciones condicionales
+
+<!-- TODO: formalizar -->
 
     if <condición> then <instrucciones> else <instrucciones> end;
+
     if <condición> then <instrucciones> end;
 
 La condición debe ser una expresión de tipo booleano, de lo contrario debe arrojarse un error.
 
 Ejecutar está instrucción tiene el efecto de evaluar la condición y si su valor es `true` se ejecuta la `<instrucción 1>`; si su valor es `false` se ejecuta la `<instrucción 2>`. Es posible omitir la palabra clave `else` y la `<instrucción 2>` asociada, de manera que si la expresión vale `false` no se ejecuta ninguna instrucción.
 
+
 ### Iteración determinada
+
+<!-- TODO: formalizar -->
 
     for <identificador> in <vector/matrix> do <instrucciones> end;
 
@@ -505,51 +647,34 @@ Para ejecutar esta instrucción se evalúa la expresión `<vector/matrix>` qu
 
 La instrucción declara automáticamente una variable llamada `<identificador>` de tipo numérico y local al cuerpo de la iteración.
 
+
 ### Iteración indeterminada
+
+<!-- TODO: formalizar -->
 
     while <condición> do <instrucciones> end;
 
 La condición debe ser una expresión de tipo booleano. Para ejecutar la `<instrucción>` se evalúa la `<condición>`, si es igual a `false` termina la iteración; si es `true` se ejecuta la `<instrucción>` del cuerpo y se repite el proceso.
 
-    unless <condición> do <instrucciones> end;
 
-Es equivalente a la instrucción de `while`, pero aplicando la *negación booleana* a la `<condición>`.
+### Funciones
 
-## Comentarios y espacion en blanco
+    function <identificador>(<parámetros>) return <tipo> begin <instrucciones> end;
 
-    print "Hello World!" # esto es un comentario
+Las funciones en *Trinity* tienen un nombre, una lista de parámetros, un tipo de retorno y un cuerpo con una lista de instrucciones.  Los parámetros pueden usarse en el cuerpo como variables.  El pasaje de parámetros es por valor.  La instrucción de retorno `return e` puede usarse en el cuerpo de la función para retornar el valor de la expresión `e`.  La lista de parámetros es una secuencia de declaraciones.
 
-En *Trinity* se pueden escribir comentarios de una línea, al estilo de Ruby. Al escribir `#` se ignorarán todos los caracteres hasta el siguiente salto de línea.
+Las funciones pueden llamarse en una expresión de la forma `<identificador>(<argumentos>)`, donde `<argumentos>` es una lista de expresiones separadas por comas que sean de igual número y con los mismos tipos en el mismo orden que las declaraciones en la lista de parámetros de la función del mismo nombre.  Evaluar la expresión implica evaluar todos los argumentos en orden, asignar sus valores a los parámetros correspondientes, y ejecutar el cuerpo.  La última instrucción ejecutada en el cuerpo debe ser una instrucción de retorno, y el valor de la llamada a la función será el valor de la primera expresión de retorno que se ejecute del cuerpo de la función llamada.  La ejecución de una función no continúa luego de ejecutar una instrucción de retorno.
 
-El espacio en blanco es ignorado de manera similar a otros lenguajes de programación, es decir, el programador es libre de colocar cualquier cantidad de espacio en blanco, saltos de línea, etc. entre los elementos sintácticos del lenguaje.
+<!-- TODO: formalizar, ejemplos -->
 
-## Programas ejemplo
 
-    program begin
-    use
-        matrix(2,2) m;  # se inicializa todas en '0'
-        number x;       # se inicializa en '0'
-        boolean b;      # se inicializa en 'false'
-    in
-        m = { 1, 2
-            : 3 4 };
+### Estructura de un programa
 
-        read x;
+Un programa de *Trinity* tiene la siguiente estructura:
 
-        for i in m do
-            if i % 2 == 0 then
-                # si 'i' es par
-                print i;
-            else begin
-                print x;
-                read x;
-                b = not b;
-            end;
-        end;
-
-        if b then
-            print i;
-        else
-            print "b is a lie";
-        end;
+    <funciones>
+    program
+      <instrucciones>;
     end;
+
+<!-- TODO: formalizar, ejemplos -->
