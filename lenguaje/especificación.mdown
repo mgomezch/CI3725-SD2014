@@ -306,6 +306,7 @@
     *   Las instrucciones de impresión que imprimen 1, 2, 8 y 9 no están dentro de la extensión del contexto de ninguna declaración.
 
     *   Las instrucciones que imprimen 3, 4 y 7 están dentro de la extensión del contexto en el cual los identificadores `foo` y `bar` están asociados a un número y a una matriz, respectivamente.
+:w
 
     *   Las instrucciones que imprimen 5 y 6 están dentro de la extensión del contexto antes mencionado, y también dentro de la extensión del contexto establecido por la declaración `boolean foo;`.
 
@@ -401,13 +402,13 @@
 
 <!-- TODO: asignaciones a posiciones de matrices -->
 
-<!-- FIXME --> 2.  Las funciones de *Trinity* abstraen sobre secuencias de instrucciones, y permiten que éstas sean ejecutadas como parte de la evaluación de una expresión.
 
-1.  
 
-Para utilizar una variable primero debe ser declarada al comienzo de un bloque o como parte de la variable de iteración de una instrucción for. Es posible anidar bloques e instrucciones for y también es posible declarar variables con el mismo nombre que otra variable en un bloque o for exterior. En este caso se dice que la variable interior esconde a la variable exterior y cualquier instrucción del bloque será incapaz de acceder a la variable exterior.
+- - -
 
-Dada una instrucción o expresión en un punto particular del programa, para determinar si existe una variable y a qué bloque pertenece, el interpretador debe partir del bloque o for más cercano que contenga a la instrucción y revisar las variables que haya declarado, si no la encuentra debe proceder a revisar el siguiente bloque que lo contenga, y así sucesivamente hasta encontrar un acierto o llegar al tope.
+
+
+0.  Las funciones de *Trinity* abstraen sobre secuencias de instrucciones, y permiten que éstas sean ejecutadas como parte de la evaluación de una expresión. <!-- TODO -->
 
 El siguiente ejemplo es válido en *Trinity* y pone en evidencia las reglas de alcance:
 
@@ -446,21 +447,6 @@ El siguiente ejemplo es válido en *Trinity* y pone en evidencia las reglas de 
         end;
     end;
 
-<!--
-1.  A partir de una:
-TODO: alcances, variables, asignación, valor/referencia
-
-### Lectura
-
-### Funciones
-
-TODO: funciones
--->
-
-
-
----
-
 
 
 ## Estructura de un programa
@@ -481,9 +467,9 @@ Es decir, la palabra clave `program` seguida de una instrucción. Un programa si
 
         if x < 18 then
             print "You can't be here.";
-        else 
+        else
             print "Oh, ", x, "? come right in.";
-        ;
+        end;
     end;
 
 Que se correría así:
@@ -493,52 +479,19 @@ Que se correría así:
     > 22
     Oh, 22? come right in.
 
-## Identificadores
-
 
 ## Instrucciones
 
-### Asignación
-
-    <variable> = <expresión>
-
-Ejecutar esta instrucción tiene el efecto de evaluar la expresión del lado derecho y almacenarla en la variable del lado izquierdo. La variable tiene que haber sido declarada previamente y su tipo debe coincidir con el tipo de la expresión, en caso contrario debe arrojarse un error.
-
-### Bloque
-
-    begin
-        <declaración de variables>
-        <instrucción 1> ;
-        <instrucción 2> ;
-        ...
-        <instrucción n> ;
-    end
-
-El bloque consiste de una sección de declaración de variables, la cual es opcional, y una secuencia de instrucciones finalizadas por el caracter `;`. Nótese que se utiliza el caracter `;` como finalizador, por lo que todas las instrucciones deben terminar con `;`.
-
-La sintaxis de la declaración de variables es:
-
-    use
-      <tipo> x1, x2, x3, ... , xn ;
-      <tipo> y1, y2, y3, ... , xn ;
-      ...
-      <tipo> z1, z2, z3, ... , xn ;
-    in
-
-Estas variables sólo serán visibles a las instrucciones y expresiones del bloque. Se considera un error declarar más de una vez la misma variable en el mismo bloque.
-
-La declaración de variables puede verse como una secuencia de declaraciones de un mismo tipo terminadas por el caracter `;`.
-
 ### Entrada
 
-    read <variable>
+    read <variable>;
 
 Permite obtener entrada escrita para escalares por parte del usuario. Para ejecutar esta instrucción el interpretador debe solicitar al usuario que introduzca un valor, y posteriormente se debe validar y almacenar lo que sea introducido. Si la entrada es inválida debe arrojarse un error. Sólo se puede pedir entrada para variables de tipo numérico y booleano. Puede haber cualquier cantidad de espacio en blanco antes o después del dato introducido.
 
 ### Condicional `if then else`
 
-    if <condición> then <instrucción 1> else <instrucción 2>
-    if <condición> then <instrucción>
+    if <condición> then <instrucciones> else <instrucciones> end;
+    if <condición> then <instrucciones> end;
 
 La condición debe ser una expresión de tipo booleano, de lo contrario debe arrojarse un error.
 
@@ -546,7 +499,7 @@ Ejecutar está instrucción tiene el efecto de evaluar la condición y si su 
 
 ### Iteración determinada
 
-    for <identificador> in <vector/matrix> do <instrucción>
+    for <identificador> in <vector/matrix> do <instrucciones> end;
 
 Para ejecutar esta instrucción se evalúa la expresión `<vector/matrix>` que puede ser tanto una vector como una matriz, su tipo debe ser matricial, y a la variable `<identificador>` se le asigna cada valor dentro de la matriz, avanzando de izquierda a derecha y de arriba hacia abajo. Para cada valor de `<identificador>` se ejecuta `<instrucción>`. Note que cambiar el valor de la variable `<identificador>` **no cambiará el valor** de la posición representada por éste de la matriz.
 
@@ -554,17 +507,17 @@ La instrucción declara automáticamente una variable llamada `<identificador>
 
 ### Iteración indeterminada
 
-    while <condición> do <instrucción>
+    while <condición> do <instrucciones> end;
 
 La condición debe ser una expresión de tipo booleano. Para ejecutar la `<instrucción>` se evalúa la `<condición>`, si es igual a `false` termina la iteración; si es `true` se ejecuta la `<instrucción>` del cuerpo y se repite el proceso.
 
-    unless <condición> do <instrucción>
+    unless <condición> do <instrucciones> end;
 
 Es equivalente a la instrucción de `while`, pero aplicando la *negación booleana* a la `<condición>`.
 
 ## Comentarios y espacion en blanco
 
-    print "Hello Wordl!" # esto es un comentario
+    print "Hello World!" # esto es un comentario
 
 En *Trinity* se pueden escribir comentarios de una línea, al estilo de Ruby. Al escribir `#` se ignorarán todos los caracteres hasta el siguiente salto de línea.
 
@@ -592,11 +545,11 @@ El espacio en blanco es ignorado de manera similar a otros lenguajes de programa
                 read x;
                 b = not b;
             end;
-        ;
+        end;
 
         if b then
             print i;
         else
             print "b is a lie";
-        ;
+        end;
     end;
