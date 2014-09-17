@@ -2,63 +2,65 @@
 module Language.Trinity.Parser where
 
 import Data.Sequence ((|>), Seq, singleton)
+import Language.Trinity.Lexer
 }
 
 %name      parse
-%tokentype { String     }
-%error     { parseError }
+%tokentype { Token             }
+%error     { parseError        }
 
 %token
-  "number" { "number" }
-  "row"    { "row"    }
-  "col"    { "col"    }
-  "matrix" { "matrix" }
-  "print"  { "print"  }
-  "strlit" { "strlit" }
-  "if"     { "if"     }
-  "then"   { "then"   }
-  "else"   { "else"   }
-  "end"    { "end"    }
-  "while"  { "while"  }
-  "do"     { "do"     }
-  "for"    { "for"    }
-  "in"     { "in"     }
-  "use"    { "use"    }
-  "id"     { "id"     }
-  "0"      { "0"      }
-  "="      { "="      }
-  ","      { ","      }
-  ";"      { ";"      }
-  ":"      { ":"      }
-  "("      { "("      }
-  ")"      { ")"      }
-  "["      { "["      }
-  "]"      { "]"      }
-  "{"      { "{"      }
-  "}"      { "}"      }
-  "not"    { "not"    }
-  "&"      { "&"      }
-  "|"      { "|"      }
-  "=="     { "=="     }
-  "/="     { "/="     }
-  "<"      { "<"      }
-  ">"      { ">"      }
-  "<="     { "<="     }
-  ">="     { ">="     }
-  "+"      { "+"      }
-  "-"      { "-"      }
-  "*"      { "*"      }
-  "/"      { "/"      }
-  "%"      { "%"      }
-  "div"    { "div"    }
-  "mod"    { "mod"    }
-  ".+."    { ".+."    }
-  ".-."    { ".-."    }
-  ".*."    { ".*."    }
-  "./."    { "./."    }
-  ".%."    { ".%."    }
-  ".div."  { ".div."  }
-  ".mod."  { ".mod."  }
+  "number" { TkNumber          }
+  "row"    { TkRow             }
+  "col"    { TkCol             }
+  "matrix" { TkMatrix          }
+  "print"  { TkPrint           }
+  string   { TkString _        }
+  "if"     { TkIf              }
+  "then"   { TkThen            }
+  "else"   { TkElse            }
+  "end"    { TkEnd             }
+  "while"  { TkWhile           }
+  "do"     { TkDo              }
+  "for"    { TkFor             }
+  "in"     { TkIn              }
+  "use"    { TkUse             }
+  iden     { TkIden _          }
+  number   { TkFloat _         }
+  "="      { TkAssign          }
+  ","      { TkComma           }
+  ";"      { TkSemicolon       }
+  ":"      { TkColon           }
+  "("      { TkLParen          }
+  ")"      { TkRParen          }
+  "["      { TkLBrackets       }
+  "]"      { TkRBrackets       }
+  "{"      { TkLBraces         }
+  "}"      { TkRBraces         }
+  "not"    { TkNot             }
+  "&"      { TkAnd             }
+  "|"      { TkOr              }
+  "=="     { TkEqual           }
+  "/="     { TkUnequal         }
+  "<"      { TkLess            }
+  ">"      { TkGreat           }
+  "<="     { TkLessEq          }
+  ">="     { TkGreatEq         }
+  "+"      { TkPlus            }
+  "-"      { TkMinus           }
+  "*"      { TkTimes           }
+  "/"      { TkDivide          }
+  "%"      { TkModulo          }
+  "div"    { TkIntDivide       }
+  "mod"    { TkIntModulo       }
+  ".+."    { TkDottedPlus      }
+  ".-."    { TkDottedMinus     }
+  ".*."    { TkDottedTimes     }
+  "./."    { TkDottedDivide    }
+  ".%."    { TkDottedModulo    }
+  ".div."  { TkDottedIntDivide }
+  ".mod."  { TkDottedIntModulo }
+
 
 %nonassoc "["
 %left "*" "/" "%" "div" "mod"
@@ -72,52 +74,52 @@ import Data.Sequence ((|>), Seq, singleton)
 
 %%
 
-Program    : Instructions                                                  { $1                          }
-Declaration: Type "id"                                                     { DDefault           $1 $2    }
-           | Type "id" "=" Expression                                      { DInitialize        $1 $2 $4 }
-Type       : "number"                                                      { TNumber                     }
-           | "row"    "(" "0" ")"                                          { TRow               $3       }
-           | "col"    "(" "0" ")"                                          { TCol               $3       }
-           | "matrix" "(" "0" "," "0" ")"                                  { TMatrix            $3 $5    }
-Instruction: Expression                                                    { IExpression        $1       }
-           | "print" Prints                                                { IPrint             $2       }
-           | "if" Expression "then" Instructions "end"                     { IIf                $2 $4    }
-           | "if" Expression "then" Instructions "else" Instructions "end" { IIfElse            $2 $4 $6 }
-           | "while" Expression "do" Instructions "end"                    { IWhile             $2 $4    }
-           | "for" "id" "in" Expression "do" Instructions "end"            { IFor               $2 $4 $6 }
-           | "use" Declarations "in" Instructions "end"                    { IBlock             $2 $4    }
-Print      : "strlit"                                                      { PrintStringLiteral $1       }
-           | Expression                                                    { PrintExpression    $1       }
-Expression : "(" Expression ")"                                            { $2                          }
-           | "id"                                                          { EIdentifier           $1    }
-           | "id" "(" Arguments ")"                                        { ECall              $1 $3    }
-           | "0"                                                           { ELitScalar            $1    }
-           | "{" Rows "}"                                                  { ELitMatrix         $2       }
-           | Expression "[" Expression                "]"                  { EAccessVector      $1 $3    }
-           | Expression "[" Expression "," Expression "]"                  { EAccessMatrix      $1 $3    }
-           | Expression "not"   Expression                                 { ENot               $1       }
-           | Expression "&"     Expression                                 { EAnd               $1 $3    }
-           | Expression "|"     Expression                                 { EOr                $1 $3    }
-           | Expression "=="    Expression                                 { EEQ                $1 $3    }
-           | Expression "/="    Expression                                 { ENEQ               $1 $3    }
-           | Expression "<"     Expression                                 { ELT                $1 $3    }
-           | Expression ">"     Expression                                 { EGT                $1 $3    }
-           | Expression "<="    Expression                                 { ELE                $1 $3    }
-           | Expression ">="    Expression                                 { EGE                $1 $3    }
-           | Expression "+"     Expression                                 { EAdd               $1 $3    }
-           | Expression "-"     Expression                                 { ESubstract         $1 $3    }
-           | Expression "*"     Expression                                 { EMultiply          $1 $3    }
-           | Expression "/"     Expression                                 { EDivide            $1 $3    }
-           | Expression "%"     Expression                                 { EModulo            $1 $3    }
-           | Expression "div"   Expression                                 { EDivideInteger     $1 $3    }
-           | Expression "mod"   Expression                                 { EModuloInteger     $1 $3    }
-           | Expression ".+."   Expression                                 { EMapAdd            $1 $3    }
-           | Expression ".-."   Expression                                 { EMapSubstract      $1 $3    }
-           | Expression ".*."   Expression                                 { EMapMultiply       $1 $3    }
-           | Expression "./."   Expression                                 { EMapDivide         $1 $3    }
-           | Expression ".%."   Expression                                 { EMapModulo         $1 $3    }
-           | Expression ".div." Expression                                 { EMapDivideInteger  $1 $3    }
-           | Expression ".mod." Expression                                 { EMapModuloInteger  $1 $3    }
+Program    : Instructions                                                        { $1                          }
+Declaration: Type iden                                                           { DDefault           $1 (unTkIden $2) }
+           | Type iden "=" Expression                                            { DInitialize        $1 (unTkIden $2) $4 }
+Type       : "number"                                                            { TNumber                     }
+           | "row"    "(" number ")"                                             { TRow               (unTkFloat $3) }
+           | "col"    "(" number ")"                                             { TCol               (unTkFloat $3) }
+           | "matrix" "(" number "," number ")"                                  { TMatrix            (unTkFloat $3) (unTkFloat $5) }
+Instruction: Expression                                                          { IExpression        $1       }
+           | "print" Prints                                                      { IPrint             $2       }
+           | "if" Expression "then" Instructions "end"                           { IIf                $2 $4    }
+           | "if" Expression "then" Instructions "else" Instructions "end"       { IIfElse            $2 $4 $6 }
+           | "while" Expression "do" Instructions "end"                          { IWhile             $2 $4    }
+           | "for" iden "in" Expression "do" Instructions "end"                  { IFor               (unTkIden $2) $4 $6 }
+           | "use" Declarations "in" Instructions "end"                          { IBlock             $2 $4    }
+Print      : string                                                              { PrintStringLiteral (unTkString $1) }
+           | Expression                                                          { PrintExpression    $1       }
+Expression : "(" Expression ")"                                                  { $2                          }
+           | iden                                                                { EIdentifier        (unTkIden $1) }
+           | iden "(" Arguments ")"                                              { ECall              (unTkIden $1) $3 }
+           | number                                                              { ELitScalar            (unTkFloat $1) }
+           | "{" Rows "}"                                                        { ELitMatrix         $2       }
+           | Expression "[" Expression                "]"                        { EAccessVector      $1 $3    }
+           | Expression "[" Expression "," Expression "]"                        { EAccessMatrix      $1 $3    }
+           | Expression "not"   Expression                                       { ENot               $1       }
+           | Expression "&"     Expression                                       { EAnd               $1 $3    }
+           | Expression "|"     Expression                                       { EOr                $1 $3    }
+           | Expression "=="    Expression                                       { EEQ                $1 $3    }
+           | Expression "/="    Expression                                       { ENEQ               $1 $3    }
+           | Expression "<"     Expression                                       { ELT                $1 $3    }
+           | Expression ">"     Expression                                       { EGT                $1 $3    }
+           | Expression "<="    Expression                                       { ELE                $1 $3    }
+           | Expression ">="    Expression                                       { EGE                $1 $3    }
+           | Expression "+"     Expression                                       { EAdd               $1 $3    }
+           | Expression "-"     Expression                                       { ESubstract         $1 $3    }
+           | Expression "*"     Expression                                       { EMultiply          $1 $3    }
+           | Expression "/"     Expression                                       { EDivide            $1 $3    }
+           | Expression "%"     Expression                                       { EModulo            $1 $3    }
+           | Expression "div"   Expression                                       { EDivideInteger     $1 $3    }
+           | Expression "mod"   Expression                                       { EModuloInteger     $1 $3    }
+           | Expression ".+."   Expression                                       { EMapAdd            $1 $3    }
+           | Expression ".-."   Expression                                       { EMapSubstract      $1 $3    }
+           | Expression ".*."   Expression                                       { EMapMultiply       $1 $3    }
+           | Expression "./."   Expression                                       { EMapDivide         $1 $3    }
+           | Expression ".%."   Expression                                       { EMapModulo         $1 $3    }
+           | Expression ".div." Expression                                       { EMapDivideInteger  $1 $3    }
+           | Expression ".mod." Expression                                       { EMapModuloInteger  $1 $3    }
 
 Declarations: Declarations     Declaration ";" { $1 |> $2 } | Declaration ";" { singleton $1 }
 Instructions: Instructions     Instruction ";" { $1 |> $2 } | Instruction ";" { singleton $1 }
@@ -129,7 +131,7 @@ Arguments   : Arguments    "," Expression      { $1 |> $3 } | Expression      { 
 {
 parseError = error . ("welp: " ++) . show
 
-type NumericLiteral = String
+type NumericLiteral = Float
 type Identifier     = String
 
 data Type
@@ -148,7 +150,7 @@ data Declaration
 type Instructions = Seq Instruction
 data Instruction
   = IExpression Expression
-  | IPrint      [Either String Expression]
+  | IPrint      (Seq Print)
   | IIf         Expression   Instructions
   | IIfElse     Expression   Instructions Instructions
   | IWhile      Expression   Instructions
