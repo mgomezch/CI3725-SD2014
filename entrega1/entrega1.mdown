@@ -14,6 +14,8 @@
 
 3.  La especificación del lenguaje de programación *Trinity* **no** es parte de este documento — la definición del lenguaje se encuentra en un documento separado.  Solo una parte de lo especificado en *ese* documento debe ser implantada para la entrega especificada en *este* documento.  La especificación del lenguaje está disponible en la página del curso.
 
+4.  Los requerimientos establecidos por este documento se dividen en dos secciones: los *requerimientos generales*, que aplican para el proyecto en general y en todas sus etapas, y los *requerimientos específicos*, que aplican únicamente para la etapa específica correspondiente a este documento.
+
 
 
 # Requerimientos generales
@@ -42,7 +44,7 @@
 
     Una vez seleccione un conjunto de herramientas para realizar su proyecto, deberá realizar las entregas de los demás en el mismo.  No es factible y no se aceptará que se combinen herramientas ni que cambien sus herramientas una vez realizada la primera entrega.
 
-4.  Las entregas deben realizarse vía correo electrónico a los encargados de la práctica en un archivo adjunto de nombre `XX.tar.gz`, donde `XX` es su número de grupo.  El archivo deberá contener un directorio con todo lo necesario para compilar su proyecto y ejecutarlo.
+4.  Las entregas deben realizarse vía correo electrónico a los encargados de la práctica en un archivo adjunto de nombre `CI3725-2014SD-n-gg.tar.gz`, donde `gg` es su número de grupo con dos dígitos decimales, y `n` es el número de la etapa (entre 1 y 4).  El archivo deberá contener un directorio con todo lo necesario para compilar su proyecto y ejecutarlo.  El número de carné debe escribirse con todos sus dígitos consecutivos; por ejemplo, `0538235`.
 
 5.  No incluya en su entrega archivos producidos por herramientas generadoras de código ni compiladores que Ud. utilice para su proyecto, sino los archivos de fuente que Ud. escribió para suministrarle a esas herramientas.
 
@@ -67,6 +69,8 @@
     3     8      9              Tabla de símbolos y verificaciones estáticas
     4     11     11             Ejecución con verificaciones dinámicas
 
+13. Deberá realizar el proyecto individualmente o en equipos de dos integrantes.
+
 
 # Requerimientos específicos
 
@@ -88,6 +92,24 @@
 
 8.  Los números de línea y de columna se cuentan desde 1.
 
-9.  Cada lexema o error debe representarse en la salida estándar con una línea donde reporte la ubicación en el archivo de entrada donde comienza el lexema reconocido o el error encontrado.  El formato exacto de salida para representar cada lexema o error queda a su criterio.
+9.  Cada lexema o error debe representarse en la salida estándar con una línea donde reporte la ubicación en el archivo de entrada donde comienza el lexema reconocido o el error encontrado, así como una indicación no ambigua del tipo del lexema, y la información del lexema adicional a su tipo y su ubicación, en caso de que exista.
+
+    Por ejemplo, en la representación textual en la salida del analizador lexicográfico de los lexemas que representen a un identificador, deberá incluirse el texto correspondiente al identificador específico encontrado.
+
+    Como ejemplo concreto, si se encuentra el identificador `foo` en la columna 15 de la línea 3 del archivo de entrada, se podría imprimir algo similar a
+
+        Línea 3, columna 15: Identificador: foo
+
+    Si se encuentra el lexema correspondiente al operador de comparación por igualdad (que no tiene información adicional a su ubicación y su tipo) en la columna 27 de la línea 42, se podría imprimir algo similar a
+
+        Línea 42, columna 27: Comparación por igualdad
+
+    Si se encuentra un caracter inesperado `@` que produzca un error lexicográfico en la columna 15 de la línea 84, se podría imprimir algo similar a
+
+        Línea 82, columna 15: Caracter inesperado: @
+
+    Tanto los nombres asociados a cada tipo de lexema como el formato exacto de salida para representar cada lexema o error quedan a su criterio — se requiere únicamente que contengan al menos la información requerida en este punto e ilustrada en estos ejemplos.
 
 10. Para esta etapa del proyecto, **no** se utilizarán las herramientas generadoras de analizadores sintácticos — ni *Happy*, ni *Racc*, ni *PLY*.  **No** debe hacer análisis sintáctico —únicamente lexicográfico— y no debe detectar errores en la estructura gramatical de los programas, ni errores semánticos o de contexto.
+
+12. La numeración de los grupos será definida **después** de la entrega de la primera etapa del proyecto, por lo cual la entrega de esta etapa no podrá hacerse con el nombre de archivo especificado en los requerimientos generales (§2.4).  Por lo tanto, para la primera etapa deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-ca-cb.tar.gz`, donde `ca` y `cb` son los números de carné de los integrantes del equipo en cualquier orden.  Si Ud. realiza el proyecto individualmente, deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-c.tar.gz`, donde `c` es su número de carné.  Los números de carné deben escribirse como se especifica en los requerimientos generales.
