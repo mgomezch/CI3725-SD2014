@@ -1,6 +1,6 @@
 % Trinity
 % Analizador lexicográfico
-% \today
+% Versión 2 - \today
 
 - - -
 
@@ -15,6 +15,19 @@
 3.  La especificación del lenguaje de programación *Trinity* **no** es parte de este documento — la definición del lenguaje se encuentra en un documento separado.  Solo una parte de lo especificado en *ese* documento debe ser implantada para la entrega especificada en *este* documento.  La especificación del lenguaje está disponible en la página del curso.
 
 4.  Los requerimientos establecidos por este documento se dividen en dos secciones: los *requerimientos generales*, que aplican para el proyecto en general y en todas sus etapas, y los *requerimientos específicos*, que aplican únicamente para la etapa específica correspondiente a este documento.
+
+
+## Resumen de cambios
+
+1.  Versión 2:
+
+    1.  Se agregó la §2.13 para especificar la constitución de los grupos de trabajo para el proyecto.
+
+    2.  La numeración de los grupos será definida **después** de la entrega de la primera etapa del proyecto, por lo cual la entrega de esta etapa no podrá hacerse con el nombre de archivo especificado en los requerimientos generales (§2.4).  Por lo tanto, se agregó la §3.12 para especificar un nombre de archivo para la entrega que no dependa del número de grupo, y además se modificó la especificación original del nombre de archivo para las entregas de las demás etapas en §2.4 para hacerla consistente con la primera.
+
+    3.  Se agregaron ejemplos a la §3.9 para ilustrar un posible formato de salida.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+    4.  Se agregó el resumen de cambios.
 
 
 
@@ -69,7 +82,7 @@
     3     8      9              Tabla de símbolos y verificaciones estáticas
     4     11     11             Ejecución con verificaciones dinámicas
 
-13. Deberá realizar el proyecto individualmente o en equipos de dos integrantes.
+13. Deberá realizar el proyecto individualmente o en equipos de dos integrantes que estén actualmente cursando CI3725.
 
 
 # Requerimientos específicos
@@ -112,4 +125,4 @@
 
 10. Para esta etapa del proyecto, **no** se utilizarán las herramientas generadoras de analizadores sintácticos — ni *Happy*, ni *Racc*, ni *PLY*.  **No** debe hacer análisis sintáctico —únicamente lexicográfico— y no debe detectar errores en la estructura gramatical de los programas, ni errores semánticos o de contexto.
 
-12. La numeración de los grupos será definida **después** de la entrega de la primera etapa del proyecto, por lo cual la entrega de esta etapa no podrá hacerse con el nombre de archivo especificado en los requerimientos generales (§2.4).  Por lo tanto, para la primera etapa deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-ca-cb.tar.gz`, donde `ca` y `cb` son los números de carné de los integrantes del equipo en cualquier orden.  Si Ud. realiza el proyecto individualmente, deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-c.tar.gz`, donde `c` es su número de carné.  Los números de carné deben escribirse como se especifica en los requerimientos generales.
+12. Para la entrega de esta etapa del proyecto, deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-ca-cb.tar.gz`, donde `ca` y `cb` son los números de carné de los integrantes del equipo en cualquier orden.  Si Ud. realiza el proyecto individualmente, deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-c.tar.gz`, donde `c` es su número de carné.  Los números de carné deben escribirse como se especifica en los requerimientos generales.
