@@ -1,6 +1,6 @@
 % Trinity
 % Analizador lexicográfico
-% Versión 3 - \today
+% Versión 4 - \today
 
 - - -
 
@@ -34,6 +34,11 @@
 ### Versión 3
 
 1.  Ni *Python* ni *Ruby* modelan directamente el concepto de clase abstracta, así que el requerimiento de hacer clases abstractas en *Python* y *Ruby* para la clase de todos los lexemas es técnicamente inadecuado.  Por lo tanto, se reescribió la §3.3 con términos más adecuados al contexto de los sistemas de objetos de *Python* y *Ruby* para evitar confusión.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+
+### Versión 4
+
+1.  El resumen de cambios de la versión 2 se refería a una sección no existente, §3.12.  La referencia fue corregida a §3.11.
 
 
 
