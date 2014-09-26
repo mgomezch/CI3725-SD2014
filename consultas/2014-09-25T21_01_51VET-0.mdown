@@ -1,0 +1,31 @@
+>   Si tengo una línea de código que dice por ejemplo:
+>
+>       m = { 4, 2 : 1, 1/2 }
+>
+>   Los tokens serían cada char por separado?
+>
+>       token de la variable m
+>       Token del igual
+>       token del abre llave
+>       Token del numero 4
+>       Etc
+>
+>   O sería algo como:
+>
+>       token de la variable m
+>       Token del igual
+>       Token de la matriz { 4, 2 : 1, 1/2 }
+
+De la primera forma, todo por separado:
+
+    token de la variable m
+    Token del igual
+    token del abre llave
+    Token del numero 4
+    Etc
+
+Pero, debes agregar línea y columna.  Algo como
+
+    Línea 4, columna 1: variable m
+    Línea 4, columna 3: igual
+    Línea 4, columna 5: abre llave

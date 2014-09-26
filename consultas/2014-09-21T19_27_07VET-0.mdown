@@ -1,0 +1,114 @@
+> Construir un DFA que cumpla:
+>
+> The set of strings over `{ 1, 2, 3 }` the sum of whose elements is divisible
+> by six.
+
+Sea `Σ = { 1, 2, 3 }`, y
+
+    f : Σ* → ℤ₆
+    f(w) = suma(w) mod 6
+
+donde
+
+    suma : Σ* → ℤ
+    suma(λ) = 0
+    suma(x w) = x + suma(w)
+
+Sea `w` cualquier palabra tal que `f(w) = 0`.  Considera ahora:
+
+    f(1w)
+      = suma(1w) mod 6
+      = (1 + suma(w)) mod 6
+      = (1 mod 6 + (suma(w)) mod 6) mod 6
+      = (1 mod 6 + 0) mod 6
+      = (1 mod 6) mod 6
+      = 1 mod 6
+      = 1
+
+    f(2w)
+      = suma(2w) mod 6
+      = (2 + suma(w)) mod 6
+      = (2 mod 6 + suma(w) mod 6) mod 6
+      = (2 mod 6 + 0) mod 6
+      = (2 mod 6) mod 6
+      = 2 mod 6
+      = 2
+
+    f(3w)
+      = (suma(3w)) mod 6
+      = (3 + suma(w)) mod 6
+      = (3 mod 6 + suma(w) mod 6) mod 6
+      = (3 mod 6 + 0) mod 6
+      = (3 mod 6) mod 6
+      = 3 mod 6
+      = 3
+
+Entonces
+
+    f(w) = 0 ⇒ f(1w) = 1
+    f(w) = 0 ⇒ f(2w) = 2
+    f(w) = 0 ⇒ f(3w) = 3
+
+Considera ahora, por ejemplo, cualquier palabra `w` tal que `f(w) = 4`.  Luego,
+
+    f(1w)
+      = (suma(1w)) mod 6
+      = (1 + suma(w)) mod 6
+      = (1 mod 6 + suma(w) mod 6) mod 6
+      = (1 mod 6 + 4) mod 6
+      = (1 + 4) mod 6
+      = 5 mod 6
+      = 5
+
+    f(2w)
+      = suma(2w) mod 6
+      = (2 + suma(w)) mod 6
+      = (2 mod 6 + suma(w) mod 6) mod 6
+      = (2 mod 6 + 4) mod 6
+      = (2 + 4) mod 6
+      = 6 mod 6
+      = 0
+
+    f(3w)
+      = suma(3w) mod 6
+      = (3 + suma(w)) mod 6
+      = (3 mod 6 + suma(w) mod 6) mod 6
+      = (3 mod 6 + 4) mod 6
+      = (3 + 4) mod 6
+      = 7 mod 6
+      = 1
+
+Entonces
+
+    f(w) = 4 ⇒ f(1w) = 5
+    f(w) = 4 ⇒ f(2w) = 0
+    f(w) = 4 ⇒ f(3w) = 1
+
+Puedes llenar los detalles para palabras `w` tales que `f(w) = n` para 1, 2, 3 y 5.
+
+En particular, observa que
+
+    foo(λ)
+      = suma(λ) mod 6
+      = 0 mod 6
+      = 0
+
+Sea `A` el autómata finito determinístico
+
+*   cuyo conjunto de estados es `ℤ₆`,
+
+*   cuyo estado inicial es `0`,
+
+*   cuyo conjunto de estados finales es `{0}`, y
+
+*   cuya función de transición es
+
+    f : ℤ₆×Σ → ℤ₆
+    f(n, a) = foo(a 1ⁿ)
+
+Observa que para toda palabra w y para todo `a ∈ Σ`,
+
+    |w| = n ⇒ foo(a w) = foo(a 1ⁿ)
+
+que es un lema que será de utilidad si quieres demostrar que `A` es el
+autómata pedido.

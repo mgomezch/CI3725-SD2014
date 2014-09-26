@@ -1,0 +1,23 @@
+> En el examen http://ldc.usb.ve/~emhn/cursos/ci3725/201304/P1-Solución.pdf
+> en la parte 2.1 ¿a qué se refieren con "pre-fijo"?
+
+Los prefijos de la palabra `abaabbbabaabb` son:
+
+    λ
+    a
+    ab
+    aba
+    abaa
+    abaab
+    abaabb
+    abaabbb
+    abaabbba
+    abaabbbab
+    abaabbbaba
+    abaabbbabaa
+    abaabbbabaab
+    abaabbbabaabb
+
+En particular, tanto la palabra vacía como la palabra original completa son prefijos de la palabra.  A veces se usa el término «prefijo propio» para referirse a prefijos que sean más cortos que la palabra original.
+
+En cada paso de la operación de un autómata, éste habrá consumido un prefijo de la palabra completa que intenta reconocer.
