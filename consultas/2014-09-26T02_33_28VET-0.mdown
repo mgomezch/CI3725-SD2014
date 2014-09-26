@@ -1,0 +1,13 @@
+> Por otro lado, no me queda claro qué tengo que devolver. La vez pasada que
+> vi traductores se me pedía que, en caso de haber errores devolviera sólo la
+> lista de errores (Todos), pero en caso de no haber errores, devolviera la
+> lista de tokens reconocidos. Por lo que leo en el enunciado me pareciera que
+> se pide que se devuelva una lista tanto de tokens como de errores, todos
+> juntos. Podría hacer eso, pero me parece más lógico lo que me han pedido
+> antes (tokens en caso exitoso, errores en caso de error).
+
+De la segunda etapa en adelante, podrían querer hacer todo el análisis lexicográfico hasta el final y *luego* invocar al analizador sintáctico con la lista de lexemas resultante si no hubo ningún error.  Alternativamente, podrían querer proveer al analizador sintáctico un objeto que le permita solicitar el siguiente lexema para procesarlo en la gramática, y en ese caso podrían procesarlos uno por uno según vayan solicitándose.
+
+En el primer caso, el analizador sintáctico nunca recibiría lexemas al procesar programas con errores lexicográficos — de hecho, nunca llegaría a ejecutarse.  En el segundo caso, el analizador sintáctico podría procesar lexemas antes de llegar al primer error lexicográfico.  Ambas alternativas serán válidas.
+
+Eso está subespecificado a propósito para permitir que el desarrollo de la primera etapa se adapte a la primera o a la segunda alternativa — lo único que el enunciado pide al respecto es que si hay errores se muestren todos, y si no hay errores, que se muestren todos los lexemas.  No hay problema si deciden mostrar o no mostrar los lexemas válidos que hayan podido procesar en caso de que encuentren algún error.

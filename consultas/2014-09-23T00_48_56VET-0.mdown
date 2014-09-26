@@ -1,0 +1,32 @@
+Para las clases de lexemas en Python, puede ser algo del estilo de
+
+    class Lexema:
+        def __init__(self, line, col, code):
+            self.line = line
+            self.col  = col
+            self.code = code
+
+    class If(Lexema):
+        def __init__(self, line, col):
+            self.line = line
+            self.col  = col
+            self.code = None        # Ya sabemos cómo se ve un if
+
+    class String(Lexema):
+        def __init__(self, line, col, code):
+            self.line = line
+            self.col  = col
+            self.code = code        # Guardamos el string para poder
+                                    # obtenerlo más adelante
+
+Para un `if` no es importante cómo se escribió, porque siempre se escribe igual.  Pero un literal de cadena de caracteres puede ser diferente en cada *match*, de manera que necesitamos almacenar qué fue lo que conseguimos en este caso.  También estaría bien guardar siempre el texto reconocido, porque así tienen la ventaja de que los objetos de lexemas siempre se construyen con los mismos parámetros.
+
+Y así continúan con todos los tipos de lexemas del lenguaje.  Noten que `If` y `String` tienen a `Lexema` como superclase.
+
+Verificar que los identificadores estén definidos no puede hacerse en el analizador lexicográfico, y corresponde a etapas posteriores del proyecto.
+
+La secuencia
+
+    5hola
+
+debería producir dos lexemas: uno para el número `5`, y otro para un identificador `hola`.

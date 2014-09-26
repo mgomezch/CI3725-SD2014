@@ -1,0 +1,109 @@
+>   Buenas queria realizar una consulta del proyecto por esta via, me encuentro
+>   trabajando en python en el lexer para esta semana, ya funciona y lo ejecuto
+>   con el comando:
+>
+>       python lexer.py [archivo_de_entrada]
+>
+>   Ahora a la hora del proyecto se nos pide que el documento se ejecute con un
+>   make y de este se pueda ejecutar con el comando:
+>
+>       ./trynity [archivo_de_entrada]
+>
+>   Mi pregunta es: ¿Como podria realizar el Makefile para Python?
+
+La separación del nombre de un archivo en nombre y extensión es una
+tradición inmaterial, no algo necesario — la solución usual es que su
+archivo principal simplemente se llame `trinity` en vez de `lexer.py`,
+y que la primera línea del archivo sea una línea *hashbang*:
+
+    #!/usr/bin/env python
+
+Incluir una línea *hashbang* en un archivo de código le indica al
+sistema de operación qué debe hacer cuando se solicita la ejecución
+de un archivo que sea ejecutable pero que no sea un binario en un
+formato reconocido de binario ejecutable como ELF.  Un archivo de
+código en Python puede volverse ejecutable de esta manera a pesar
+de ser simplemente texto.
+
+Además de esto, es necesario indicar al sistema de permisos que el
+archivo podrá ser ejecutado.  Esto se logra con el comando
+
+    chmod +x trinity
+
+Hecho esto, será posible ejecutar tanto
+
+    python trinity [archivo de entrada]
+
+como
+
+    ./trinity [archivo de entrada]
+
+Esa solución **debería** ser suficiente, a menos que su editor tenga
+algún problema.  Si algo falla y no pueden cambiar de editor, pueden
+intentar una de estas dos soluciones:
+
+*   Si su editor no es capaz de reconocer que es un archivo de Python
+solo porque el nombre del archivo no termine en `.py`,a pesar de tener
+la línea *hashbang* que es suficiente para cualquier editor razonable,
+podrían aprovechar un enlace simbólico: tengan el archivo real con
+código en `trinity` y hagan que `lexer.py` sea un enlace simbólico a
+`trinity`.
+
+*   Es posible que la solución anterior falle si su editor intenta
+sobreescribir el enlace simbólico con un archivo real.  En ese caso,
+podrían hacerlo al revés: tengan el código en un archivo real
+`lexer.py` y usa un enlace simbólico `trinity` que apunte a
+`lexer.py` para ejecutarlo.
+
+Ojo: no hay ningún problema, y de hecho es deseable, que separen el
+código que define el funcionamiento del analizador sintáctico y el
+código que lo ejecuta sobre el archivo de entrada.  En general,
+es deseable que organicen el código en varios archivos según resulte
+conveniente.  Lo único que se requiere es que haya un archivo
+ejecutable llamado `trinity` que haga funcionar al proyecto, pero no
+es necesario ni es ideal que esté todo el código del proyecto ahí.
+
+- - -
+
+Sobre el `Makefile`, el enunciado de la primera etapa dice
+
+> Su proyecto debe incluir un Makefile que permita generar
+> todo lo necesario para su ejecución al ejecutar el comando
+> `make` en el directorio contenido en su entrega. Si Ud.
+> elige realizar su proyecto en Haskell, se acepta y se
+> recomienda que utilice Cabal en vez de Make para
+> especificar lo necesario para que su proyecto compile.
+
+Es decir: un `Makefile` es necesario únicamente para la construcción
+de archivos generados por herramientas de generación de código que
+deban ejecutarse **previamente** a la ejecución del proyecto.
+
+En los proyectos en Haskell, se utilizan los comandos `alex` y `happy`
+para generar los analizadores lexicográfico y sintáctico a partir de
+archivos que describen la estructura lexicográfica y sintáctica del
+lenguaje, respectivamente, y esto debe hacerse previo a la compilación
+— aunque Cabal, la herramienta de empaquetado y compilación para
+Haskell, se encarga de hacer esto automáticamente y se recomienda
+usarlo en vez de Make.
+
+En los proyectos en Ruby, el analizador sintáctico es generado por el
+comando `racc` a partir de un archivo que especifica la gramática del
+lenguaje, y debe ser invocado manualmente antes de la ejecución, para
+lo cual se requiere el uso de un `Makefile`.
+
+En los proyectos en Python, entiendo que PLY genera el analizador
+sintáctico al momento de cargar el módulo que defina la gramática, y
+no se invoca manualmente un generador de código externo.  Por otra
+parte, existen implantaciones de Python que hacen alguna forma de
+compilación previa a la ejecución con la intención de que los archivos
+resultantes de esa compilación se utilicen para ejecutar el programa
+en vez de los archivos fuente — el proyecto Nuitka, por ejemplo, lo
+hace.  Sin embargo, lo más común es que esto se haga transparentemente:
+cuando corren un programa en Python, tanto con CPython como con PyPy,
+el programa se compila al momento y sin tener que utilizar comandos
+separados.  En este proyecto, es muy probable que baste y sobre que
+usen CPython, que es la implantación típicamente usada al ejecutar el
+comando `python`.
+
+Por lo tanto, no hace falta una etapa separada de compilación, y no es
+necesario un `Makefile` en caso de que usen Python.
