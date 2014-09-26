@@ -24,7 +24,7 @@
 
 1.  Se agregó la §2.13 para especificar la constitución de los grupos de trabajo para el proyecto.
 
-2.  La numeración de los grupos será definida **después** de la entrega de la primera etapa del proyecto, por lo cual la entrega de esta etapa no podrá hacerse con el nombre de archivo especificado en los requerimientos generales (§2.4).  Por lo tanto, se agregó la §3.12 para especificar un nombre de archivo para la entrega que no dependa del número de grupo, y además se modificó la especificación original del nombre de archivo para las entregas de las demás etapas en §2.4 para hacerla consistente con la primera.
+2.  La numeración de los grupos será definida **después** de la entrega de la primera etapa del proyecto, por lo cual la entrega de esta etapa no podrá hacerse con el nombre de archivo especificado en los requerimientos generales (§2.4).  Por lo tanto, se agregó la §3.11 para especificar un nombre de archivo para la entrega que no dependa del número de grupo, y además se modificó la especificación original del nombre de archivo para las entregas de las demás etapas en §2.4 para hacerla consistente con la primera.
 
 3.  Se agregaron ejemplos a la §3.9 para ilustrar un posible formato de salida.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
 
@@ -131,4 +131,4 @@
 
 10. Para esta etapa del proyecto, **no** se utilizarán las herramientas generadoras de analizadores sintácticos — ni *Happy*, ni *Racc*, ni *PLY*.  **No** debe hacer análisis sintáctico —únicamente lexicográfico— y no debe detectar errores en la estructura gramatical de los programas, ni errores semánticos o de contexto.
 
-12. Para la entrega de esta etapa del proyecto, deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-ca-cb.tar.gz`, donde `ca` y `cb` son los números de carné de los integrantes del equipo en cualquier orden.  Si Ud. realiza el proyecto individualmente, deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-c.tar.gz`, donde `c` es su número de carné.  Los números de carné deben escribirse como se especifica en los requerimientos generales.
+11. Para la entrega de esta etapa del proyecto, deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-ca-cb.tar.gz`, donde `ca` y `cb` son los números de carné de los integrantes del equipo en cualquier orden.  Si Ud. realiza el proyecto individualmente, deberá realizar la entrega en un archivo adjunto de nombre `CI3725-2014SD-1-c.tar.gz`, donde `c` es su número de carné.  Los números de carné deben escribirse como se especifica en los requerimientos generales.
