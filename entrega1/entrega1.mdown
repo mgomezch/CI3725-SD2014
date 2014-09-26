@@ -1,6 +1,6 @@
 % Trinity
 % Analizador lexicográfico
-% Versión 2 - \today
+% Versión 3 - \today
 
 - - -
 
@@ -19,15 +19,21 @@
 
 ## Resumen de cambios
 
-1.  Versión 2:
 
-    1.  Se agregó la §2.13 para especificar la constitución de los grupos de trabajo para el proyecto.
+### Versión 2
 
-    2.  La numeración de los grupos será definida **después** de la entrega de la primera etapa del proyecto, por lo cual la entrega de esta etapa no podrá hacerse con el nombre de archivo especificado en los requerimientos generales (§2.4).  Por lo tanto, se agregó la §3.12 para especificar un nombre de archivo para la entrega que no dependa del número de grupo, y además se modificó la especificación original del nombre de archivo para las entregas de las demás etapas en §2.4 para hacerla consistente con la primera.
+1.  Se agregó la §2.13 para especificar la constitución de los grupos de trabajo para el proyecto.
 
-    3.  Se agregaron ejemplos a la §3.9 para ilustrar un posible formato de salida.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+2.  La numeración de los grupos será definida **después** de la entrega de la primera etapa del proyecto, por lo cual la entrega de esta etapa no podrá hacerse con el nombre de archivo especificado en los requerimientos generales (§2.4).  Por lo tanto, se agregó la §3.12 para especificar un nombre de archivo para la entrega que no dependa del número de grupo, y además se modificó la especificación original del nombre de archivo para las entregas de las demás etapas en §2.4 para hacerla consistente con la primera.
 
-    4.  Se agregó el resumen de cambios.
+3.  Se agregaron ejemplos a la §3.9 para ilustrar un posible formato de salida.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+4.  Se agregó el resumen de cambios.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+
+### Versión 3
+
+1.  Ni *Python* ni *Ruby* modelan directamente el concepto de clase abstracta, así que el requerimiento de hacer clases abstractas en *Python* y *Ruby* para la clase de todos los lexemas es técnicamente inadecuado.  Por lo tanto, se reescribió la §3.3 con términos más adecuados al contexto de los sistemas de objetos de *Python* y *Ruby* para evitar confusión.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
 
 
 
@@ -93,7 +99,7 @@
 
 2.  En caso de haber seleccionado las herramientas de *Haskell*, deberá utilizar el generador de analizadores lexicográficos *Alex*.  En caso de haber seleccionado otras herramientas, deberá programar un ciclo que verifique la porción inicial del código *Trinity* a analizar contra expresiones regulares correspondientes a cada tipo de lexema, consuma la porción reconocida, y genere el lexema correspondiente.
 
-3.  En caso de haber seleccionado las herramientas de *Haskell*, deberá definir un tipo de datos con un constructor por cada clase de lexema del lenguaje — su analizador lexicográfico producirá un valor de este tipo por cada lexema reconocido.  En caso de haber seleccionado las herramientas de *Ruby* o *Python*, deberá definir una clase abstracta para los lexemas, con subclases concretas para cada tipo de lexema del lenguaje — su analizador lexicográfico producirá instancias de estas clases concretas por cada lexema reconocido.
+3.  En caso de haber seleccionado las herramientas de *Haskell*, deberá definir un tipo de datos algebráico con un constructor por cada tipo de lexema del lenguaje — su analizador lexicográfico producirá un valor de este tipo por cada lexema reconocido.  En caso de haber seleccionado las herramientas de *Ruby* o *Python*, deberá definir una clase base para los lexemas, con una subclase para cada tipo de lexema del lenguaje — su analizador lexicográfico producirá instancias de estas subclases para representar cada lexema reconocido.
 
 4.  En caso de haber seleccionado las herramientas de *Haskell*, deberá definir las reglas para reconocer cada tipo de lexema del lenguaje en el archivo de entrada para *Alex*, que debería llamarse *Lexer.x*.  En caso de haber seleccionado las herramientas de *Ruby* o *Python*, deberá usar las expresiones regulares provistas por el lenguaje para reconocer cada tipo de lexema del lenguaje, y queda a su criterio cómo organizar su implantación — en el caso de Python, utilice el módulo `re`.
 
