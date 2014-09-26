@@ -2,13 +2,18 @@
 module Language.Trinity.Lexer
     ( Token(..)
     , scanTokens
+    , Position(..)
     ) where
 
 import Prelude hiding (lex)
 
+import Data.List       (intercalate, foldl')
+import Data.List.Split (splitOn)
+
+
 }
 
-%wrapper "basic"
+%wrapper "posn"
 
 $digit = 0-9
 
@@ -40,6 +45,7 @@ tokens :-
         "#".*           ;
 
         -- Language
+        "program"       { lex' TkProgram         }
         ";"             { lex' TkSemicolon       }
         ","             { lex' TkComma           }
         ":"             { lex' TkColon           }
@@ -126,8 +132,8 @@ tokens :-
         @iden           { lex TkIden             }
 
         -- Errors
-        .               { lex (TkError . head)   }
-        @string_error   { lex (TkStringError . dropQuotationMarks 1 0 . filterBackSlash) }
+        .               { lexPosn (\str -> TkError (head str))   }
+        @string_error   { lexPosn (\str -> TkStringError (dropQuotationMarks 1 0 $ filterBackSlash str)) }
 
 {
 
@@ -181,31 +187,102 @@ data Token
 
     -- Interpreter
     | TkEOF
-    | TkError       { unTkError :: Char }
-    | TkStringError { unTkStringError :: String }
-    deriving (Eq, Read, Show)
+    | TkError       { unTkError :: Char,         tkPosn :: Position }
+    | TkStringError { unTkStringError :: String, tkPosn :: Position }
+    deriving (Eq)
 
+instance Show Token where
+    show tk = case tk of
+        TkSemicolon -> "Semicolon"
+        TkComma -> "Comma"
+        TkColon -> "Colon"
+        TkReturn -> "Return"
+        TkBegin -> "Begin"
+        TkUse -> "Use"
+        TkIn -> "In"
+        TkEnd -> "End"
+        TkProgram -> "Program"
+        TkFunction -> "Function"
+        TkLParen -> "LParen"
+        TkRParen -> "RParen"
+        TkLBrackets -> "LBrackets"
+        TkRBrackets -> "RBrackets"
+        TkLBraces -> "LBraces"
+        TkRBraces -> "RBraces"
+        TkNumber -> "Number"
+        TkBoolean -> "Boolean"
+        TkMatrix -> "Matrix"
+        TkRow -> "Row"
+        TkCol -> "Col"
+        TkSet -> "Set"
+        TkAssign -> "Assign"
+        TkRead -> "Read"
+        TkPrint -> "Print"
+        TkIf -> "If"
+        TkThen -> "Then"
+        TkElse -> "Else"
+        TkWhile -> "While"
+        TkFor -> "For"
+        TkDo -> "Do"
+        TkFloat val -> "Float (" ++ show val ++ ")"
+        TkBool val -> "Bool (" ++ show val ++ ")"
+        TkString val -> "String (" ++ show val ++ ")"
+        TkPlus -> "Plus"
+        TkMinus -> "Minus"
+        TkTimes -> "Times"
+        TkDivide -> "Divide"
+        TkModulo -> "Modulo"
+        TkIntDivide -> "Int"
+        TkIntModulo -> "Int"
+        TkDottedPlus -> "Dotted"
+        TkDottedMinus -> "Dotted"
+        TkDottedTimes -> "Dotted"
+        TkDottedDivide -> "Dotted"
+        TkDottedModulo -> "Dotted"
+        TkDottedIntDivide -> "Dotted"
+        TkDottedIntModulo -> "Dotted"
+        TkOr -> "Or"
+        TkAnd -> "And"
+        TkNot -> "Not"
+        TkEqual -> "Equal"
+        TkUnequal -> "Unequal"
+        TkLess -> "Less"
+        TkGreat -> "Great"
+        TkLessEq -> "Less"
+        TkGreatEq -> "Great"
+        TkIden idn -> "Iden (" ++ idn ++ ")"
+        TkEOF -> "EOF"
+        TkError val posn -> "en " ++ show posn ++ ": caracter inesperado " ++ show val
+        TkStringError val posn -> "en " ++ show posn ++ ": string mal escrito " ++ show val
+
+
+-- (Line, Column)
+newtype Position = Posn (Int, Int)
+    deriving (Eq)
+
+instance Show Position where
+    show (Posn (r,c)) = "línea " ++ show r ++ ", columna " ++ show c
 --------------------------------------------------------------------------------
 
 filterBackSlash :: String -> String
-filterBackSlash = foldr func []
+filterBackSlash str = foldl' (flip replace) str chars
     where
-        func :: Char -> String -> String
-        func c str
-            | c == '\\' = case head str of
-                'a' -> '\a' : tail str
-                'b' -> '\b' : tail str
-                'f' -> '\f' : tail str
-                'n' -> '\n' : tail str
-                'r' -> '\r' : tail str
-                't' -> '\t' : tail str
-                'v' -> '\v' : tail str
-            | otherwise = c : str
+        replace :: (Char, Char) -> String -> String
+        replace (new, old) = intercalate [new] . splitOn ['\\', old]
+        chars = [('\a', 'a'), ('\b', 'b'), ('\f', 'f'),
+                 ('\n', 'n'), ('\r', 'r'), ('\t', 't'),
+                 ('\v', 'v'), ('"', '"'), ('\\', '\\')]
 
 dropQuotationMarks :: Int -> Int -> String -> String
 dropQuotationMarks l r = reverse . drop r . reverse . drop l
 
-lex f str = f str
+toPosition :: AlexPosn -> Position
+toPosition (AlexPn _ r c) = Posn (r,c)
+
+lexPosn f p str = f str (toPosition p)
+
+-- lex :: AlexPosn -> -> String -> Token
+lex f p str = f str
 
 lex' = lex . const
 
