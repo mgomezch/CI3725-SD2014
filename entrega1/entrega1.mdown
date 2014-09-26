@@ -38,7 +38,7 @@
 
 ### Versión 4
 
-1.  El resumen de cambios de la versión 2 se refería a una sección no existente, §3.12.  La referencia fue corregida a §3.11.
+1.  El resumen de cambios de la versión 2 se refería a una sección no existente, §3.12.  La referencia fue corregida a §3.11.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
 
 
 
