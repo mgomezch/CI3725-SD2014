@@ -1,0 +1,49 @@
+"holamundo"
+"hola mundo"
+"hola   mundo"
+" hola   mundo "
+"    hola   mundo    "
+
+"hola \" mundo"
+"hola\"mundo"
+"\""
+
+"hola \\ mundo"
+"hola   \\   mundo"
+"hola\\mundo"
+"\\"
+
+"hola \n mundo"
+"hola   \n   mundo"
+"hola\nmundo"
+"\n"
+
+"\\\"\n"
+" \\ \" \n "
+"    \\    \"    \n    "
+
+"hola" "mundo"
+"hola""mundo"
+
+hola "mundo"
+hola"mundo"
+
+"hola" mundo
+"hola"mundo
+
+ho"la mun"do
+"ho"la mun"do"
+
+"hola"#mundo
+"ho#la"mundo
+
+hola_mundo
+HOLA_MUNDO
+HOLA_mundo
+_hola_mundo
+
+42hola27mundo
+42 hola 27 mundo
+
+"hola@mundo"
+hola@mundo

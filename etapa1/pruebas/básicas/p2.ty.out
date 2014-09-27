@@ -1,0 +1,79 @@
+Linea 1, columna 1: Palabra reservada: program
+Linea 2, columna 1: Palabra reservada: use
+Linea 3, columna 3: Palabra reservada: matrix
+Linea 3, columna 9: Parentesis Izquierdo
+Linea 3, columna 10: Literal Numerico: 2.0
+Linea 3, columna 11: Coma
+Linea 3, columna 12: Literal Numerico: 2.0
+Linea 3, columna 13: Parentesis Derecho
+Linea 3, columna 15: Identificador: m
+Linea 3, columna 16: Punto y Coma
+Linea 4, columna 3: Palabra reservada: number
+Linea 4, columna 10: Identificador: x
+Linea 4, columna 11: Punto y Coma
+Linea 5, columna 3: Palabra reservada: boolean
+Linea 5, columna 11: Identificador: b
+Linea 5, columna 12: Punto y Coma
+Linea 6, columna 1: Palabra reservada: in
+Linea 7, columna 3: Palabra reservada: set
+Linea 7, columna 7: Identificador: m
+Linea 7, columna 9: Asignacion
+Linea 7, columna 11: Llave Izquierda
+Linea 7, columna 13: Literal Numerico: 1.0
+Linea 7, columna 14: Coma
+Linea 7, columna 16: Literal Numerico: 2.0
+Linea 8, columna 11: Dos Puntos
+Linea 8, columna 13: Literal Numerico: 3.0
+Linea 8, columna 14: Coma
+Linea 8, columna 16: Literal Numerico: 4.0
+Linea 8, columna 18: Llave Derecha
+Linea 8, columna 19: Punto y Coma
+Linea 10, columna 3: Palabra reservada: read
+Linea 10, columna 8: Identificador: x
+Linea 10, columna 9: Punto y Coma
+Linea 12, columna 3: Palabra reservada: for
+Linea 12, columna 7: Identificador: i
+Linea 12, columna 9: Palabra reservada: in
+Linea 12, columna 12: Identificador: m
+Linea 12, columna 14: Palabra reservada: do
+Linea 13, columna 5: Palabra reservada: if
+Linea 13, columna 8: Identificador: i
+Linea 13, columna 10: Operador: Residuo Escalar
+Linea 13, columna 12: Literal Numerico: 2.0
+Linea 13, columna 14: Comparacion por igualdad
+Linea 13, columna 17: Literal Numerico: 0.0
+Linea 13, columna 19: Palabra reservada: then
+Linea 15, columna 7: Palabra reservada: print
+Linea 15, columna 13: Identificador: i
+Linea 15, columna 14: Punto y Coma
+Linea 16, columna 5: Palabra reservada: else
+Linea 17, columna 7: Palabra reservada: print
+Linea 17, columna 13: Identificador: x
+Linea 17, columna 14: Punto y Coma
+Linea 18, columna 7: Palabra reservada: read
+Linea 18, columna 12: Identificador: x
+Linea 18, columna 13: Punto y Coma
+Linea 19, columna 7: Palabra reservada: set
+Linea 19, columna 11: Identificador: b
+Linea 19, columna 13: Asignacion
+Linea 19, columna 15: Palabra reservada: not
+Linea 19, columna 19: Identificador: b
+Linea 19, columna 20: Punto y Coma
+Linea 20, columna 5: Palabra reservada: end
+Linea 20, columna 8: Punto y Coma
+Linea 21, columna 3: Palabra reservada: end
+Linea 21, columna 6: Punto y Coma
+Linea 23, columna 3: Palabra reservada: if
+Linea 23, columna 6: Identificador: b
+Linea 23, columna 8: Palabra reservada: then
+Linea 24, columna 5: Palabra reservada: print
+Linea 24, columna 11: Identificador: i
+Linea 24, columna 12: Punto y Coma
+Linea 25, columna 3: Palabra reservada: else
+Linea 26, columna 5: Palabra reservada: print
+Linea 26, columna 11: String Literal: "b is a lie"
+Linea 26, columna 23: Punto y Coma
+Linea 27, columna 3: Palabra reservada: end
+Linea 27, columna 6: Punto y Coma
+Linea 28, columna 1: Palabra reservada: end
+Linea 28, columna 4: Punto y Coma

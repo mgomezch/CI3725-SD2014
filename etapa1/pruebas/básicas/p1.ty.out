@@ -1,0 +1,32 @@
+Linea 1, columna 1: Palabra reservada: program
+Linea 2, columna 1: Palabra reservada: use
+Linea 3, columna 3: Palabra reservada: number
+Linea 3, columna 10: Identificador: x
+Linea 3, columna 11: Punto y Coma
+Linea 4, columna 1: Palabra reservada: in
+Linea 5, columna 3: Palabra reservada: print
+Linea 5, columna 9: String Literal: "How old are you?\n> "
+Linea 5, columna 31: Punto y Coma
+Linea 6, columna 3: Palabra reservada: read
+Linea 6, columna 8: Identificador: x
+Linea 6, columna 9: Punto y Coma
+Linea 8, columna 3: Palabra reservada: if
+Linea 8, columna 6: Identificador: x
+Linea 8, columna 8: Comparacion menor
+Linea 8, columna 10: Literal Numerico: 18.0
+Linea 8, columna 13: Palabra reservada: then
+Linea 9, columna 5: Palabra reservada: print
+Linea 9, columna 11: String Literal: "You can't be here."
+Linea 9, columna 31: Punto y Coma
+Linea 10, columna 3: Palabra reservada: else
+Linea 11, columna 5: Palabra reservada: print
+Linea 11, columna 11: String Literal: "Oh, "
+Linea 11, columna 17: Coma
+Linea 11, columna 19: Identificador: x
+Linea 11, columna 20: Coma
+Linea 11, columna 22: String Literal: "? come right in."
+Linea 11, columna 40: Punto y Coma
+Linea 12, columna 3: Palabra reservada: end
+Linea 12, columna 6: Punto y Coma
+Linea 13, columna 1: Palabra reservada: end
+Linea 13, columna 4: Punto y Coma

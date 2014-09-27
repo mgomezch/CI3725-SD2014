@@ -1,0 +1,13 @@
+program
+use
+  number x;
+in
+  print "How old are you?\n> ";
+  read x;
+
+  if x < 18 then
+    print "You can't be here.";
+  else
+    print "Oh, ", x, "? come right in.";
+  end;
+end;

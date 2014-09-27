@@ -1,0 +1,28 @@
+program
+use
+  matrix(2,2) m;  # se inicializa todas en '0'
+  number x;       # se inicializa en '0'
+  boolean b;      # se inicializa en 'false'
+in
+  set m = { 1, 2
+          : 3, 4 };
+
+  read x;
+
+  for i in m do
+    if i % 2 == 0 then
+      # si 'i' es par
+      print i;
+    else
+      print x;
+      read x;
+      set b = not b;
+    end;
+  end;
+
+  if b then
+    print i;
+  else
+    print "b is a lie";
+  end;
+end;
