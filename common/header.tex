@@ -1,0 +1,122 @@
+\usepackage{newunicodechar}
+\newunicodechar{η}{\ensuremath{\eta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∧}{\ensuremath{\land}}
+\newunicodechar{∨}{\ensuremath{\lor}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∷}{\ensuremath{::}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{𝔹}{\ensuremath{\mathbb{B}}}
+
+
+
+\usepackage{polyglossia}
+\setdefaultlanguage{spanish}
+\hyphenation{do-cu-men-to}
+
+
+
+\usepackage[margin=2.5cm]{geometry}
+
+
+
+\usepackage{anyfontsize}
+\usepackage{lastpage}
+
+\makeatletter
+\let\mytitle\@title
+%\let\mysubtitle\@subtitle
+\let\myauthor\@author
+\let\mydate\@date
+\makeatother
+
+\usepackage{titling}
+\title{\mytitle}
+%\subtitle{\mysubtitle}
+\author{\myauthor}
+\date{\mydate}
+
+\pretitle{
+  \begin{center}
+  \fontsize{50}{60}
+  \selectfont
+  \sc
+}
+
+\posttitle{
+  \end{center}
+}
+
+\usepackage[normalem]{ulem}
+
+%\renewcommand{\maketitlehookd}{
+%  \textbf{Este documento es solo una propuesta y no especifica requerimientos para ninguna evaluación.  No debe suponerse que alguna evaluación vaya a ser basada en él a menos que sea publicado oficialmente por los profesores a cargo del curso; en ese caso, la versión normativa del documento será la que se publique, que no contendrá esta nota, y esta versión será considerada inválida y no deberá ser usada como referencia para ningún propósito.}
+%
+%  Este documento es un borrador, y se espera que tenga deficiencias de diseño, del redacción, orthografícas y d\emph{e} t\textbf{ipo}g\textsuperscript{r}a\sout{f}\textsubscript{ía}.
+%}
+
+
+
+\usepackage{fancyhdr}
+\usepackage{calc}
+
+\pagestyle{fancyplain}
+
+\def\headerlogo{\includegraphics[width=75pt]{header.png}}
+\addtolength{\headheight}{\heightof{\headerlogo}}
+\addtolength{\textheight}{0pt-\heightof{\headerlogo}}
+%\addtolength{\headheight}{\baselineskip}
+
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[R]{
+  \parbox[b]{0.7\textwidth}{
+    \begin{flushright}
+      \scriptsize{
+        \thetitle \\
+        \theauthor
+      }
+    \end{flushright}
+    \vspace{-14pt}
+  }
+}
+
+\fancyhead[L]{
+  \headerlogo
+}
+
+
+\fancyfoot{}
+\fancyfoot[L]{
+  \parbox[t]{0.9\textwidth}{
+    \scriptsize{Universidad Simón Bolívar — Departamento de Computación y Tecnologías de la Información \\
+    CI3725 (Traductores e interpretadores) — Septiembre–Diciembre 2014}
+  }
+}
+\fancyfoot[R]{\parbox[t]{0.02\textwidth}{\textbf{\thepage}}}
+
+\hypersetup{
+  xetex,
+  pdftitle={\thetitle},
+  pdfsubject={\theauthor},
+  pdfauthor={David Lilue, Ernesto Hernández-Novich, Karen Troiano, Matteo Ferrando, Manuel Gómez},
+  pdfcreator={Manuel Gómez},
+  pdfkeywords={CI3725},
+  pdflang={es-VE},
+  bookmarks=true,
+  bookmarksnumbered=true,
+  pdfpagelabels=true,
+  pdfpagemode=UseOutlines,
+  pdfstartview=FitH,
+  linktocpage=true,
+  colorlinks=true,
+  linkcolor=blue,
+  plainpages=true,
+  setpagesize=false
+}
+
+
+
+\urlstyle{tt}
