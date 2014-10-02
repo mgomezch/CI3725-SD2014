@@ -136,9 +136,13 @@
 
     Note que los fragmentos de programas como estos no serán entradas válidas para el analizador sintáctico, ya que éste funcionará únicamente con programas completos — estos ejemplos de fragmentos de programas se utilizan únicamente para ilustrar un ejemplo de formato de salida.
 
-13. Como ejemplo concreto, si se encuentra un lexema inesperado que produzca un error de sintaxis y que comienza en la columna 15 de la línea 84 —por ejemplo, una palabra reservada `if`—, se podría imprimir algo similar a
+13. Como ejemplo concreto, si se encuentra un lexema inesperado `if` que comience en la columna 9 de la línea 84 y que produzca un error de sintaxis, como en
 
-        Línea 82, columna 15: Lexema inesperado: Palabra reservada: if
+        set a = if;
+
+    se podría imprimir algo similar a
+
+        Línea 84, columna 9: Lexema inesperado: Palabra reservada: if
 
 14. Tanto los nombres asociados a cada tipo de nodo del árbol de sintaxis abstracta, como la selección exacta de cuáles elementos sintácticos corresponden a nodos del árbol, como el formato exacto de salida para los nodos y los errores de sintaxis quedan a su criterio — se requiere únicamente que contengan al menos la información requerida e ilustrada en estos ejemplos.
 
