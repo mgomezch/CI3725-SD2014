@@ -130,7 +130,7 @@
 
     Si se encuentra un caracter inesperado `@` que produzca un error lexicográfico en la columna 15 de la línea 84, se podría imprimir algo similar a
 
-        Línea 82, columna 15: Caracter inesperado: @
+        Línea 84, columna 15: Caracter inesperado: @
 
     Tanto los nombres asociados a cada tipo de lexema como el formato exacto de salida para representar cada lexema o error quedan a su criterio — se requiere únicamente que contengan al menos la información requerida en este punto e ilustrada en estos ejemplos.
 
