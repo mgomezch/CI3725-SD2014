@@ -1,0 +1,35 @@
+name:          trinity
+version:       0.1.0.0
+synopsis:      Lenguaje de programación para el proyecto de CI3725 (Traductores e interpretadores) en Septiembre–Diciembre de 2014 en la Universidad Simón Bolívar
+homepage:      http://ldc.usb.ve/~05-38235/cursos/CI3725/2014SD/
+license:       BSD3
+license-file:  LICENSE
+author:        David Lilue, Karen Troiano, Matteo Ferrando, Manuel Gómez
+maintainer:    Manuel Gómez <targen@gmail.com>
+category:      Language
+build-type:    Simple
+cabal-version: >= 1.10
+-- description:   
+-- copyright:     
+
+-- extra-source-files:
+
+executable trinity
+  other-extensions: CPP
+  hs-source-dirs:   src
+  default-language: Haskell2010
+  main-is:          Main.hs
+
+  build-tools:
+    alex,
+    happy
+
+  other-modules:
+    Language.Trinity.Lexer
+    Language.Trinity.Parser
+
+  build-depends:
+    array      >= 0.5   && < 0.6,
+    base       >= 4.7   && < 4.8,
+    containers >= 0.5   && < 0.6,
+    split      >= 0.2.2 && < 0.3
