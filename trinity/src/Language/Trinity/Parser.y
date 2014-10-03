@@ -1,7 +1,7 @@
 {
 module Language.Trinity.Parser where
 
-import Data.Sequence ((|>), Seq, singleton)
+import Data.Sequence ((|>), Seq, empty, singleton)
 import Language.Trinity.Lexer
 }
 
@@ -15,11 +15,13 @@ import Language.Trinity.Lexer
   "begin"    { TkBegin           }
   "return"   { TkReturn          }
   "number"   { TkNumber          }
+  "boolean"  { TkBoolean         }
   "row"      { TkRow             }
   "col"      { TkCol             }
   "matrix"   { TkMatrix          }
   "print"    { TkPrint           }
   string     { TkString _        }
+  "read"     { TkRead            }
   "if"       { TkIf              }
   "then"     { TkThen            }
   "else"     { TkElse            }
@@ -86,6 +88,7 @@ Instruction: Expression                                                         
            | "set" iden "[" Expression "]" "=" Expression                                  { IVectorAssignment  $2 $4 $7    }
            | "set" iden "[" Expression "," Expression "]" "=" Expression                   { IMatrixAssignment  $2 $4 $6 $9 }
            | "print" Prints                                                                { IPrint             $2          }
+           | "read" iden                                                                   { IRead              $2          }
            | "if" Expression "then" Instructions "end"                                     { IIf                $2 $4       }
            | "if" Expression "then" Instructions "else" Instructions "end"                 { IIfElse            $2 $4 $6    }
            | "while" Expression "do" Instructions "end"                                    { IWhile             $2 $4       }
@@ -94,6 +97,7 @@ Instruction: Expression                                                         
 Declaration: Type iden                                                                     { DDefault           $1 $2       }
            | Type iden "=" Expression                                                      { DInitialize        $1 $2 $4    }
 Type       : "number"                                                                      { TNumber                        }
+           | "boolean"                                                                     { TBoolean                       }
            | "row"    "(" number ")"                                                       { TRow               $3          }
            | "col"    "(" number ")"                                                       { TCol               $3          }
            | "matrix" "(" number "," number ")"                                            { TMatrix            $3 $5       }
@@ -106,7 +110,7 @@ Expression : "(" Expression ")"                                                 
            | "{" Rows "}"                                                                  { ELitMatrix         $2          }
            | Expression "[" Expression                "]"                                  { EAccessVector      $1 $3       }
            | Expression "[" Expression "," Expression "]"                                  { EAccessMatrix      $1 $3       }
-           | Expression "not"   Expression                                                 { ENot               $1          }
+           | "not" Expression                                                              { ENot               $2          }
            | Expression "&"     Expression                                                 { EAnd               $1 $3       }
            | Expression "|"     Expression                                                 { EOr                $1 $3       }
            | Expression "=="    Expression                                                 { EEQ                $1 $3       }
@@ -130,9 +134,9 @@ Expression : "(" Expression ")"                                                 
            | Expression ".div." Expression                                                 { EMapDivideInteger  $1 $3       }
            | Expression ".mod." Expression                                                 { EMapModuloInteger  $1 $3       }
 
-Functions   : Functions        Function    ";" { $1 |> $2 } | Function    ";" { singleton $1 }
-Declarations: Declarations     Declaration ";" { $1 |> $2 } | Declaration ";" { singleton $1 }
-Instructions: Instructions     Instruction ";" { $1 |> $2 } | Instruction ";" { singleton $1 }
+Functions   : Functions        Function    ";" { $1 |> $2 } |                 { empty        }
+Instructions: Instructions     Instruction ";" { $1 |> $2 } |                 { empty        }
+Declarations: Declarations     Declaration ";" { $1 |> $2 } |                 { empty        }
 Prints      : Prints       "," Print           { $1 |> $3 } | Print           { singleton $1 }
 Rows        : Rows         ":" Columns         { $1 |> $3 } | Columns         { singleton $1 }
 Columns     : Columns      "," Expression      { $1 |> $3 } | Expression      { singleton $1 }
@@ -155,9 +159,10 @@ data Function
 
 data Type
   = TNumber
-  | TRow    NumericLiteral
-  | TCol    NumericLiteral
-  | TMatrix NumericLiteral NumericLiteral
+  | TBoolean
+  | TRow     NumericLiteral
+  | TCol     NumericLiteral
+  | TMatrix  NumericLiteral NumericLiteral
   deriving (Eq, Read, Show)
 
 type Declarations = Seq Declaration
@@ -173,6 +178,7 @@ data Instruction
   | IVectorAssignment Identifier Expression Expression
   | IMatrixAssignment Identifier Expression Expression Expression
   | IPrint            Prints
+  | IRead             Identifier
   | IIf               Expression Instructions
   | IIfElse           Expression Instructions Instructions
   | IWhile            Expression Instructions

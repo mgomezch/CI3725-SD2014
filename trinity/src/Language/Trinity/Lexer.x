@@ -189,7 +189,7 @@ data Token
     | TkEOF
     | TkError       { unTkError :: Char,         tkPosn :: Position }
     | TkStringError { unTkStringError :: String, tkPosn :: Position }
-    deriving (Eq)
+    deriving (Eq, Read)
 
 instance Show Token where
     show tk = case tk of
@@ -234,13 +234,13 @@ instance Show Token where
         TkModulo -> "Modulo"
         TkIntDivide -> "Int"
         TkIntModulo -> "Int"
-        TkDottedPlus -> "Dotted"
-        TkDottedMinus -> "Dotted"
-        TkDottedTimes -> "Dotted"
-        TkDottedDivide -> "Dotted"
-        TkDottedModulo -> "Dotted"
-        TkDottedIntDivide -> "Dotted"
-        TkDottedIntModulo -> "Dotted"
+        TkDottedPlus -> "Dotted plus"
+        TkDottedMinus -> "Dotted minus"
+        TkDottedTimes -> "Dotted times"
+        TkDottedDivide -> "Dotted divide"
+        TkDottedModulo -> "Dotted modulo"
+        TkDottedIntDivide -> "Dotted int divide"
+        TkDottedIntModulo -> "Dotted int modulo"
         TkOr -> "Or"
         TkAnd -> "And"
         TkNot -> "Not"
@@ -257,8 +257,9 @@ instance Show Token where
 
 
 -- (Line, Column)
-newtype Position = Posn (Int, Int)
-    deriving (Eq)
+newtype Position
+  = Posn (Int, Int)
+  deriving (Eq, Read)
 
 instance Show Position where
     show (Posn (r,c)) = "línea " ++ show r ++ ", columna " ++ show c
