@@ -1,6 +1,6 @@
 % Trinity
 % Especificación del lenguaje
-% Versión 2 — \today
+% Versión 3 — \today
 
 - - -
 
@@ -14,22 +14,24 @@
 
 3.  Este documento describe el lenguaje de programación *Trinity* a través de los elementos fundamentales de todo lenguaje: sus **objetos**, sus mecanismos de **composición** para hacer objetos complejos a partir de otros simples, y sus mecanismos de **abstracción y control**.  No se presenta una gramática exacta para el lenguaje ni una especificación formal de su semántica, pero sí se especifica lo necesario para construir una gramática y un intérprete.
 
+
 ## Sinopsis
 
 1.  Un programa simple de *Trinity* podría verse así:
 
         program
-        use
+          use
             number x;
-        in
+          in
             print "How old are you?\n> ";
             read x;
 
             if x < 18 then
-                print "You can't be here.";
+              print "You can't be here.";
             else
-                print "Oh, ", x, "? come right in.";
+              print "Oh, ", x, "? come right in.";
             end;
+          end;
         end;
 
 2.  Ese programa se ejecutaría así:
@@ -42,33 +44,71 @@
 3.  Un ejemplo más extenso de programa en *Trinity*:
 
         program
-        use
-          matrix(2,2) m;  # se inicializa todas en '0'
-          number x;       # se inicializa en '0'
-          boolean b;      # se inicializa en 'false'
-        in
-          set m = { 1, 2
-                  : 3, 4 };
+          use
+            matrix(2,2) m;  # se inicializa todas en '0'
+            number x;       # se inicializa en '0'
+            boolean b;      # se inicializa en 'false'
+          in
+            set m = { 1, 2
+                    : 3, 4 };
 
-          read x;
+            read x;
 
-          for i in m do
-            if i % 2 == 0 then
-              # si 'i' es par
+            for i in m do
+              if i % 2 == 0 then
+                # si 'i' es par
+                print i;
+              else
+                print x;
+                read x;
+                set b = not b;
+              end;
+            end;
+
+            if b then
               print i;
             else
-              print x;
-              read x;
-              set b = not b;
+              print "b is a lie";
             end;
           end;
-
-          if b then
-            print i;
-          else
-            print "b is a lie";
-          end;
         end;
+
+
+## Resumen de cambios
+
+### Versión 2
+
+1.  Se agregaron algunos ejemplos de programas.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+### Versión 3
+
+1.  Se agregó el resumen de cambios.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+2.  Cambió la numeración de párrafos y secciones en varias partes del documento, y se hicieron cambios menores de redacción y tipografía.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+3.  Se agregaron ejemplos a varias secciones del documento.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+4.  El uso de la notación `matrix(n, m)` en este documento, con las variables metasintácticas `n` y `m`, chocaba con el uso de `m` como variable metasintáctica para cantidades matriciales.  Se corrigieron errores en el documento debido a esto y ahora se usa en todo el documento la misma notación pero con las variables metasintácticas `r` (por *rows*) y `c` (por *columns*).  De igual manera, se utiliza `row(c)` en vez de `row(m)` y `col(r)` en vez de `col(n)`.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+5.  Se declararon explícitamente todas las palabras reservadas como tal.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+6.  Se corrigieron los ejemplos en la sinopsis para hacerlos consistentes con la estructura de los programas de *Trinity* — les faltaba el `end;` al final.
+
+7.  La definición de los literales numéricos no especificaba si la parte entera podía estar compuesta por cero dígitos, por lo cual no estaba claro, por ejemplo, si `.42` debía ser equivalente a `0.42`.  Se modificó la definición de los literales numéricos para excluir del lenguaje a las secuencias de caracteres de la primera forma, así que `.42` por sí solo ahora constituye un error lexicográfico.
+
+8.  Se especificó que los programas deben abortar al intentar hacer divisiones entre cero o calcular restos por división entre cero.
+
+9.  La definición de secuencias de instrucciones y declaraciones ahora admite que esas secuencias sean vacías.
+
+10. Se reescribieron las secciones que especifican las instrucciones condicionales y de iteración, así como las funciones y la estructura del programa principal, para especificar con precisión su sintaxis y semántica.  El texto anterior, aunque impreciso, especificaba en esencia lo mismo que el texto nuevo.
+
+11. Se especificó el mecanismo de ejecución de una secuencia de instrucciones.
+
+12. Se especificó que las instrucciones de impresión deben tener al menos un elemento en su secuencia de especificaciones de impresión.
+
+13. Se corrigió un error de tipeo en el ejemplo de que una declaración con inicialización tiene implícita una asignación.
+
+14. Se especificó la instrucción de asignación vectorial, que ya se usaba en los ejemplos sin haberse definido.
 
 
 
@@ -96,13 +136,13 @@
 
 2.  Las cantidades escalares en *Trinity* corresponden al tipo numérico, cuya especificación de tipo es `number`, y se implementan como números de punto flotante según el estándar [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point), incluyendo a la noción de igualdad.  El lexema `number` es una palabra reservada.
 
-3.  Un literal numérico está formado por secuencias de dígitos en notación posicional decimal, con una parte fraccional opcional separada por un punto (`.`) de la parte entera.  Por ejemplo, `42` y [`6.2831853`](http://www.tauday.com/) son literales numéricos.  Los literales numéricos son expresiones que denotan cantidades escalares y tienen el tipo numérico.  <!-- TODO: La correspondencia entre un literal numérico y el valor de tipo numérico que denota se hace según las reglas de …? -->
+3.  Un literal numérico está formado por secuencias de uno o más dígitos en notación posicional decimal (la parte entera), seguidas opcionalmente por una parte fraccional compuesta de un punto (`.`) y otra secuencia de uno o más dígitos en notación posicional decimal (la parte fraccional).  Por ejemplo, `42` y [`6.2831853`](http://www.tauday.com/) son literales numéricos.  Los literales numéricos son expresiones que denotan cantidades escalares y tienen el tipo numérico.
 
-4.  Las cantidades matriciales en *Trinity* son arreglos bidimensionales, rectangulares, discretos y finitos de cantidades escalares.  Las cantidades matriciales de `n` filas y `m` columnas corresponden al tipo especificado por `matrix(n, m)`.  Dos cantidades matriciales del mismo tipo se consideran iguales cuando las cantidades escalares correspondientes en cada posición son iguales.  El lexema `matrix` es una palabra reservada.
+4.  Las cantidades matriciales en *Trinity* son arreglos bidimensionales, rectangulares, discretos y finitos de cantidades escalares.  Las cantidades matriciales de `r` filas y `c` columnas corresponden al tipo especificado por `matrix(r, c)`, donde `r` y `c` son literales numéricos enteros y positivos.  Dos cantidades matriciales del mismo tipo se consideran iguales cuando las cantidades escalares correspondientes en cada posición son iguales.  El lexema `matrix` es una palabra reservada.
 
-5.  Las cantidades vectoriales son cantidades matriciales de una sola fila o una sola columna.  Los vectores fila de `m` dimensiones tienen el tipo especificado por `row(m)`, y los vectores columna de `n` dimensiones tienen el tipo especificado por `col(n)`.  `col(n)` y `row(m)` denotan los mismos tipos que `matrix(n, 1)` y `matrix(1, m)`, respectivamente — son simples atajos en la notación, y no representan conceptos distintos.  Los lexemas `row` y `col` son palabras reservadas.
+5.  Las cantidades vectoriales son cantidades matriciales de una sola fila o una sola columna.  Los vectores fila de `c` columnas tienen el tipo especificado por `row(c)`, y los vectores columna de `r` filas tienen el tipo especificado por `col(r)`.  `col(r)` y `row(c)` denotan los mismos tipos que `matrix(r, 1)` y `matrix(1, c)`, respectivamente — son simples atajos en la notación, y no representan conceptos distintos.  Los lexemas `row` y `col` son palabras reservadas.
 
-6.  Un literal matricial es una secuencia de filas separadas por el símbolo dos puntos (`:`) y encerrada toda entre corchetes curvos (`{` y `}`), siendo cada fila una secuencia de igual número de expresiones separadas por el símbolo coma (`,`), cada una de las cuales debe tener el tipo numérico.  Los literales matriciales son expresiones que denotan cantidades matriciales y tienen el tipo especificado por `matrix(n, m)`, donde `n` es el número de filas en el literal matricial, y `m` el número de expresiones en cada una de las filas.
+6.  Un literal matricial es una secuencia de una o más filas separadas por el símbolo dos puntos (`:`) y encerrada toda entre corchetes curvos (`{` y `}`), siendo cada fila una secuencia de una o más expresiones, todas de igual número, separadas por el símbolo coma (`,`), cada una de las cuales debe tener el tipo numérico.  Los literales matriciales son expresiones que denotan cantidades matriciales y tienen el tipo especificado por `matrix(r, c)`, donde `r` es el número de filas en el literal matricial, y `c` el número de expresiones en cada una de las filas.
 
     Por ejemplo,
 
@@ -113,6 +153,12 @@
         { 4, 5 : 6, 7 : 8, 9 }
 
     es otro literal matricial y denota un valor con el tipo especificado por `matrix(3, 2)`.
+
+    En cambio,
+
+        { 1, 2 : 3 }
+
+    no es una expresión bien formada, ya que las dos filas no tienen la misma cantidad de columnas.
 
 7.  Los tipos de las cantidades escalares y matriciales se denominan *tipos aritméticos*.
 
@@ -135,7 +181,7 @@
 
     es una expresión del tipo booleano y tiene el mismo valor que la expresión `false`.
 
-2.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo booleano, se pueden formar las expresiones `e₁ & e₂` y `e₁ | e₂`, ambas del tipo booleano, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e`~1~ y `e`~2~.  Ambos operadores tienen asociatividad izquierda y tienen menor precedencia que el operador `not`.  El operador `&` tiene mayor precedencia que el operador `|`.
+2.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo booleano, se pueden formar las expresiones `e`~1~ `&` `e`~2~ y `e`~1~ `|` `e`~2~, ambas del tipo booleano, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e`~1~ y `e`~2~.  Ambos operadores tienen asociatividad izquierda y tienen menor precedencia que el operador `not`.  El operador `&` tiene mayor precedencia que el operador `|`.
 
     Por ejemplo, la expresión
 
@@ -147,11 +193,11 @@
 
     debido a que la precedencia de `&` es mayor que la de `|`.
 
-3.  La evaluación de `e₁ & e₂` procede con la evaluación de `e`~1~, y si ésta produce el valor `false`, la evaluación de `e₁ & e₂` produce `false` de inmediato, sin evaluar `e`~2~; si, en cambio, la evaluación de `e`~1~ produce el valor `true`, entonces se evalúa `e`~2~ y la evaluación de `e₁ & e₂` produce finalmente el valor que produce la evaluación de `e`~2~.
+3.  La evaluación de `e`~1~ `&` `e`~2~ procede con la evaluación de `e`~1~, y si ésta produce el valor `false`, la evaluación de `e`~1~ `&` `e`~2~ produce `false` de inmediato, sin evaluar `e`~2~; si, en cambio, la evaluación de `e`~1~ produce el valor `true`, entonces se evalúa `e`~2~ y la evaluación de `e`~1~ `&` `e`~2~ produce finalmente el valor que produce la evaluación de `e`~2~.
 
-4.  La evaluación de `e₁ | e₂` procede con la evaluación de `e`~1~, y si ésta produce el valor `true`, la evaluación de `e₁ | e₂` produce `true` de inmediato, sin evaluar `e`~2~; si, en cambio, la evaluación de `e`~1~ produce el valor `false`, entonces se evalúa `e`~2~ y la evaluación de `e₁ | e₂` produce finalmente el valor que produce la evaluación de `e`~2~.
+4.  La evaluación de `e`~1~ `|` `e`~2~ procede con la evaluación de `e`~1~, y si ésta produce el valor `true`, la evaluación de `e`~1~ `|` `e`~2~ produce `true` de inmediato, sin evaluar `e`~2~; si, en cambio, la evaluación de `e`~1~ produce el valor `false`, entonces se evalúa `e`~2~ y la evaluación de `e`~1~ `|` `e`~2~ produce finalmente el valor que produce la evaluación de `e`~2~.
 
-5.  A partir de dos expresiones `e`~1~ y `e`~2~ del mismo tipo cualquiera[^homoeq], se pueden formar las expresiones `e₁ == e₂` y `e₁ /= e₂`, ambas del tipo booleano, cuyos valores serán, respectivamente, `true` y `false` si los valores de `e`~1~ y `e`~2~ son iguales. Ninguno de los dos operadores es asociativo y ambos tienen igual precedencia.
+5.  A partir de dos expresiones `e`~1~ y `e`~2~ del mismo tipo cualquiera[^homoeq], se pueden formar las expresiones `e`~1~ `==` `e`~2~ y `e`~1~ `/=` `e`~2~, ambas del tipo booleano, cuyos valores serán, respectivamente, `true` y `false` si los valores de `e`~1~ y `e`~2~ son iguales. Ninguno de los dos operadores es asociativo y ambos tienen igual precedencia.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -161,11 +207,11 @@
 
         { 1, 2 : 3, 4 } /= { 3, 4 : 1, 2 }
 
-6.  La evaluación de `e₁ == e₂` y `e₁ /= e₂` procede con la evaluación de `e`~1~; al terminarla, procede a evaluar `e`~2~; al terminarla, verifica si ambos valores producidos por las subexpresiones son iguales, y produce el resultado final.  El mecanismo de evaluación análogo para expresiones formadas por otros operadores binarios será referido en el resto de este documento como estricta de izquierda a derecha.
+6.  La evaluación de `e`~1~ `==` `e`~2~ y `e`~1~ `/=` `e`~2~ procede con la evaluación de `e`~1~; al terminarla, procede a evaluar `e`~2~; al terminarla, verifica si ambos valores producidos por las subexpresiones son iguales, y produce el resultado final.  El mecanismo de evaluación análogo para expresiones formadas por otros operadores binarios será referido en el resto de este documento como estricta de izquierda a derecha.
 
 [^homoeq]: La igualdad en *Trinity* es homogénea.  No se puede formar una expresión con los operadores `==` y `/=` entre dos expresiones con tipos diferentes.  Por lo tanto, dos valores de tipos diferentes no pueden compararse entre sí ni siquiera para resultar en que son distintos.  La forma `42 == { 54 }` **no** es una expresión con valor `false`, sino un fragmento de programa mal formado que debe arrojar un error estáticamente.
 
-7.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e₁ <= e₂`, `e₁ < e₂`, `e₁ >= e₂` y `e₁ > e₂`, todas del tipo booleano, cuyos valores serán `true` únicamente si el valor de `e`~1~ es, respectivamente, menor or igual, menor, mayor o igual o mayor que el valor de `e`~2~.  Ninguno de los cuatro operadores es asociativo y todos tienen precedencia igual a la de `==` y `/=`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+7.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e`~1~ `<=` `e`~2~, `e`~1~ `<` `e`~2~, `e`~1~ `>=` `e`~2~ y `e`~1~ `>` `e`~2~, todas del tipo booleano, cuyos valores serán `true` únicamente si el valor de `e`~1~ es, respectivamente, menor or igual, menor, mayor o igual o mayor que el valor de `e`~2~.  Ninguno de los cuatro operadores es asociativo y todos tienen precedencia igual a la de `==` y `/=`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
     Por ejemplo, la siguiente expresión tiene el mismo valor que la expresión `true`:
 
@@ -174,7 +220,7 @@
 
 ### Operadores aritméticos
 
-1.  A partir de dos expresiones `e`~1~ y `e`~2~ de un mismo tipo aritmético, se pueden formar las expresiones `e₁ + e₂` y `e₁ - e₂`, ambas del mismo tipo aritmético original, cuyos valores serán, respectivamente, la suma y la resta de los valores de `e`~1~ y `e`~2~.  Ambos operadores tienen asociatividad izquierda y tienen igual precedencia.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+1.  A partir de dos expresiones `e`~1~ y `e`~2~ de un mismo tipo aritmético, se pueden formar las expresiones `e`~1~ `+` `e`~2~ y `e`~1~ `-` `e`~2~, ambas del mismo tipo aritmético original, cuyos valores serán, respectivamente, la suma y la resta de los valores de `e`~1~ y `e`~2~.  Ambos operadores tienen asociatividad izquierda y tienen igual precedencia.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -184,7 +230,7 @@
 
 2.  A partir de una expresión `e` de un tipo aritmético, se puede formar la expresión `- e` del mismo tipo, cuyo valor será el inverso aditivo de `e`.  Por ejemplo, `- (3 * (- 3)) == 9`.  La evaluación de `- e` es estricta.
 
-3.  A partir de expresiones `e`~1~ del tipo especificado por `matrix(n, m)` y `e`~2~ del tipo especificado por `matrix(m, p)`, se puede formar la expresión `e₁ * e₂` del tipo especificado por `matrix(n, p)`, cuyo valor se calculará como el producto matricial de los valores de `e`~1~ y `e`~2~.  Por otra parte, a partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se puede formar la expresión `e₁ * e₂` del tipo numérico, cuyo valor será el producto (escalar) de los valores de `e`~1~ y `e`~2~.  El operador `*` tiene asociatividad izquierda y mayor precedencia que los operadores `+` y `-`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+3.  A partir de expresiones `e`~1~ del tipo especificado por `matrix(r, c)` y `e`~2~ del tipo especificado por `matrix(r, p)`, se puede formar la expresión `e`~1~ `*` `e`~2~ del tipo especificado por `matrix(c, p)`, cuyo valor se calculará como el producto matricial de los valores de `e`~1~ y `e`~2~.  Por otra parte, a partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se puede formar la expresión `e`~1~ `*` `e`~2~ del tipo numérico, cuyo valor será el producto (escalar) de los valores de `e`~1~ y `e`~2~.  El operador `*` tiene asociatividad izquierda y mayor precedencia que los operadores `+` y `-`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -192,7 +238,7 @@
 
         2 * 3 == 6
 
-4.  A partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e₁ / e₂` y `e₁ % e₂`, ambas del tipo numérico, cuyos valores serán, respectivamente, la división exacta y el resto exacto de la división entera entre los valores de `e`~1~ y `e`~2~.  Los operadores `/` y `%` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+4.  A partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e`~1~ `/` `e`~2~ y `e`~1~ `%` `e`~2~, ambas del tipo numérico, cuyos valores serán, respectivamente, la división exacta y el resto exacto de la división entera entre los valores de `e`~1~ y `e`~2~.  Los operadores `/` y `%` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha, salvo porque si el valor producido por la expresión en el operando derecho es cero, el programa abortará.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -200,7 +246,7 @@
 
         10.2 % 2 == 0.2
 
-5.  A partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e₁ div e₂` y `e₁ mod e₂`, ambas del tipo numérico, cuyos valores serán, respectivamente, la división entera y el resto entero de la división entre los valores de `e`~1~ y `e`~2~.  Los operadores `div` y `mod` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha.  Los lexemas `div` y `mod` son palabras reservadas.
+5.  A partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e`~1~ `div` `e`~2~ y `e`~1~ `mod` `e`~2~, ambas del tipo numérico, cuyos valores serán, respectivamente, la división entera y el resto entero de la división entre los valores de `e`~1~ y `e`~2~.  Los operadores `div` y `mod` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha, salvo porque si el valor producido por la expresión en el operando derecho es cero, el programa abortará.  Los lexemas `div` y `mod` son palabras reservadas.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -208,7 +254,7 @@
 
         10.2 mod 2 == 0
 
-6.  A partir de una expresión `e` del tipo especificado `matrix(n, m)`, se puede formar la expresión `e'` del tipo especificado por `matrix(m, n)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene mayor precedencia que el operador `*`.  La evaluación de estas expresiones es estricta.
+6.  A partir de una expresión `e` del tipo especificado `matrix(r, c)`, se puede formar la expresión `e'` del tipo especificado por `matrix(c, r)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene mayor precedencia que el operador `*`.  La evaluación de estas expresiones es estricta.
 
     Por ejemplo,
 
@@ -227,7 +273,7 @@
 
 2.  Cada operador binario entre cantidades escalares que resulte en otra cantidad escalar tiene un operador cruzado correspondiente.  Los operadores cruzados `.+.`, `.-.`, `.*.`, `./.`, `.%.`, `.div.` y `.mod.` corresponden a los operadores escalares `+`, `-`, `*`, `/`, `%`, `div` y `mod`, respectivamente.
 
-3.  A partir de expresiones `e`~1~ del tipo numérico y `e`~2~ de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e₁ .op. e₂` y `e₂ .op. e₁` del mismo tipo de `e`~2~, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `xᵤᵥ` de `e`~2~ por `e₁ op xᵤᵥ` o `xᵤᵥ op e₁`, respectivamente, donde `op` es el operador escalar correspondiente de `.op.`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+3.  A partir de expresiones `e`~1~ del tipo numérico y `e`~2~ de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e`~1~ `.op.` `e`~2~ y `e`~2~ `.op.` `e`~1~ del mismo tipo de `e`~2~, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `x`~uv~ de `e`~2~ por `e`~i~ `op` `x`~uv~ o `x`~uv~ `op` `e`~i~, respectivamente, donde `op` es el operador escalar correspondiente a `.op.`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
 4.  Por ejemplo,
 
@@ -248,7 +294,7 @@
 
 ### Proyección de componentes
 
-1.  A partir de una expresión `e` del tipo especificado por `matrix(n, m)`, y dos expresiones `i` y `j` del tipo numérico, se puede formar la expresión `e[i, j]` del tipo numérico, cuyo valor será la componente del valor de `e` en la fila cuyo índice sea el valor de la expresión `i`, y en la columna cuyo índice sea el valor de la expresión `j`.  Esta operación tiene la máxima precedencia.
+1.  A partir de una expresión `e` del tipo especificado por `matrix(r, c)`, y dos expresiones `i` y `j` del tipo numérico, se puede formar la expresión `e[i, j]` del tipo numérico, cuyo valor será la componente del valor de `e` en la fila cuyo índice sea el valor de la expresión `i`, y en la columna cuyo índice sea el valor de la expresión `j`.  Esta operación tiene la máxima precedencia.
 
 2.  La evaluación de `e[i, j]` sigue los siguientes pasos:
 
@@ -274,7 +320,7 @@
 
     aborta el programa al ser evaluada.
 
-4.  A partir de una expresión `e` del tipo especificado por `row(n)` o `col(m)`, y una expresión `i` del tipo numérico, se puede formar la expresión `e[i]` del tipo numérico.  Si `e` tiene el tipo especificado por `row(n)`, entonces `e[i]` tiene el mismo significado que `e[1, i]`, y si `e` tiene el tipo especificado por `col(m)`, entonces `e[i]` tiene el mismo significado que `e[i, 1]`.
+4.  A partir de una expresión `e` del tipo especificado por `row(c)` o `col(r)`, y una expresión `i` del tipo numérico, se puede formar la expresión `e[i]` del tipo numérico.  Si `e` tiene el tipo especificado por `row(c)`, entonces `e[i]` tiene el mismo significado que `e[1, i]`, y si `e` tiene el tipo especificado por `col(r)`, entonces `e[i]` tiene el mismo significado que `e[i, 1]`.
 
     Por ejemplo, todas estas expresiones tienen el mismo significado:
 
@@ -292,14 +338,16 @@
 
 1.  *Trinity* es un lenguaje imperativo, y su mecanismo principal de operación es la ejecución de secuencias de instrucciones.  Algunas instrucciones son estructuras de control que pueden contener otras secuencias de instrucciones que se ejecuten de manera condicional o reiterada.
 
-2.  A partir de una o más instrucciones `i`~1~, `i`~2~, …, `i`~n~, se puede formar una secuencia de instrucciones `i`~1~ `i`~2~ … `i`~n~ simplemente escribiéndolas en secuencia.
+2.  A partir de cero o más instrucciones `i`~1~, `i`~2~, …, `i`~n~, se puede formar una secuencia de instrucciones `i`~1~ `i`~2~ … `i`~n~ simplemente escribiéndolas en secuencia.
 
-3.  A partir de una expresión `e` de cualquier tipo, se puede formar la instrucción `e;`.  La ejecución de esta instrucción procede con la evaluación de `e` y descarta su valor.
+3.  La ejecución de una secuencia de instrucciones vacía no tiene efectos.  La ejecución de una secuencia de instrucciones no vacía procede con la ejecución de cada una de las instrucciones de la secuencia en el orden en el cual ocurren.  La ejecución de cada instrucción de una secuencia debe completarse antes del inicio de la ejecución de aquellas instrucciones que le siguen en la secuencia.
+
+4.  A partir de una expresión `e` de cualquier tipo, se puede formar la instrucción `e;`.  La ejecución de esta instrucción procede con la evaluación de `e` y descarta su valor.
 
 
 ### Impresión
 
-1.  A partir de expresiones `e`~1~, `e`~2~. …, `e`~n~ de tipos cualesquiera, o literales de cadena de caracteres, se puede formar la instrucción `print e`~1~`, e`~2~` … e`~n~`;`.  La ejecución de esta instrucción procede con la evaluación de `e`~1~, `e`~2~ … `e`~n~ en el orden de aparición, exceptuando aquellas que no sean expresiones sino literales de cadena de caracteres,  y al todas haber producido sus valores, se escribe a la salida estándar del programa una representación textual de los valores obtenidos, o el texto representado por los literales de cadena de caracteres, en el mismo orden de aparición.  El lexema `print` es una palabra reservada.
+1.  A partir de una o más expresiones `e`~1~, `e`~2~. …, `e`~n~ de tipos cualesquiera, o literales de cadena de caracteres, se puede formar la instrucción de impresión `print e`~1~`, e`~2~` … e`~n~`;`.  La ejecución de esta instrucción procede con la evaluación de `e`~1~, `e`~2~ … `e`~n~ en el orden de aparición, exceptuando aquellas que no sean expresiones sino literales de cadena de caracteres,  y al todas haber producido sus valores, se escribe a la salida estándar del programa una representación textual de los valores obtenidos, o el texto representado por los literales de cadena de caracteres, en el mismo orden de aparición.  El lexema `print` es una palabra reservada.
 
     Por ejemplo,
 
@@ -327,7 +375,7 @@
 
 1.  *Trinity* utiliza alcance estático y requiere que las variables sean declaradas con sus tipos antes de poder usarse o asignarse.  Esta sección define con precisión el funcionamiento del alcance de las variables en el lenguaje.
 
-2.  Un identificador es una secuencia de caracteres no vacía compuesta por letras de la `A` hasta la `Z` (minúscula o mayúscula), los dígitos del `0` al `9` y el caracter *underscore* (`_`).  Los identificadores deben comenzar por letras, no pueden comenzar ni por dígitos ni por `_`, y son sensibles a mayúsculas; por ejemplo, el identificador `foo` es distinto del identificador `fOo`.  Además de estas restricciones, aquellas secuencias de caracteres que sean palabras reservadas no son identificadores.
+2.  Un identificador es una secuencia de uno o más caracteres compuesta por letras de la `A` hasta la `Z` (minúscula o mayúscula), los dígitos del `0` al `9` y el caracter *underscore* (`_`).  Los identificadores deben comenzar por letras, no pueden comenzar ni por dígitos ni por `_`, y son sensibles a mayúsculas; por ejemplo, el identificador `foo` es distinto del identificador `fOo`.  Además de estas restricciones, aquellas secuencias de caracteres que sean palabras reservadas no son identificadores.
 
     Por ejemplo, `print` y `not` no son identificadores, porque son palabras reservadas, pero `pRint` sí es un identificador.
 
@@ -335,7 +383,7 @@
 
 4.  Una variable es una ubicación de memoria modificable que hace referencia a un valor.  Pueden hacerse disponibles variables en las instrucciones contenidas directa o indirectamente en una secuencia de instrucciones particular, así como en las expresiones que éstas contengan.  Para hacerlo, la secuencia de instrucciones se incluye en una instrucción de bloque que declare esa variable y la asocie a un nombre.  Las instrucciones incluidas en ese bloque, y las expresiones que contengan, podrán referirse a la variable a través del nombre que se le asoció en el bloque donde fue declarada.
 
-5.  A partir de un identificador `i`, una especificación de tipo `t` y una expresión `e` del tipo especificado por `t`, se puede formar una declaración de variable `t i;` o una declaración de variable con inicialización `t i = e;`.  A partir de una o más declaraciones `d`~1~, `d`~2~, …, `d`~n~ donde no se declare el mismo identificador en más de una declaración, se puede formar una secuencia de declaraciones `d`~1~ `d`~2~ … `d`~n~ simplemente escribiéndolas en secuencia.
+5.  A partir de un identificador `i`, una especificación de tipo `t` y una expresión `e` del tipo especificado por `t`, se puede formar una declaración de variable `t i;` o una declaración de variable con inicialización `t i = e;`.  A partir de cero o más declaraciones `d`~1~, `d`~2~, …, `d`~n~ donde no se declare el mismo identificador en más de una declaración, se puede formar una secuencia de declaraciones `d`~1~ `d`~2~ … `d`~n~ simplemente escribiéndolas en secuencia.
 
     Por ejemplo,
 
@@ -358,6 +406,8 @@
         in
           print tau, m[2, 1]
         end;
+
+    Los lexemas `use`, `in` y `end` son palabras reservadas.
 
 7.  La secuencia de declaraciones en cada instrucción de bloque produce un contexto en el cual cada declaración hace disponible una variable del tipo de la declaración que se asocia al identificador de la declaración.  Ese contexto se extiende sobre todas las instrucciones y expresiones contenidas directa o indirectamente en la secuencia de instrucciones de la instrucción de bloque.  Si el alcance de un contexto de declaración ocurre dentro del alcance de otro, entonces en el alcance del contexto interior, la asociación de la declaración del contexto interior sustituye a la asociación de la declaración del contexto exterior si usa el mismo identificador.
 
@@ -493,7 +543,7 @@
 
     a pesar de que la condición del ciclo no está sintacticamente después de la asignación, sigue estando la condición dentro de la extensión del contexto establecido por la declaración, así que la asociación del valor computado de `false & true` (que es igual al de `false`) aplica para la condición del ciclo, por lo cual el cuerpo del ciclo solo es ejecutado una vez.
 
-4.  Las declaraciones de variable con inicialización se comportan como asignaciones: ejecutar la instrucción donde ocurren ejecuta una asignación implícita al identificador de la declaración con la expresión dada en la inicialización.  Si hay varias declaraciones en una secuencia, las asignaciones de inicialización se ejecutan en el mismo orden en que ocurren en la secuencia.
+4.  Las declaraciones de variable con inicialización se comportan como asignaciones: ejecutar la instrucción donde ocurren ejecuta una asignación implícita al identificador de la declaración con la expresión dada en la inicialización.  Las asignaciones de inicialización se ejecutan en el mismo orden en que ocurren en la secuencia.
 
     Por ejemplo, en
 
@@ -508,7 +558,7 @@
           end;
         end;
 
-    el programa aborta antes de imprimir, ya que se ejecuta la asignación `set r = q[p] == 0`, lo cual evalúa la expresión `q[p] == 0`, que comienza por evaluar `q[r]`, pero `p` está asociada al valor de la expresión `42`, que sobrepasa los límites de la cantidad matricial de la cual se desea obtener un elemento..
+    el programa aborta antes de imprimir, ya que se ejecuta la asignación `set r = q[p] == 0`, lo cual evalúa la expresión `q[p] == 0`, que comienza por evaluar `q[p]`, pero `p` está asociada al valor de la expresión `42`, que sobrepasa los límites de la cantidad matricial de la cual se desea obtener un elemento.
 
 5.  Las declaraciones de variable sin inicialización se comportan como declaraciones de variable con inicialización donde la expresión de inicialización es un literal del tipo apropiado con valores por defecto.  La inicialización por defecto para el tipo booleano es con el literal `false`, para el tipo numérico es con el literal `0`, y para tipos matriciales, es un literal matricial de las dimensiones adecuadas al tipo y con `0` en todas las componentes.
 
@@ -524,7 +574,7 @@
 
     el programa imprime `false`, `0`, y un representación textual de una matriz 3×2 llena de ceros.
 
-6.  La ejecución de una instrucción de uso de variable con el identificador `i` produce como valor el último valor que se asociara a `i` en una instrucción de asignación, sea implícita o explícita, y no tiene otros efectos.
+6.  La evaluación de una expresión de uso de variable con el identificador `i` produce como valor el último valor que se asociara a `i` en una instrucción de asignación en el mismo contexto más interior en ese punto que la declare, sea esa asignación implícita o explícita, y no tiene otros efectos.
 
     Por ejemplo, en
 
@@ -538,9 +588,32 @@
 
     el programa imprime `0` (porque al momento de la primera impresión, la última instrucción de asignación ejecutada fue la asignación implícita `set n = 0;` en la declaración sin inicialización `number n;`, y *luego* de la asignación explícita `set n = 42;`, el programa imprime `42`.
 
-7.  A partir de un identificador `m`, dos expresiones `i` y `j` del tipo numérico, y una expresión `e` del tipo `t`, puede utilizarse la instrucción de asignación matricial `set m[i, j] = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `m` con el tipo especificado por `matrix(n, m)`.
+    En cambio, en
 
-    Por ejemplo,
+        use
+          number n;
+        in
+        set x = 27;
+          use
+            number n;
+          in
+            set x = 42;
+            use
+              number n;
+            in
+              set n = 54;
+            end;
+            print n;
+          end;
+        end;
+
+    el programa imprime `42` a pesar de que en el punto de ocurrencia del uso de variable con el identificador `n`, la última instrucción de asignación ejecutada le asoció el valor `54` — esa asignación, sin embargo, no es relevante para ese uso de variable, ya que el contexto más interior en esa asignación es distinto del contexto más interior en el uso de variable.
+
+7.  A partir de un identificador `m`, dos expresiones `i` y `j` del tipo numérico, y una expresión `e` del tipo numérico, puede utilizarse la instrucción de asignación matricial `set m[i, j] = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `m` con el tipo especificado por `matrix(r, c)`.
+
+8.  A partir de un identificador `v`, una expresión `i` del tipo numérico, y una expresión `e` del tipo numérico, puede formarse la instrucción de asignación vectorial `set v[i] = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `m` con el tipo especificado por `row(c)` o `col(r)`, y es equivalente a la instrucción de asignación matricial `set v[1, i] = e;` o `set v[i, 1] = e;`, respectivamente.
+
+9.  Por ejemplo,
 
         use
           number n;
@@ -548,7 +621,7 @@
           set n[1] = 2;
         end;
 
-    es un programa mal formado, porque el identificador `n` se asocia con el tipo numérico en el contexto establecido por la declaración `number n;`, pero el tipo numérico no es especificado por una especificación de tipo de la forma `matrix(n, m)` —es decir, no es una variable matricial— así que no puede utilizarse en una instrucción de asignación matricial en la extensión de ese contexto.
+    es un programa mal formado, porque el identificador `n` se asocia con el tipo numérico en el contexto establecido por la declaración `number n;`, pero el tipo numérico no es especificado por una especificación de tipo de la forma `matrix(r, c)` —es decir, no es una variable matricial— así que no puede utilizarse en una instrucción de asignación matricial en la extensión de ese contexto.
 
     En cambio,
 
@@ -560,21 +633,21 @@
 
     sí es un programa bien formado.
 
-8.  La ejecución de `set m[i, j] = e` sigue los siguientes pasos:
+10. La ejecución de `set m[i, j] = e` sigue los siguientes pasos:
 
-    2.  Se procede con la evaluación de `i`.
+    1.  Se procede con la evaluación de `i`.
 
-    3.  Una vez terminada y producido su valor, se verifica si ese valor es un entero entre 1 y el número de filas del tipo asociado al identificador `m`.
+    2.  Una vez terminada y producido su valor, se verifica si ese valor es un entero entre 1 y el número de filas del tipo asociado al identificador `m`.
 
-    4.  Si esta condición no se cumple, la ejecución del programa abortará.  Si la condición sí se cumple, se procede con la evaluación de `j`.
+    3.  Si esta condición no se cumple, la ejecución del programa abortará.  Si la condición sí se cumple, se procede con la evaluación de `j`.
 
-    6.  Una vez terminada y producido su valor, se verifica si ese valor es un entero entre 1 y el número de columnas del tipo asociado al identificador `m`.
+    4.  Una vez terminada y producido su valor, se verifica si ese valor es un entero entre 1 y el número de columnas del tipo asociado al identificador `m`.
 
-    7.  Si esta condición no se cumple, la ejecución del programa abortará.  Si la condición sí se cumple, se procede con la evaluación de `e`.
+    5.  Si esta condición no se cumple, la ejecución del programa abortará.  Si la condición sí se cumple, se procede con la evaluación de `e`.
 
-    8.  Una vez terminada y producido su valor, se asocia al identificador `m` un valor igual al que tuviera asociado en el momento de la asignación, salvo por el valor en la componente en la fila y columna especificadas por los valores producidos en la evaluación de las expresiones `i` y `j`.  El valor de esa componente del valor nuevo asociado a `m` será el valor producido por la evaluación de la expresión `e`.
+    6.  Una vez terminada y producido su valor, se asocia al identificador `m` un valor igual al que tuviera asociado en el momento de la asignación, salvo por el valor en la componente en la fila y columna especificadas por los valores producidos en la evaluación de las expresiones `i` y `j`.  El valor de esa componente del valor nuevo asociado a `m` será el valor producido por la evaluación de la expresión `e`.
 
-9.  Por ejemplo, en
+11. Por ejemplo, en
 
         use
           matrix(2, 3) m = { 1, 2, 3 : 4, 5, 6 };
@@ -594,7 +667,7 @@
         |  1  2  3 |
         |  4  5 42 |
 
-10. Esta definición de asignación tiene como consecuencia que *Trinity* utiliza el modelo de valor.  Por ejemplo, en
+12. Esta definición de asignación tiene como consecuencia que *Trinity* utiliza el modelo de valor.  Por ejemplo, en
 
         use
           row(1) box1;
@@ -619,62 +692,153 @@
 
 2.  La conversión de datos de entrada a un valor del tipo booleano solo es exitosa si los datos de entrada son exactamente `false` o `true`, y el valor convertido es el de la expresión `false` o `true`, respectivamente.  La conversión de datos de entrada a un valor del tipo numérico solo es exitosa si los datos de entrada tienen el formato exacto de un literal numérico de *Trinity*, y el valor convertido es el que ese literal numérico denota en *Trinity*.
 
-3.  Si la conversión de los datos de entrada no es exitosa, la instrucción de lectura de entrada produce un mensaje de error en la salida estándar del programa y aborta su ejecución.
+3.  Si la conversión de los datos de entrada no es exitosa, la ejecución del programa abortará.
 
 <!-- TODO: ejemplo -->
 
 
 ### Instrucciones condicionales
 
-<!-- TODO: formalizar -->
+1.  A partir de una expresión `e` del tipo booleano, y dos secuencias de instrucciones `ts` y `fs`, se puede formar una instrucción condicional `if e then ts else fs end;`.  La ejecución de esta instrucción procede con la evaluación de la expresión `e`, y al producir su valor, si es el de la expresión `true` o `false`, se procede a ejecutar la secuencia de instrucciones `ts` o `fs`, respectivamente.
 
-    if <condición> then <instrucciones> else <instrucciones> end;
+2.  A partir de una expresión `e` del tipo booleano, y una secuencia de instrucciones `ts`, se puede formar una instrucción condicional incompleta `if e then ts end;`.  Esta instrucción es equivalente a `if e then ts else end;`.
 
-    if <condición> then <instrucciones> end;
-
-La condición debe ser una expresión de tipo booleano, de lo contrario debe arrojarse un error.
-
-Ejecutar está instrucción tiene el efecto de evaluar la condición y si su valor es `true` se ejecuta la `<instrucción 1>`; si su valor es `false` se ejecuta la `<instrucción 2>`. Es posible omitir la palabra clave `else` y la `<instrucción 2>` asociada, de manera que si la expresión vale `false` no se ejecuta ninguna instrucción.
+<!-- TODO: ejemplo -->
 
 
-### Iteración determinada
+### Iteración
 
-<!-- TODO: formalizar -->
+1.  A partir de una expresión `e` del tipo booleano, y una secuencia de instrucciones `is`, se puede formar una instrucción de iteración indeterminada `while e do is end;`.  Esta instrucción es equivalente a
 
-    for <identificador> in <vector/matrix> do <instrucciones> end;
+    if e then
+      is
+      while e do is end;
+    end;
 
-Para ejecutar esta instrucción se evalúa la expresión `<vector/matrix>` que puede ser tanto una vector como una matriz, su tipo debe ser matricial, y a la variable `<identificador>` se le asigna cada valor dentro de la matriz, avanzando de izquierda a derecha y de arriba hacia abajo. Para cada valor de `<identificador>` se ejecuta `<instrucción>`. Note que cambiar el valor de la variable `<identificador>` **no cambiará el valor** de la posición representada por éste de la matriz.
+    Los lexemas `while` y `do` son palabras reservadas.
 
-La instrucción declara automáticamente una variable llamada `<identificador>` de tipo numérico y local al cuerpo de la iteración.
+2.  A partir de una expresión `e` del tipo especificado por `matrix(r, c)`, un identificador `i` y una secuencia de instrucciones `is`, se puede formar una instrucción de iteración determinada `for i in e do is end;`.  Esta instrucción es equivalente a
 
+        use matrix(r, c) fresh_m = e; in
+          use number fresh_r = 1; in
+            while fresh_r <= r do
+              use number fresh_c = 1; in
+                while fresh_c <= r do
+                  use
+                    number i = m[fresh_r, fresh_c];
+                  in
+                    is
+                  end;
+                  fresh_c = fresh_c + 1;
+                end;
+              end;
+            end;
+            fresh_r = fresh_r + 1;
+          end;
+        end;
 
-### Iteración indeterminada
+    donde `fresh_m`, `fresh_r` y `fresh_c` son tres identificadores cualesquiera que no ocurran en `is`.  El lexema `for` es una palabra reservada.
 
-<!-- TODO: formalizar -->
+<!-- Nota:
 
-    while <condición> do <instrucciones> end;
+Preferiría haber especificado esto con una definición similar a la que tenía la versión original de la especificación,
 
-La condición debe ser una expresión de tipo booleano. Para ejecutar la `<instrucción>` se evalúa la `<condición>`, si es igual a `false` termina la iteración; si es `true` se ejecuta la `<instrucción>` del cuerpo y se repite el proceso.
+> Para ejecutar esta instrucción se evalúa la expresión `<vector/matrix>` que puede ser tanto una vector como una matriz, su tipo debe ser matricial, y a la variable `<identificador>` se le asigna cada valor dentro de la matriz, avanzando de izquierda a derecha y de arriba hacia abajo. Para cada valor de `<identificador>` se ejecuta `<instrucción>`. Note que cambiar el valor de la variable `<identificador>` **no cambiará el valor** de la posición representada por éste de la matriz.
+
+pero con el mismo nivel de precisión de, por ejemplo, la definición de la instrucción de impresión.  El problema es que sería larguísima y muy poco clara una definición de ese estilo con esa precisión — ya bastante confusa fue la de `use`.  Dar código en *Trinity* equivalente hace que sea mucho más fácil especificar lo que se requiere, y en realidad no sobreespecifica el comportamiento de la iteración determinada.
+
+Sin embargo, una especificación de esta forma podría sugerir una implantación basada en generar un fragmento de AST equivalente.  Eso no estaría *mal*, y de hecho es una práctica común en muchas implantaciones de lenguajes de programación, aunque no sé si es lo que queremos incentivar.  Lo dejo así por ahora porque de verdad no tengo ganas de escribir una docena de párrafos confusos acá que al final digan exactamente lo mismo en un formato mucho más difícil de entender, y no estoy convencido de que sería mejor.  Si les provoca y piensan que es buena idea, escríbanlo y me avisan.
+
+—Manuel -->
 
 
 ### Funciones
 
-    function <identificador>(<parámetros>) return <tipo> begin <instrucciones> end;
+1.  A partir de un identificador `i` y una especificación de tipo `t`, se puede formar una especificación de parámetro `t i`.  A partir de cero o más especificaciones de parámetros `p`~1~, `p`~2~, … `p`~n~ donde no se incluya el mismo identificador en más de una especificación de parámetro, se puede formar una secuencia de especificaciones de parámetros `p`~1~`,` `p`~2~`,` … `p`~n~ escribiéndolos en secuencia separados por comas.
 
-Las funciones en *Trinity* tienen un nombre, una lista de parámetros, un tipo de retorno y un cuerpo con una lista de instrucciones.  Los parámetros pueden usarse en el cuerpo como variables.  El pasaje de parámetros es por valor.  La instrucción de retorno `return e` puede usarse en el cuerpo de la función para retornar el valor de la expresión `e`.  La lista de parámetros es una secuencia de declaraciones.
+2.  A partir de un identificador `i`, una secuencia de especificaciones de parámetros `ps`, una especificacíon de tipo `t` y una secuencia de instrucciones `is`, se puede formar una especificación de función `function i(ps) return t begin is end;`.  Los lexemas `function`, `return` y `begin` son palabras reservadas.
 
-Las funciones pueden llamarse en una expresión de la forma `<identificador>(<argumentos>)`, donde `<argumentos>` es una lista de expresiones separadas por comas que sean de igual número y con los mismos tipos en el mismo orden que las declaraciones en la lista de parámetros de la función del mismo nombre.  Evaluar la expresión implica evaluar todos los argumentos en orden, asignar sus valores a los parámetros correspondientes, y ejecutar el cuerpo.  La última instrucción ejecutada en el cuerpo debe ser una instrucción de retorno, y el valor de la llamada a la función será el valor de la primera expresión de retorno que se ejecute del cuerpo de la función llamada.  La ejecución de una función no continúa luego de ejecutar una instrucción de retorno.
+3.  La secuencia de instrucciones de una especificación de función está implícitamente contenida en una instrucción de bloque `use ds in is`, donde `ds` es una secuencia de declaraciones construidas a partir de la secuencia de especificaciones de parámetros de la misma especificación de función, donde a cada especificación de parámetro corresponde, en el mismo orden, una declaración con la misma especificación de tipos y el mismo identificador.
 
-<!-- TODO: formalizar, ejemplos -->
+    Por ejemplo,
+
+        function foo(number bar, boolean baz)
+        return number
+        begin
+          if baz then
+            return 42 + bar;
+          end;
+          print baz;
+          return 27;
+        end;
+
+    es una especificación de función bien formada, ya que la secuencia de instrucciones
+
+        if baz then
+          return 42 + bar;
+        end;
+        print baz;
+        return 27;
+
+    implícitamente ocurre en la forma
+
+        use
+          number bar;
+          boolean baz;
+        in
+          if baz then
+            return 42 + bar;
+          end;
+          print baz;
+          return 27;
+        end;
+
+    así que los usos de `bar` como expresión del tipo numérico y `baz` como expresión del tipo booleano son válidos.
+
+4.  A partir de cero o más expresiones `e`~1~, `e`~2~, … `e`~n~, se puede formar una secuencia de argumentos `e`~1~`,` `e`~2~`,` … `e`~n~ escribiéndolas en secuencia separadas por comas.
+
+5.  Si en un programa ocurre una especificación de función con el identificador `f`, la secuencia de especificaciones de parámetros `ps`, la especificación de tipo `r` (llamada su especificación de tipo de retorno) y la secuencia de instrucciones `is`, se puede formar la expresión de llamada a función `f(as)` del tipo `r` a partir de una secuencia de argumentos `as` cuyas expresiones son de igual número y con tipos iguales a los de las especificaciones de parámetros en las posiciones respectivas de `ps`.
+
+    Por ejemplo, en un programa donde ocurra la especificación de función
+
+        function
+          scale(number s, row(3) r)
+          return row(3)
+        begin
+          return r .*. s;
+        end;
+
+    puede usarse
+
+        scale(10, {1, 2, 3})
+
+    como una expresión de tipo `row(3)` porque las expresiones `10` y `{1, 2, 3}` tienen los tipos especificados por `number` y `row(3)`, respectivamente, los cuales se ajustan al número de especificaciones de parámetros y a sus tipos respectivos en la especificación de función identificada por `scale`.
+
+    En cambio,
+
+        scale(true, {1, 2, 3})
+
+    no es una expresión bien formada, ya que la expresión `true` en la primera posición de la secuencia de argumentos no tiene el tipo especificado por `number`, que es la especificación de tipo en la especificación de parámetro correspondiente de la especificación de función identificada por `scale`.
+
+    Además,
+
+        scale(42)
+
+    no es una expresión bien formada, porque su secuencia de argumentos no tiene el mismo tamaño que la secuencia de especificaciones de parámetros de la especificación de función identificada por `scale`.
+
+6.  Dentro de la secuencia de instrucciones de una especificación de función con la especificación de tipo de retorno `t`, puede formarse la instrucción de retorno `return e` a partir de una expresión `e` del tipo `t`.
+
+7.  La evaluación de una expresión de llamada a función `f(as)` procede con la evaluación de cada expresión en la secuencia de argumentos en orden —la evaluación de una de las expresiones no comienza hasta que la evaluación de todas las anteriores en la secuencia de argumentos hayan producido sus valores—; una vez producidos valores por cada una, se procede a ejecutar una secuencia de asignaciones que asocian los valores obtenidos a cada variable implícita correspondiente a cada parámetro de la función; finalmente, se ejecuta la secuencia de instrucciones de la especificación de función identificada por `f`.
+
+8.  La ejecución de una instrucción de retorno procede con la evaluación de su expresión, y al ésta producir su valor, la expresión de llamada a función que hizo que se ejecutara esa secuencia de instrucciones produce el mismo valor.  La ejecución de la secuencia de instrucciones de una especificación de función termina inmediatamente al ejecutar una instrucción de retorno, sin ejecutar aquellas instrucciones que normalmente se ejecutarían luego de esa instrucción de retorno.  Si se ejecuta por completo la secuencia de instrucciones de una especificación de función sin que una instrucción de retorno terminara su ejecución antes de finalizar la ejecución de todas las instrucciones, la ejecución del programa abortará.
+
+<!-- TODO: ejemplos -->
 
 
 ### Estructura de un programa
 
-Un programa de *Trinity* tiene la siguiente estructura:
+1.  A partir de cero o más especificaciones de funciones `f`~1~, `f`~2~, …, `f`~n~ donde no se utilice el mismo identificador para más de una de las especificaciones de funciones, se puede formar una secuencia de especificaciones de funciones `f`~1~ `f`~2~ … `f`~n~ simplemente escribiéndolas en secuencia.
 
-    <funciones>
-    program
-      <instrucciones>;
-    end;
+2.  A partir de una secuencia de especificaciones de funciones `fs` y una secuencia de instrucciones `is`, se puede formar un programa de *Trinity* `fs program is end;`.  La ejecución de un programa consiste de la ejecución de la secuencia de instrucciones.  El lexema `program` es una palabra reservada.
 
-<!-- TODO: formalizar, ejemplos -->
+<!-- TODO: ejemplos -->
