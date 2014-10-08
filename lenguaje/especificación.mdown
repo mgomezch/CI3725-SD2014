@@ -1,6 +1,6 @@
 % Trinity
 % Especificación del lenguaje
-% Versión 3 — \today
+% Versión 4 — \today
 
 - - -
 
@@ -109,6 +109,12 @@
 13. Se corrigió un error de tipeo en el ejemplo de que una declaración con inicialización tiene implícita una asignación.
 
 14. Se especificó la instrucción de asignación vectorial, que ya se usaba en los ejemplos sin haberse definido.
+
+### Versión 4
+
+1.  El ejemplo en la §2.4.3 mostraba sintaxis inválida en declaraciones de la forma `number x, y;` y `boolean x, y;` que sugerían que era una construcción sintáctica válida en *Trinity* incluir múltiples nombres en una secuencia separada por comas en una misma declaración.  Esta sintaxis **no** es válida en *Trinity*, y el ejemplo fue corregido.
+
+2.  El ejemplo en la §2.4.3 mostraba sintaxis inválida en una declaración de la forma `bool x;` que sugería que era una construcción sintáctica válida en *Trinity* especificar el tipo booleano con la palabra clave `bool`.  Esta sintaxis **no** es válida en *Trinity*, `bool` **no** es una palabra reservada ni especifica un tipo, y el ejemplo fue corregido para usar la palabra reservada `boolean` que sí es correcta.
 
 
 
@@ -492,7 +498,8 @@
 
         program
           use
-            number x, y; # inicializados en 0
+            number x; # inicializado en 0
+            number y; # inicializado en 0
           in
             use
               row(3) x;
@@ -504,7 +511,8 @@
             end;
 
             use
-              boolean x, y;
+              boolean x; # inicializado en false
+              boolean y; # inicializado en false
             in
               set x = true;
               print "Print 2", x; # x es del tipo booleano
@@ -516,7 +524,7 @@
               { 1, 2, 3 : 4, 5, 6 }
             do
               use
-                bool x; # esconde la x declarada en el for y se inicializa en 'false'
+                boolean x; # esconde la x declarada en el for y se inicializa en 'false'
               in
                 set x = not x;
                 print "Print 4", x; # x es del tipo booleano
