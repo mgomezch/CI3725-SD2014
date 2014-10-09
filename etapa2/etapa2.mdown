@@ -1,6 +1,6 @@
 % Trinity
 % Analizador sintáctico
-% Versión 1 - \today
+% Versión 2 - \today
 
 - - -
 
@@ -15,6 +15,13 @@
 3.  La especificación del lenguaje de programación *Trinity* **no** es parte de este documento — la definición del lenguaje se encuentra en un documento separado.  Solo una parte de lo especificado en *ese* documento debe ser implantada para la entrega especificada en *este* documento.  La especificación del lenguaje está disponible en la página del curso.
 
 4.  Los requerimientos establecidos por este documento se dividen en dos secciones: los *requerimientos generales*, que aplican para el proyecto en general y en todas sus etapas, y los *requerimientos específicos*, que aplican únicamente para la etapa específica correspondiente a este documento.
+
+
+## Resumen de cambios
+
+### Versión 2
+
+1.  Se agregó la §3.16 con la nueva fecha de entrega para la segunda etapa del proyecto.
 
 
 # Requerimientos generales
@@ -147,3 +154,5 @@
 14. Tanto los nombres asociados a cada tipo de nodo del árbol de sintaxis abstracta, como la selección exacta de cuáles elementos sintácticos corresponden a nodos del árbol, como el formato exacto de salida para los nodos y los errores de sintaxis quedan a su criterio — se requiere únicamente que contengan al menos la información requerida e ilustrada en estos ejemplos.
 
 15. Para esta etapa del proyecto, **no** debe realizar análisis de tipos sobre el programa a analizar, ni verificar que las variables usadas estén correctamente declaradas, ni ningún otro análisis de contexto.  Tampoco debe realizar ningún tipo de ejecución de los programas a analizar.
+
+16. Se ha prorrogado la entrega de la segunda etapa.  Deberá enviar su entrega antes de la medianoche al final del domingo 2014-10-12 en hora legal de Venezuela.
