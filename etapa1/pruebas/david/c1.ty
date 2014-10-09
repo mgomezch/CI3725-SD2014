@@ -1,0 +1,29 @@
+program
+  use
+    matrix(-,_) m; # se inicializa todas en '0'
+    number x; # se inicializa en '0'
+    boolean b_varB1; # se inicializa en 'false'
+  in
+    set m = [ 1, 2
+            / 3, 4 ];
+
+    read x;$
+
+    for i in %% m do
+      if i @ 2 == 0 then
+        # si 'i' es par
+        print i;
+      else (((
+        print x;
+)))     read x;
+        set b = not b;
+      end;
+    end;
+
+    if b then
+      print &a;
+    else
+      print /*hola*/;
+    end;
+  end;
+end;

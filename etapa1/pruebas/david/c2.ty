@@ -1,0 +1,23 @@
+begin
+  in
+    this
+      if
+        i
+          do
+            lexer
+              # $say *hi
+            end
+            ^
+          end
+            ^
+        end
+         |
+      end
+<-
+    end
+                        ->
+  end
+  ~~~@
+end
+
+:P
