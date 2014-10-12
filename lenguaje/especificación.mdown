@@ -1,6 +1,6 @@
 % Trinity
 % Especificación del lenguaje
-% Versión 4 — \today
+% Versión 5 — \today
 
 - - -
 
@@ -74,11 +74,14 @@
         end;
 
 
+
 ## Resumen de cambios
+
 
 ### Versión 2
 
 1.  Se agregaron algunos ejemplos de programas.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
 
 ### Versión 3
 
@@ -110,11 +113,23 @@
 
 14. Se especificó la instrucción de asignación vectorial, que ya se usaba en los ejemplos sin haberse definido.
 
+
 ### Versión 4
 
 1.  El ejemplo en la §2.4.3 mostraba sintaxis inválida en declaraciones de la forma `number x, y;` y `boolean x, y;` que sugerían que era una construcción sintáctica válida en *Trinity* incluir múltiples nombres en una secuencia separada por comas en una misma declaración.  Esta sintaxis **no** es válida en *Trinity*, y el ejemplo fue corregido.
 
 2.  El ejemplo en la §2.4.3 mostraba sintaxis inválida en una declaración de la forma `bool x;` que sugería que era una construcción sintáctica válida en *Trinity* especificar el tipo booleano con la palabra clave `bool`.  Esta sintaxis **no** es válida en *Trinity*, `bool` **no** es una palabra reservada ni especifica un tipo, y el ejemplo fue corregido para usar la palabra reservada `boolean` que sí es correcta.
+
+
+### Versión 5
+
+1.  Se modificó la §2.3.2.6 para aclarar que la precedencia de los operadores sufijos es la misma.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+2.  Se especificó que los operadores unarios son asociativos en la §2.3.1.1, la §2.3.2.2, la §2.3.2.6 y la §2.3.4.1.
+
+3.  Se modificó la §2.3.1.2 y la §2.3.1.5 para especificar que los operadores de comparación tienen menor precedencia que el operador `not` y mayor precedencia que el operador `&`.
+
+4.  Se especificó en la §2.3.3.3 que los operadores cruzados tienen la misma precedencia y asociatividad que sus operadores escalares correspondientes.
 
 
 
@@ -179,7 +194,7 @@
 
 ### Operadores lógicos
 
-1.  A partir de una expresión `e` del tipo booleano, se puede formar la expresión `not e` del tipo booleano, cuyo valor será el contrario del valor de `e`.  La evaluación de `not e` es estricta.  El lexema `not` es una palabra reservada.
+1.  A partir de una expresión `e` del tipo booleano, se puede formar la expresión `not e` del tipo booleano, cuyo valor será el contrario del valor de `e`.  El operador `not` es asociativo.  La evaluación de `not e` es estricta.  El lexema `not` es una palabra reservada.
 
     Por ejemplo,
 
@@ -187,7 +202,7 @@
 
     es una expresión del tipo booleano y tiene el mismo valor que la expresión `false`.
 
-2.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo booleano, se pueden formar las expresiones `e`~1~ `&` `e`~2~ y `e`~1~ `|` `e`~2~, ambas del tipo booleano, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e`~1~ y `e`~2~.  Ambos operadores tienen asociatividad izquierda y tienen menor precedencia que el operador `not`.  El operador `&` tiene mayor precedencia que el operador `|`.
+2.  A partir de dos expresiones `e`~1~ y `e`~2~ del tipo booleano, se pueden formar las expresiones `e`~1~ `&` `e`~2~ y `e`~1~ `|` `e`~2~, ambas del tipo booleano, cuyos valores serán, respectivamente, la conjunción y la disyunción de los valores de `e`~1~ y `e`~2~.  Ambos operadores tienen asociatividad izquierda, y el operador `&` tiene mayor precedencia que el operador `|`.
 
     Por ejemplo, la expresión
 
@@ -203,7 +218,7 @@
 
 4.  La evaluación de `e`~1~ `|` `e`~2~ procede con la evaluación de `e`~1~, y si ésta produce el valor `true`, la evaluación de `e`~1~ `|` `e`~2~ produce `true` de inmediato, sin evaluar `e`~2~; si, en cambio, la evaluación de `e`~1~ produce el valor `false`, entonces se evalúa `e`~2~ y la evaluación de `e`~1~ `|` `e`~2~ produce finalmente el valor que produce la evaluación de `e`~2~.
 
-5.  A partir de dos expresiones `e`~1~ y `e`~2~ del mismo tipo cualquiera[^homoeq], se pueden formar las expresiones `e`~1~ `==` `e`~2~ y `e`~1~ `/=` `e`~2~, ambas del tipo booleano, cuyos valores serán, respectivamente, `true` y `false` si los valores de `e`~1~ y `e`~2~ son iguales. Ninguno de los dos operadores es asociativo y ambos tienen igual precedencia.
+5.  A partir de dos expresiones `e`~1~ y `e`~2~ del mismo tipo cualquiera[^homoeq], se pueden formar las expresiones `e`~1~ `==` `e`~2~ y `e`~1~ `/=` `e`~2~, ambas del tipo booleano, cuyos valores serán, respectivamente, `true` y `false` si los valores de `e`~1~ y `e`~2~ son iguales. Ninguno de los dos operadores es asociativo y ambos tienen igual precedencia.  Los operadores `==` y `/=` tienen menor precedencia que el operador `not` y mayor precedencia que el operador `&`.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -234,7 +249,7 @@
 
         { 1, 2 } + { 2, 1 } == { 3, 3 }
 
-2.  A partir de una expresión `e` de un tipo aritmético, se puede formar la expresión `- e` del mismo tipo, cuyo valor será el inverso aditivo de `e`.  Por ejemplo, `- (3 * (- 3)) == 9`.  La evaluación de `- e` es estricta.
+2.  A partir de una expresión `e` de un tipo aritmético, se puede formar la expresión `- e` del mismo tipo, cuyo valor será el inverso aditivo de `e`.  Este operador es asociativo.  La evaluación de `- e` es estricta.  Por ejemplo, `-3 + 3 == 0`.
 
 3.  A partir de expresiones `e`~1~ del tipo especificado por `matrix(r, c)` y `e`~2~ del tipo especificado por `matrix(r, p)`, se puede formar la expresión `e`~1~ `*` `e`~2~ del tipo especificado por `matrix(c, p)`, cuyo valor se calculará como el producto matricial de los valores de `e`~1~ y `e`~2~.  Por otra parte, a partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se puede formar la expresión `e`~1~ `*` `e`~2~ del tipo numérico, cuyo valor será el producto (escalar) de los valores de `e`~1~ y `e`~2~.  El operador `*` tiene asociatividad izquierda y mayor precedencia que los operadores `+` y `-`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
@@ -260,7 +275,7 @@
 
         10.2 mod 2 == 0
 
-6.  A partir de una expresión `e` del tipo especificado `matrix(r, c)`, se puede formar la expresión `e'` del tipo especificado por `matrix(c, r)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene mayor precedencia que el operador `*`.  La evaluación de estas expresiones es estricta.
+6.  A partir de una expresión `e` del tipo especificado `matrix(r, c)`, se puede formar la expresión `e'` del tipo especificado por `matrix(c, r)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene la máxima precedencia y es asociativo.  La evaluación de estas expresiones es estricta.
 
     Por ejemplo,
 
@@ -279,7 +294,7 @@
 
 2.  Cada operador binario entre cantidades escalares que resulte en otra cantidad escalar tiene un operador cruzado correspondiente.  Los operadores cruzados `.+.`, `.-.`, `.*.`, `./.`, `.%.`, `.div.` y `.mod.` corresponden a los operadores escalares `+`, `-`, `*`, `/`, `%`, `div` y `mod`, respectivamente.
 
-3.  A partir de expresiones `e`~1~ del tipo numérico y `e`~2~ de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e`~1~ `.op.` `e`~2~ y `e`~2~ `.op.` `e`~1~ del mismo tipo de `e`~2~, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `x`~uv~ de `e`~2~ por `e`~i~ `op` `x`~uv~ o `x`~uv~ `op` `e`~i~, respectivamente, donde `op` es el operador escalar correspondiente a `.op.`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+3.  A partir de expresiones `e`~1~ del tipo numérico y `e`~2~ de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e`~1~ `.op.` `e`~2~ y `e`~2~ `.op.` `e`~1~ del mismo tipo de `e`~2~, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `x`~uv~ de `e`~2~ por `e`~i~ `op` `x`~uv~ o `x`~uv~ `op` `e`~i~, respectivamente, donde `op` es el operador escalar correspondiente a `.op.`.  Las precedencias y asociatividades de los operadores cruzados son iguales a las de los operadores escalares correspondientes.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
 4.  Por ejemplo,
 
@@ -300,7 +315,7 @@
 
 ### Proyección de componentes
 
-1.  A partir de una expresión `e` del tipo especificado por `matrix(r, c)`, y dos expresiones `i` y `j` del tipo numérico, se puede formar la expresión `e[i, j]` del tipo numérico, cuyo valor será la componente del valor de `e` en la fila cuyo índice sea el valor de la expresión `i`, y en la columna cuyo índice sea el valor de la expresión `j`.  Esta operación tiene la máxima precedencia.
+1.  A partir de una expresión `e` del tipo especificado por `matrix(r, c)`, y dos expresiones `i` y `j` del tipo numérico, se puede formar la expresión `e[i, j]` del tipo numérico, cuyo valor será la componente del valor de `e` en la fila cuyo índice sea el valor de la expresión `i`, y en la columna cuyo índice sea el valor de la expresión `j`.  Esta operación tiene la máxima precedencia y es asociativa.
 
 2.  La evaluación de `e[i, j]` sigue los siguientes pasos:
 
