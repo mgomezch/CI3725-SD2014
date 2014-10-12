@@ -1,0 +1,158 @@
+> Es posible tener una matriz vacia ? matrix(0,0)  o  { }
+
+No.
+
+Especificación del lenguaje, §2.2.4:
+
+> Las cantidades matriciales de `r` filas y `c` columnas corresponden
+> al tipo especificado por `matrix(r, c)`, donde `r` y `c` son literales
+> numéricos enteros y positivos.
+
+Especificación del lenguaje, §2.2.6:
+
+> Un literal matricial es una secuencia de una o más filas […] siendo
+> cada fila una secuencia de una o más expresiones […]
+
+Por lo tanto, los literales matriciales deben incluir al menos una fila con al menos una columna, y los tipos matriciales deben tener dimensiones mayores que cero.
+
+
+
+---
+
+
+
+> Es posible siendo a una variable de tipo matrix(n,m) hacer  -a? siendo esto
+> la matriz con valores negativos a la original.
+
+Sí.
+
+Especificación del lenguaje, §2.2.7:
+
+> Los tipos de las cantidades escalares y matriciales se denominan
+> *tipos aritméticos*.
+
+Especificación del lenguaje, §2.3.2.2:
+
+> A partir de una expresión `e` de un tipo aritmético, se puede formar la
+> expresión `- e` del mismo tipo, cuyo valor será el inverso aditivo de `e`.
+
+En efecto, el inverso aditivo de una matriz es la matriz con todos los valores de la original con el signo contrario.
+
+
+
+---
+
+
+
+> Tenemos una duda respecto a la gramatica, es mejor idea hacer una gramatica
+> especifica en la que por lo menos, tenga expresiones booleanas,expresiones
+> matriciales, expresiones numericas, o tener simplemente expresiones? y en
+> los proyectos posteriores hacer el analisis de tipos. Pq en tener solo
+> expresiones puedes englobar mas cosas facilmente pero tipificar las
+> expresiones nos ahorra hacer ciertos chequeos mas adelante.El problema de
+> hacer tipos de expresiones en la gramatica, es que no sabemos el tipo que
+> puede tener un identificador entonces eso crea ambiguedad.
+
+Es imposible resolver esa ambigüedad dentro de la gramática, ya que la información de si un identificador está en alcance, y a cuál tipo está asociado si está en alcance, depende del contexto en el cual el identificador ocurre, pero el análisis lexicográfico para gramáticas libres de contexto no dispone de esa información.
+
+En efecto, la §3.15 del enunciado de la segunda etapa dice:
+
+> Para esta etapa del proyecto, no debe realizar análisis de tipos sobre
+> el programa a analizar, ni verificar que las variables usadas estén
+> correctamente declaradas, ni ningún otro análisis de contexto.
+
+Por lo tanto, es **necesario** que no haya distinción en la gramática entre expresiones de cada tipo.  
+
+
+
+---
+
+
+
+> Puede haber una expresion dentro de una matriz? de ser asi, esto implica que
+> puede haber una matriz de expresiones booleanas, y en tal caso como
+> funcionarian los operadores aplicables a matrices?
+
+Especificación del lenguaje, §2.2.2:
+
+> Las cantidades escalares en *Trinity* corresponden al tipo numérico,
+> cuya especificación de tipo es `number` […]
+
+Especificación del lenguaje, §2.2.4:
+
+> Las cantidades matriciales en *Trinity* son arreglos bidimensionales,
+> rectangulares, discretos y finitos de cantidades escalares.
+
+Especificación del lenguaje, §
+
+> Un literal matricial es una secuencia de una o más filas […], siendo
+> cada fila una secuencia de una o más expresiones, […] cada una
+> de las cuales debe tener el tipo numérico.  Los literales matriciales
+> son expresiones que denotan cantidades matriciales […]
+
+Por lo tanto, las matrices contienen únicamente valores numéricos escalares, y no puede haber una matriz de expresiones booleanas en *Trinity*.
+
+Por otra parte, los literales matriciales, que son una manera de formar expresiones que **denotan** valores matriciales, incluyen expresiones, y las expresiones correspondientes a cada componente de la matriz deben todas tener el tipo numérico.  En efecto, el segundo ejemplo en la §2.3.3.4 muestra un literal matricial con expresiones que no son sencillamente literales numéricos en sus componentes, al igual que el ejemplo en la §2.4.2.6.
+
+
+
+---
+
+
+
+> Es posible declarar variables fuera del use?Suena a que no pero realmente no
+> lo dice.
+
+No exactamente.
+
+Especificación del lenguaje, §2.4.2.4:
+
+> Una variable es una ubicación de memoria modificable que hace
+> referencia a un valor.  Pueden hacerse disponibles variables en
+> las instrucciones contenidas directa o indirectamente en una
+> secuencia de instrucciones particular, así como en las expresiones
+> que éstas contengan.  Para hacerlo, la secuencia de instrucciones
+> se incluye en una instrucción de bloque que declare esa variable y
+> la asocie a un nombre.  Las instrucciones incluidas en ese bloque,
+> y las expresiones que contengan, podrán referirse a la variable a
+> través del nombre que se le asoció en el bloque donde fue
+> declarada.
+
+Especificación del lenguaje, §2.4.7.3:
+
+> La secuencia de instrucciones de una especificación de función
+> está implícitamente contenida en una instrucción de bloque
+> `use ds in is`, donde `ds` es una secuencia de declaraciones
+> construidas a partir de la secuencia de especificaciones de
+> parámetros de la misma especificación de función, donde a cada
+> especificación de parámetro corresponde, en el mismo orden,
+> una declaración con la misma especificación de tipos y el mismo
+> identificador.
+
+Las instrucciones de bloque y las declaraciones —que únicamente ocurren dentro de ellas— son el único mecanismo de *Trinity* para usar variables.  Sin embargo, el cuerpo de una función implícitamente ocurre en una instrucción de bloque con declaraciones correspondientes a cada especificación de parámetro de la función.  Estos son los dos únicos mecanismos que asocian nombres a variables en *Trinity*.
+
+> Como es posible hacer que la gramatica conecte el else, con el if mas
+> cercano? siendo esta la manera de trabajar de C, Pascal. Ya que otra
+> solucion para el problema de la ambiguedad en los if seria dar prioridad a
+> los shift sobre los reduce, pero no se como se hace esto en PLY.O es acaso
+> un problema de gramatica?
+
+En una instrucción condicional anidada en algunos lenguajes, como
+
+    if c1 then if c2 then x1; else x2;
+
+la ambigüedad usual ocurre entre las siguientes dos interpretaciones:
+
+    if c1 then (if c2 then x1; else x2);
+
+    if c1 then (if c2 then x1); else x2;
+
+La primera es la solución correspondiente a que el `else` se asocie con el `if` más cercano.
+
+En *Trinity* esto no es un problema, ya que las instrucciones condicionales de *Trinity* no tienen la sintaxis mostrada en el ejemplo previo — los equivalentes en *Trinity* serían de la forma
+
+    if c1 then if c2 then x1 else x2 end; end;
+
+    if c1 then if c2 then x1 end; else x2 end;
+
+El lexema `end` es obligatorio en las instrucciones condicionales de *Trinity* (§2.4.5).
