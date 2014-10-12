@@ -24,7 +24,7 @@ $alpha = [$small $large]
 $idchar = [$alpha $digit]
 
 -- Alex won't work if we write it directly in the @inside_string
-$backslash = ["\\abfnrtv]
+$backslash = ["\\n]
 
 @inside_string  = ($printable # ["\\] | \\$backslash)
 
@@ -45,6 +45,7 @@ tokens :-
         "#".*           ;
 
         -- Language
+        "function"      { lex' TkFunction        }
         "program"       { lex' TkProgram         }
         ";"             { lex' TkSemicolon       }
         ","             { lex' TkComma           }
@@ -73,7 +74,6 @@ tokens :-
         -- Statements
         -- -- Declarations
         "set"           { lex' TkSet             }
-        "="             { lex' TkAssign          }
 
         -- -- In/Out
         "read"          { lex' TkRead            }
@@ -93,8 +93,8 @@ tokens :-
         -- Expressions/Operators
         -- -- Literals
         @number         { lex  (TkFloat . read)  }
-        "true"          { lex' (TkBool True)     }
-        "false"         { lex' (TkBool False)    }
+        "false"         { lex' TkFalse           }
+        "true"          { lex' TkTrue            }
         -- -- -- Filtering newlines
         @string         { lex  (TkString . dropQuotationMarks 1 1 . filterBackSlash) }
 
@@ -106,6 +106,7 @@ tokens :-
         "%"             { lex' TkModulo          }
         "div"           { lex' TkIntDivide       }
         "mod"           { lex' TkIntModulo       }
+        "'"             { lex' TkTranspose       }
 
         ".+."           { lex' TkDottedPlus      }
         ".-."           { lex' TkDottedMinus     }
@@ -123,10 +124,12 @@ tokens :-
         "=="            { lex' TkEqual           }
         "/="            { lex' TkUnequal         }
 
-        "<"             { lex' TkLess            }
-        ">"             { lex' TkGreat           }
+        "="             { lex' TkAssign          }
+
         "<="            { lex' TkLessEq          }
         ">="            { lex' TkGreatEq         }
+        "<"             { lex' TkLess            }
+        ">"             { lex' TkGreat           }
 
         -- -- Identifiers
         @iden           { lex TkIden             }
@@ -141,46 +144,87 @@ tokens :-
 
 data Token
     -- Language
-    = TkSemicolon | TkComma | TkColon
+    = TkSemicolon
+    | TkComma
+    | TkColon
     | TkReturn
 
     -- -- Blocks
-    | TkBegin | TkUse | TkIn | TkEnd | TkProgram | TkFunction
+    | TkBegin
+    | TkUse
+    | TkIn
+    | TkEnd
+    | TkProgram
+    | TkFunction
 
     -- -- Brackets
-    | TkLParen | TkRParen | TkLBrackets | TkRBrackets | TkLBraces | TkRBraces
+    | TkLParen
+    | TkRParen
+    | TkLBrackets
+    | TkRBrackets
+    | TkLBraces
+    | TkRBraces
 
     -- -- Types
-    | TkNumber | TkBoolean | TkMatrix | TkRow | TkCol
+    | TkNumber
+    | TkBoolean
+    | TkMatrix
+    | TkRow
+    | TkCol
 
     -- Statements
     | TkSet
     | TkAssign
 
     -- -- I/O
-    | TkRead | TkPrint
+    | TkRead
+    | TkPrint
 
     -- -- Conditional
-    | TkIf | TkThen | TkElse
+    | TkIf
+    | TkThen
+    | TkElse
 
     -- -- Loops
-    | TkWhile | TkFor | TkDo
+    | TkWhile
+    | TkFor
+    | TkDo
 
     -- Expressions
     -- -- Literals
+    | TkFalse
+    | TkTrue
     | TkFloat  { unTkFloat  :: Float  }
-    | TkBool   { unTkBool   :: Bool   }
     | TkString { unTkString :: String }
 
     -- Operators
     -- -- Arithmetic
-    | TkPlus | TkMinus | TkTimes | TkDivide | TkModulo | TkIntDivide | TkIntModulo
-    | TkDottedPlus | TkDottedMinus | TkDottedTimes | TkDottedDivide | TkDottedModulo | TkDottedIntDivide | TkDottedIntModulo
+    | TkPlus
+    | TkMinus
+    | TkTimes
+    | TkDivide
+    | TkModulo
+    | TkIntDivide
+    | TkIntModulo
+    | TkTranspose
+    | TkDottedPlus
+    | TkDottedMinus
+    | TkDottedTimes
+    | TkDottedDivide
+    | TkDottedModulo
+    | TkDottedIntDivide
+    | TkDottedIntModulo
 
     -- -- Boolean
-    | TkOr | TkAnd | TkNot
-    | TkEqual | TkUnequal
-    | TkLess | TkGreat | TkLessEq | TkGreatEq
+    | TkOr
+    | TkAnd
+    | TkNot
+    | TkEqual
+    | TkUnequal
+    | TkLess
+    | TkGreat
+    | TkLessEq
+    | TkGreatEq
 
     -- Identifiers
     | TkIden { unTkIden :: String }
@@ -224,8 +268,9 @@ instance Show Token where
         TkWhile -> "While"
         TkFor -> "For"
         TkDo -> "Do"
+        TkFalse -> "False"
+        TkTrue -> "True"
         TkFloat val -> "Float (" ++ show val ++ ")"
-        TkBool val -> "Bool (" ++ show val ++ ")"
         TkString val -> "String (" ++ show val ++ ")"
         TkPlus -> "Plus"
         TkMinus -> "Minus"
