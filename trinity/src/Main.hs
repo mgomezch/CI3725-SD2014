@@ -4,28 +4,34 @@
 
 module Main (main) where
 
-import Control.Monad      ((=<<), (>>=))
-import Data.Function      ((.))
-import Data.Functor       ((<$>))
-import System.Environment (getArgs)
-import System.Exit        (exitFailure)
-import System.IO          (hPutStrLn, putStrLn, readFile, stderr)
-import Text.Show.Pretty   (ppShow)
+import Control.Monad.Unicode ((=≪), (≫=))
+import Data.Function         (($))
+import Data.Function.Unicode ((∘))
+import Data.Functor          ((<$>))
+import Data.Monoid.Unicode   ((⊕))
+import Data.Text.Encoding    (decodeUtf8)
+import Data.Text.IO          (putStrLn)
+import Data.Yaml             (encode)
+import System.Environment    (getArgs, getProgName)
+import System.Exit           (exitFailure)
+import System.IO             (hPutStrLn, readFile, stderr)
 
 import Language.Trinity.Lexer  (scanTokens)
 import Language.Trinity.Parser (parse)
 
 main
   = getArgs
-  >>= \ case
+  ≫= \ case
     [filename]
       → putStrLn
-      . ppShow
-      . parse
-      . scanTokens
-      =<< readFile filename
+      ∘ decodeUtf8
+      ∘ encode
+      ∘ parse
+      ∘ scanTokens
+      =≪ readFile filename
 
     _
       → do
-        hPutStrLn stderr "usage: $ ./trinity <file>.ty"
+        programName ← getProgName
+        hPutStrLn stderr $ "usage: " ⊕ programName ⊕ "<filename>"
         exitFailure

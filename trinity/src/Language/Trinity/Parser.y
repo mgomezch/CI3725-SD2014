@@ -1,13 +1,16 @@
 {
 module Language.Trinity.Parser where
 
-import Data.Sequence ((|>), Seq, empty, singleton)
+import Data.Sequence ((|>), empty, singleton)
+
+import Language.Trinity.AST
 import Language.Trinity.Lexer
+import Language.Trinity.Lexer.Token
 }
 
 %name      parse
-%tokentype { Token             }
-%error     { parseError        }
+%tokentype { Token      }
+%error     { parseError }
 
 %token
   "program"  { TkProgram         }
@@ -34,7 +37,7 @@ import Language.Trinity.Lexer
   "in"       { TkIn              }
   "use"      { TkUse             }
   identifier { TkIden _          }
-  number     { TkFloat _         }
+  number     { TkLitNum _        }
   "set"      { TkSet             }
   "="        { TkAssign          }
   ","        { TkComma           }
@@ -155,96 +158,4 @@ Columns     : Columns      "," Expression      { $1 |> $3 } | Expression { singl
 
 {
 parseError = error . ("welp: " ++) . show
-
-type NumericLiteral = Token
-type Identifier     = Token
-
-data Program
-  = Program { _functions :: Functions, _main :: Instructions }
-  deriving (Eq, Read, Show)
-
-type Functions = Seq Function
-data Function
-  = Function { _name :: Token, _parameters :: Parameters, _returnType :: Type, _functionBody :: Instructions }
-  deriving (Eq, Read, Show)
-
-type Parameters = Seq Parameter
-data Parameter
-  = Parameter { _parameterType :: Type, _parameter :: Identifier }
-  deriving (Eq, Read, Show)
-
-data Type
-  = TNumber
-  | TBoolean
-  | TRow     { _rowCount :: NumericLiteral }
-  | TCol     { _columnCount :: NumericLiteral }
-  | TMatrix  { _rowCount, _columnCount :: NumericLiteral }
-  deriving (Eq, Read, Show)
-
-type Declarations = Seq Declaration
-data Declaration
-  = DDefault    { _type :: Type, _identifier :: Identifier }
-  | DInitialize { _type :: Type, _identifier :: Identifier, _initializer :: Expression }
-  deriving (Eq, Read, Show)
-
-type Instructions = Seq Instruction
-data Instruction
-  = IExpression       { _expression :: Expression }
-  | IAssignment       { _target :: Identifier, _value :: Expression }
-  | IVectorAssignment { _target :: Identifier, _targetRow :: Expression, _value :: Expression }
-  | IMatrixAssignment { _target :: Identifier, _targetRow, _targetColumn :: Expression, _value :: Expression }
-  | IPrint            { _prints :: Prints }
-  | IRead             { _target :: Identifier }
-  | IIf               { _condition :: Expression, _onTrue :: Instructions }
-  | IIfElse           { _condition :: Expression, _onTrue, _onFalse :: Instructions }
-  | IWhile            { _condition :: Expression, _body :: Instructions }
-  | IFor              { _counter :: Identifier, _source :: Expression, _body :: Instructions }
-  | IBlock            { _declarations :: Declarations, _body :: Instructions }
-  deriving (Eq, Read, Show)
-
-type Prints = Seq Print
-data Print
-  = PrintStringLiteral { _printString :: Token }
-  | PrintExpression    { _printExpression :: Expression }
-  deriving (Eq, Read, Show)
-
-type Rows      = Seq Row
-type Row       = Seq Expression
-type Arguments = Seq Expression
-data Expression
-  = EVariableUse      { _variable :: Identifier }
-  | ECall             { _function :: Identifier, _arguments :: Arguments }
-  | EFalse
-  | ETrue
-  | ELitScalar        { _number :: NumericLiteral }
-  | ELitMatrix        { _rows :: Rows }
-  | EAccessVector     { _vector :: Expression, _index :: Expression }
-  | EAccessMatrix     { _matrix :: Expression, _row :: Expression, _column :: Expression }
-  | ENot              { _operand :: Expression }
-  | ENeg              { _operand :: Expression }
-  | EUMinus           { _operand :: Expression }
-  | ETranspose        { _operand :: Expression }
-  | EAnd              { _leftOperand, _rightOperand :: Expression }
-  | EOr               { _leftOperand, _rightOperand :: Expression }
-  | EEQ               { _leftOperand, _rightOperand :: Expression }
-  | ENEQ              { _leftOperand, _rightOperand :: Expression }
-  | ELT               { _leftOperand, _rightOperand :: Expression }
-  | EGT               { _leftOperand, _rightOperand :: Expression }
-  | ELE               { _leftOperand, _rightOperand :: Expression }
-  | EGE               { _leftOperand, _rightOperand :: Expression }
-  | EAdd              { _leftOperand, _rightOperand :: Expression }
-  | ESubstract        { _leftOperand, _rightOperand :: Expression }
-  | EMultiply         { _leftOperand, _rightOperand :: Expression }
-  | EDivide           { _leftOperand, _rightOperand :: Expression }
-  | EModulo           { _leftOperand, _rightOperand :: Expression }
-  | EDivideInteger    { _leftOperand, _rightOperand :: Expression }
-  | EModuloInteger    { _leftOperand, _rightOperand :: Expression }
-  | EMapAdd           { _leftOperand, _rightOperand :: Expression }
-  | EMapSubstract     { _leftOperand, _rightOperand :: Expression }
-  | EMapMultiply      { _leftOperand, _rightOperand :: Expression }
-  | EMapDivide        { _leftOperand, _rightOperand :: Expression }
-  | EMapModulo        { _leftOperand, _rightOperand :: Expression }
-  | EMapDivideInteger { _leftOperand, _rightOperand :: Expression }
-  | EMapModuloInteger { _leftOperand, _rightOperand :: Expression }
-  deriving (Eq, Read, Show)
 }
