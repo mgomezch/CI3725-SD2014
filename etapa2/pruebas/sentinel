@@ -8,8 +8,7 @@ function main() {
 
   awk 'BEGIN { FS = " @ " }; /^\s*[^#]/ { print $3 > $2 "/" NR "-" $1 }'
 
-  good=0
-  total=0
+  good=0; total=0;
   for test in shouldpass/* contexterr/*; do if ! "${trinity}" "${test}" &> /dev/null; then echo "Unexpected failure: ${test}"; else good="$((${good} + 1))"; fi; total="$((${total} + 1))"; done
   for test in shouldfail/*             ; do if   "${trinity}" "${test}" &> /dev/null; then echo "Unexpected pass:    ${test}"; else good="$((${good} + 1))"; fi; total="$((${total} + 1))"; done
 
@@ -60,6 +59,8 @@ main <<'EOF'
 
 §2.2¶4 @ shouldpass @ program use matrix( 42,  42)    foo   ; in end; end;
 
+§2.2¶4 @ contexterr @ program use matrix( 42,   0)    foo   ; in end; end;
+§2.2¶4 @ contexterr @ program use matrix(  0,  42)    foo   ; in end; end;
 §2.2¶4 @ contexterr @ program use matrix(  0,   0)    foo   ; in end; end;
 §2.2¶4 @ contexterr @ program use matrix(4.2, 4.2)    foo   ; in end; end;
 
@@ -864,5 +865,181 @@ main <<'EOF'
 
 
 # §2.4.3¶2: Asignación a variable
+
+§2.4.3¶2 @ shouldpass @ program use boolean      foo; in set foo = true               ; end; end;
+§2.4.3¶2 @ shouldpass @ program use boolean      foo; in set foo = not true           ; end; end;
+§2.4.3¶2 @ shouldpass @ program use number       foo; in set foo = 42                 ; end; end;
+§2.4.3¶2 @ shouldpass @ program use number       foo; in set foo = 42 + 42            ; end; end;
+§2.4.3¶2 @ shouldpass @ program use row(2)       foo; in set foo = { 42, 42          }; end; end;
+§2.4.3¶2 @ shouldpass @ program use col(2)       foo; in set foo = { 42     : 42     }; end; end;
+§2.4.3¶2 @ shouldpass @ program use matrix(2, 2) foo; in set foo = { 42, 42 : 42, 42 }; end; end;
+
+§2.4.3¶2 @ contexterr @ program use number       foo; in set foo = true               ; end; end;
+§2.4.3¶2 @ contexterr @ program use row(2)       foo; in set foo = true               ; end; end;
+§2.4.3¶2 @ contexterr @ program use col(2)       foo; in set foo = true               ; end; end;
+§2.4.3¶2 @ contexterr @ program use matrix(2, 2) foo; in set foo = true               ; end; end;
+§2.4.3¶2 @ contexterr @ program use boolean      foo; in set foo = 42                 ; end; end;
+§2.4.3¶2 @ contexterr @ program use row(2)       foo; in set foo = 42                 ; end; end;
+§2.4.3¶2 @ contexterr @ program use col(2)       foo; in set foo = 42                 ; end; end;
+§2.4.3¶2 @ contexterr @ program use matrix(2, 2) foo; in set foo = 42                 ; end; end;
+§2.4.3¶2 @ contexterr @ program use boolean      foo; in set foo = { 42, 42          }; end; end;
+§2.4.3¶2 @ contexterr @ program use number       foo; in set foo = { 42, 42          }; end; end;
+§2.4.3¶2 @ contexterr @ program use col(2)       foo; in set foo = { 42, 42          }; end; end;
+§2.4.3¶2 @ contexterr @ program use matrix(2, 2) foo; in set foo = { 42, 42          }; end; end;
+§2.4.3¶2 @ contexterr @ program use boolean      foo; in set foo = { 42     : 42     }; end; end;
+§2.4.3¶2 @ contexterr @ program use number       foo; in set foo = { 42     : 42     }; end; end;
+§2.4.3¶2 @ contexterr @ program use row(2)       foo; in set foo = { 42     : 42     }; end; end;
+§2.4.3¶2 @ contexterr @ program use matrix(2, 2) foo; in set foo = { 42     : 42     }; end; end;
+§2.4.3¶2 @ contexterr @ program use boolean      foo; in set foo = { 42, 42 : 42, 42 }; end; end;
+§2.4.3¶2 @ contexterr @ program use number       foo; in set foo = { 42, 42 : 42, 42 }; end; end;
+§2.4.3¶2 @ contexterr @ program use row(2)       foo; in set foo = { 42, 42 : 42, 42 }; end; end;
+§2.4.3¶2 @ contexterr @ program use col(2)       foo; in set foo = { 42, 42 : 42, 42 }; end; end;
+§2.4.3¶2 @ contexterr @ program use row(3)       foo; in set foo = { 42, 42          }; end; end;
+§2.4.3¶2 @ contexterr @ program use col(3)       foo; in set foo = { 42     : 42     }; end; end;
+§2.4.3¶2 @ contexterr @ program use matrix(2, 3) foo; in set foo = { 42, 42 : 42, 42 }; end; end;
+§2.4.3¶2 @ contexterr @ program use matrix(3, 2) foo; in set foo = { 42, 42 : 42, 42 }; end; end;
+§2.4.3¶2 @ contexterr @ program use matrix(3, 3) foo; in set foo = { 42, 42 : 42, 42 }; end; end;
+§2.4.3¶2 @ contexterr @ program set foo = true; end;
+§2.4.3¶2 @ contexterr @ program use boolean foo; in set bar = true; end; end;
+§2.4.3¶2 @ contexterr @ program use boolean foo; in end; set foo = true; end;
+§2.4.3¶2 @ contexterr @ program use boolean foo; in use number foo; in set foo = true; end; end; end;
+
+§2.4.3¶2 @ shouldfail @ program use boolean foo; in     foo = true               ; end; end;
+§2.4.3¶2 @ shouldfail @ program use boolean foo; in set     = true               ; end; end;
+§2.4.3¶2 @ shouldfail @ program use boolean foo; in set foo   true               ; end; end;
+§2.4.3¶2 @ shouldfail @ program use boolean foo; in set foo =                    ; end; end;
+§2.4.3¶2 @ shouldfail @ program use boolean foo; in set foo = true                 end; end;
+
+
+
+# §2.4.3¶6: Asignación a posición de matriz
+
+§2.4.3¶6 @ shouldpass @ program use matrix(2, 2) m; in set m[42        , 42        ] = 42             ; end; end;
+§2.4.3¶6 @ shouldpass @ program use matrix(2, 2) m; in set m[42 + 42   , 42        ] = 42             ; end; end;
+§2.4.3¶6 @ shouldpass @ program use matrix(2, 2) m; in set m[42        , 42 + 42   ] = 42             ; end; end;
+§2.4.3¶6 @ shouldpass @ program use matrix(2, 2) m; in set m[42        , 42        ] = 42 + 42        ; end; end;
+§2.4.3¶6 @ shouldpass @ program use matrix(2, 2) m; in set m[{ 42 }[42], 42        ] = 42             ; end; end;
+§2.4.3¶6 @ shouldpass @ program use matrix(2, 2) m; in set m[42        , { 42 }[42]] = 42             ; end; end;
+§2.4.3¶6 @ shouldpass @ program use matrix(2, 2) m; in set m[42        , 42        ] = { 42 }[42]     ; end; end;
+§2.4.3¶6 @ shouldpass @ program use row   (2   ) m; in set m[42        , 42        ] = 42             ; end; end;
+§2.4.3¶6 @ shouldpass @ program use col   (2   ) m; in set m[42        , 42        ] = 42             ; end; end;
+
+§2.4.3¶6 @ contexterr @ program                        set m[42        , 42        ] = 42             ;      end;
+§2.4.3¶6 @ contexterr @ program use boolean      m; in set m[42        , 42        ] = 42             ; end; end;
+§2.4.3¶6 @ contexterr @ program use number       m; in set m[42        , 42        ] = 42             ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[foo       , 42        ] = 42             ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[42        , foo       ] = 42             ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[42        , 42        ] = foo            ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[true      , 42        ] = 42             ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[42        , true      ] = 42             ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[42        , 42        ] = true           ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[{ 42 }    , 42        ] = 42             ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[42        , { 42 }    ] = 42             ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[42        , 42        ] = { 42 }         ; end; end;
+§2.4.3¶6 @ contexterr @ program use matrix(2, 2) m; in set m[42        , 42        ] = { 42 } + { 42 }; end; end;
+
+§2.4.3¶6 @ shouldfail @ program in set true     [42, 42] = 42; end;
+§2.4.3¶6 @ shouldfail @ program in set 42       [42, 42] = 42; end;
+§2.4.3¶6 @ shouldfail @ program in set { 42 }   [42, 42] = 42; end;
+§2.4.3¶6 @ shouldfail @ program in set (foo+foo)[42, 42] = 42; end;
+
+
+
+# §2.4.3¶7: Asignación a posición de vector
+
+§2.4.3¶7 @ shouldpass @ program use matrix(1, 1) m; in set m        [42        ] = 42             ; end; end;
+§2.4.3¶7 @ shouldpass @ program use matrix(1, 1) m; in set m        [42 + 42   ] = 42             ; end; end;
+§2.4.3¶7 @ shouldpass @ program use matrix(1, 1) m; in set m        [{ 42 }[42]] = 42             ; end; end;
+§2.4.3¶7 @ shouldpass @ program use row   (2   ) m; in set m        [42        ] = 42             ; end; end;
+§2.4.3¶7 @ shouldpass @ program use row   (2   ) m; in set m        [42 + 42   ] = 42             ; end; end;
+§2.4.3¶7 @ shouldpass @ program use row   (2   ) m; in set m        [{ 42 }[42]] = 42             ; end; end;
+§2.4.3¶7 @ shouldpass @ program use col   (2   ) m; in set m        [42        ] = 42             ; end; end;
+§2.4.3¶7 @ shouldpass @ program use col   (2   ) m; in set m        [42 + 42   ] = 42             ; end; end;
+§2.4.3¶7 @ shouldpass @ program use col   (2   ) m; in set m        [{ 42 }[42]] = 42             ; end; end;
+§2.4.3¶7 @ shouldpass @ program use row   (2   ) m; in set m        [42        ] = 42 + 42        ; end; end;
+§2.4.3¶7 @ shouldpass @ program use col   (2   ) m; in set m        [42        ] = 42 + 42        ; end; end;
+
+§2.4.3¶7 @ contexterr @ program                        set m        [42        ] = 42             ;      end;
+§2.4.3¶7 @ contexterr @ program use boolean      m; in set m        [42        ] = 42             ; end; end;
+§2.4.3¶7 @ contexterr @ program use number       m; in set m        [42        ] = 42             ; end; end;
+§2.4.3¶7 @ contexterr @ program use row   (2   ) m; in set m        [foo       ] = 42             ; end; end;
+§2.4.3¶7 @ contexterr @ program use row   (2   ) m; in set m        [42        ] = foo            ; end; end;
+§2.4.3¶7 @ contexterr @ program use row   (2   ) m; in set m        [true      ] = 42             ; end; end;
+§2.4.3¶7 @ contexterr @ program use row   (2   ) m; in set m        [42        ] = true           ; end; end;
+§2.4.3¶7 @ contexterr @ program use row   (2   ) m; in set m        [42        ] = { 42 }         ; end; end;
+§2.4.3¶7 @ contexterr @ program use row   (2   ) m; in set m        [42        ] = { 42 } + { 42 }; end; end;
+§2.4.3¶7 @ contexterr @ program use col   (2   ) m; in set m        [foo       ] = 42             ; end; end;
+§2.4.3¶7 @ contexterr @ program use col   (2   ) m; in set m        [42        ] = foo            ; end; end;
+§2.4.3¶7 @ contexterr @ program use col   (2   ) m; in set m        [true      ] = 42             ; end; end;
+§2.4.3¶7 @ contexterr @ program use col   (2   ) m; in set m        [42        ] = true           ; end; end;
+§2.4.3¶7 @ contexterr @ program use col   (2   ) m; in set m        [42        ] = { 42 }         ; end; end;
+§2.4.3¶7 @ contexterr @ program use col   (2   ) m; in set m        [42        ] = { 42 } + { 42 }; end; end;
+
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in     m        [42        ] = 42             ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set          [42        ] = 42             ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set m         42        ] = 42             ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set m        [          ] = 42             ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set m        [42          = 42             ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set m        [42        ]   42             ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set m        [42        ] =                ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set m        [42        ] = 42               end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set true     [42        ] = 42             ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set 42       [42        ] = 42             ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set { 42 }   [42        ] = 42             ; end; end;
+§2.4.3¶7 @ shouldfail @ program use matrix(1, 1) m; in set (foo+foo)[42        ] = 42             ; end; end;
+
+
+
+# §2.4.4¶1: Instrucción de lectura
+
+# TODO: shouldpass
+
+# TODO: contexterr
+
+# TODO: shouldfail
+
+
+
+# §2.4.5¶1: Instrucción condicional
+
+# TODO: shouldpass
+
+# TODO: contexterr
+
+# TODO: shouldfail
+
+
+
+# §2.4.5¶2: Instrucción condicional incompleta
+
+# TODO: shouldpass
+
+# TODO: contexterr
+
+# TODO: shouldfail
+
+
+
+# §2.4.6¶1: Instrucción de iteración indeterminada
+
+# TODO: shouldpass
+
+# TODO: contexterr
+
+# TODO: shouldfail
+
+
+
+# §2.4.6¶2: Instrucción de iteración determinada
+
+# TODO: shouldpass
+
+# TODO: contexterr
+
+# TODO: shouldfail
+
+
+
+# TODO: funciones
 
 EOF
