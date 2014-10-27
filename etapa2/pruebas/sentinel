@@ -6,7 +6,7 @@ function main() {
   rm -rf   shouldpass contexterr shouldfail
   mkdir -p shouldpass contexterr shouldfail
 
-  awk 'BEGIN { FS = " @ " }; /^\s*[^#]/ { print $3 > $2 "/" NR "-" $1 }'
+  awk 'BEGIN { FS = " @ "; NR = 29 }; /^\s*[^#]/ { print $3 > $2 "/" NR "-" $1 }'
 
   good=0; total=0;
   for test in shouldpass/* contexterr/*; do if ! "${trinity}" "${test}" &> /dev/null; then echo "Unexpected failure: ${test}"; else good="$((${good} + 1))"; fi; total="$((${total} + 1))"; done
@@ -57,7 +57,7 @@ main <<'EOF'
 
 
 
-§2.2¶4 @ shouldpass @ program use matrix( 42,  42)    foo   ; in end; end;
+§2.2¶4 @ shouldpass @ program use matrix(  2,   2)    foo   ; in end; end;
 
 §2.2¶4 @ contexterr @ program use matrix( 42,   0)    foo   ; in end; end;
 §2.2¶4 @ contexterr @ program use matrix(  0,  42)    foo   ; in end; end;
@@ -861,6 +861,9 @@ main <<'EOF'
 §2.4.2¶6 @ shouldfail @ program use in 42  42  42                    end; end;
 §2.4.2¶6 @ shouldfail @ program use in 42; 42  42                    end; end;
 §2.4.2¶6 @ shouldfail @ program use in 42; 42; 42                    end; end;
+§2.4.2¶6 @ shouldfail @ program use boolean use; in end; end;
+§2.4.2¶6 @ shouldfail @ program use boolean in ; in end; end;
+§2.4.2¶6 @ shouldfail @ program use boolean end; in end; end;
 
 
 
@@ -909,6 +912,7 @@ main <<'EOF'
 §2.4.3¶2 @ shouldfail @ program use boolean foo; in set foo   true               ; end; end;
 §2.4.3¶2 @ shouldfail @ program use boolean foo; in set foo =                    ; end; end;
 §2.4.3¶2 @ shouldfail @ program use boolean foo; in set foo = true                 end; end;
+§2.4.3¶2 @ shouldfail @ program use boolean set; in end; end;
 
 
 
@@ -992,46 +996,181 @@ main <<'EOF'
 
 # §2.4.4¶1: Instrucción de lectura
 
-# TODO: shouldpass
+§2.4.4¶1 @ shouldpass @ program use boolean      foo; in read foo; end; end;
+§2.4.4¶1 @ shouldpass @ program use number       foo; in read foo; end; end;
 
-# TODO: contexterr
+§2.4.4¶1 @ contexterr @ program                            read bar;      end;
+§2.4.4¶1 @ contexterr @ program use matrix(2, 2) foo; in read foo; end; end;
+§2.4.4¶1 @ contexterr @ program use row   (42  ) foo; in read foo; end; end;
+§2.4.4¶1 @ contexterr @ program use col   (42  ) foo; in read foo; end; end;
+§2.4.4¶1 @ contexterr @ program use boolean      foo; in read bar; end; end;
+§2.4.4¶1 @ contexterr @ program use boolean      foo; in read bar; end; end;
 
-# TODO: shouldfail
+§2.4.4¶1 @ shouldfail @ program use boolean      foo; in read            ; end; end;
+§2.4.4¶1 @ shouldfail @ program use boolean      foo; in read foo          end; end;
+§2.4.4¶1 @ shouldfail @ program use boolean      foo; in read true       ; end; end;
+§2.4.4¶1 @ shouldfail @ program use boolean      foo; in read 42         ; end; end;
+§2.4.4¶1 @ shouldfail @ program use boolean      foo; in read 42 + 42    ; end; end;
+§2.4.4¶1 @ shouldfail @ program use boolean      foo; in read { 42 }     ; end; end;
+§2.4.4¶1 @ shouldfail @ program use row   (42  ) foo; in read foo[42    ]; end; end;
+§2.4.4¶1 @ shouldfail @ program use col   (42  ) foo; in read foo[42    ]; end; end;
+§2.4.4¶1 @ shouldfail @ program use matrix(2, 2) foo; in read foo[42, 42]; end; end;
+§2.4.4¶1 @ shouldfail @ program use boolean read; in end; end;
 
 
 
 # §2.4.5¶1: Instrucción condicional
 
-# TODO: shouldpass
+§2.4.5¶1 @ shouldpass @ program use boolean foo; in if foo  then           else           end; end; end;
+§2.4.5¶1 @ shouldpass @ program use boolean foo; in if true then read foo; else           end; end; end;
+§2.4.5¶1 @ shouldpass @ program use boolean foo; in if true then           else read foo; end; end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then                        else                        end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then true;                  else                        end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then true; true;            else                        end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then                        else true;                  end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then                        else true; true;            end; end;
+§2.4.5¶1 @ shouldpass @ program if true & true then                        else                        end; end;
+§2.4.5¶1 @ shouldpass @ program if true | true then                        else                        end; end;
+§2.4.5¶1 @ shouldpass @ program if 42 < 42     then                        else                        end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then use in end;            else                        end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then                        else use in end;            end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then print 42;              else                        end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then                        else print 42;              end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then if true then else end; else                        end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then                        else if true then else end; end; end;
+§2.4.5¶1 @ shouldpass @ program if true        then if true then else end; else if true then else end; end; end;
 
-# TODO: contexterr
+§2.4.5¶1 @ contexterr @ program if 42          then                        else                        end; end;
+§2.4.5¶1 @ contexterr @ program if { 42 }      then                        else                        end; end;
+§2.4.5¶1 @ contexterr @ program if foo         then                        else                        end; end;
+§2.4.6¶1 @ contexterr @ program use number foo; in if foo then else end; end; end;
 
-# TODO: shouldfail
+§2.4.5¶1 @ shouldfail @ program    true        then                        else                        end; end;
+§2.4.5¶1 @ shouldfail @ program if             then                        else                        end; end;
+§2.4.5¶1 @ shouldfail @ program if true                                    else                        end; end;
+§2.4.5¶1 @ shouldfail @ program if true        then                        else                           ; end;
+§2.4.5¶1 @ shouldfail @ program if true        then                        else                        end  end;
+§2.4.5¶1 @ shouldfail @ program use boolean if  ; in end; end;
+§2.4.5¶1 @ shouldfail @ program use boolean then; in end; end;
+§2.4.5¶1 @ shouldfail @ program use boolean else; in end; end;
 
 
 
 # §2.4.5¶2: Instrucción condicional incompleta
 
-# TODO: shouldpass
+§2.4.5¶2 @ shouldpass @ program use boolean foo; in if foo  then           end; end; end;
+§2.4.5¶2 @ shouldpass @ program use boolean foo; in if true then read foo; end; end; end;
+§2.4.5¶2 @ shouldpass @ program if true        then                        end; end;
+§2.4.5¶2 @ shouldpass @ program if true        then true;                  end; end;
+§2.4.5¶2 @ shouldpass @ program if true        then true; true;            end; end;
+§2.4.5¶2 @ shouldpass @ program if true & true then                        end; end;
+§2.4.5¶2 @ shouldpass @ program if true | true then                        end; end;
+§2.4.5¶2 @ shouldpass @ program if 42 < 42     then                        end; end;
+§2.4.5¶2 @ shouldpass @ program if true        then print 42;              end; end;
+§2.4.5¶2 @ shouldpass @ program if true        then use in end;            end; end;
+§2.4.5¶2 @ shouldpass @ program if true        then if true then else end; end; end;
 
-# TODO: contexterr
+§2.4.5¶2 @ contexterr @ program if 42          then                        end; end;
+§2.4.5¶2 @ contexterr @ program if { 42 }      then                        end; end;
+§2.4.5¶2 @ contexterr @ program if foo         then                        end; end;
+§2.4.6¶1 @ contexterr @ program use number foo; in if foo then end; end; end;
 
-# TODO: shouldfail
+§2.4.5¶2 @ shouldfail @ program    true        then                        end; end;
+§2.4.5¶2 @ shouldfail @ program if             then                        end; end;
+§2.4.5¶2 @ shouldfail @ program if true                                    end; end;
+§2.4.5¶2 @ shouldfail @ program if true        then                           ; end;
+§2.4.5¶2 @ shouldfail @ program if true        then                        end  end;
 
 
 
 # §2.4.6¶1: Instrucción de iteración indeterminada
 
-# TODO: shouldpass
+§2.4.6¶1 @ shouldpass @ program while true        do                        end; end;
+§2.4.6¶1 @ shouldpass @ program while true & true do                        end; end;
+§2.4.6¶1 @ shouldpass @ program while true | true do                        end; end;
+§2.4.6¶1 @ shouldpass @ program while 42 < 42     do                        end; end;
+§2.4.6¶1 @ shouldpass @ program while true        do true;                  end; end;
+§2.4.6¶1 @ shouldpass @ program while true        do true; true;            end; end;
+§2.4.6¶1 @ shouldpass @ program while true        do print 42;              end; end;
+§2.4.6¶1 @ shouldpass @ program while true        do while true do end;     end; end;
+§2.4.6¶1 @ shouldpass @ program while true        do use in end;            end; end;
+§2.4.6¶1 @ shouldpass @ program while true        do if true then else end; end; end;
+§2.4.6¶1 @ shouldpass @ program while true        do if true then      end; end; end;
+§2.4.6¶1 @ shouldpass @ program use in       while true do end;                         end; end;
+§2.4.6¶1 @ shouldpass @ program if true then while true do end;                         end; end;
+§2.4.6¶1 @ shouldpass @ program if true then while true do end; else                    end; end;
+§2.4.6¶1 @ shouldpass @ program if true then                    else while true do end; end; end;
+§2.4.6¶1 @ shouldpass @ program use boolean foo; in while foo do end; end; end;
 
-# TODO: contexterr
+§2.4.6¶1 @ contexterr @ program while 42     do end; end;
+§2.4.6¶1 @ contexterr @ program while { 42 } do end; end;
+§2.4.6¶1 @ contexterr @ program while foo    do end; end;
+§2.4.6¶1 @ contexterr @ program use number foo; in while foo do end; end; end;
 
-# TODO: shouldfail
+§2.4.6¶1 @ shouldfail @ program       true do end; end;
+§2.4.6¶1 @ shouldfail @ program while      do end; end;
+§2.4.6¶1 @ shouldfail @ program while true    end; end;
+§2.4.6¶1 @ shouldfail @ program while true do    ; end;
+§2.4.6¶1 @ shouldfail @ program while true do end  end;
+§2.4.6¶1 @ shouldfail @ program use boolean while; in end; end;
+§2.4.6¶1 @ shouldfail @ program use boolean do   ; in end; end;
 
 
 
 # §2.4.6¶2: Instrucción de iteración determinada
 
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do                            end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42, 42 }      do                            end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 : 42 }     do                            end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 } + { 42 } do                            end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }'         do                            end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do true;                      end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do true; true;                end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do foo;                       end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do foo < foo;                 end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do print 42;                  end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do read foo;                  end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do use in                end; end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do if true then          end; end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do if true then     else end; end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do while true do         end; end; end;
+§2.4.6¶2 @ shouldpass @ program for foo in { 42 }          do for foo in { 42 } do  end; end; end;
+§2.4.6¶1 @ shouldpass @ program if    true then for foo in { 42 } do end;                                end; end;
+§2.4.6¶1 @ shouldpass @ program if    true then for foo in { 42 } do end; else                           end; end;
+§2.4.6¶1 @ shouldpass @ program if    true then                           else for foo in { 42 } do end; end; end;
+§2.4.6¶1 @ shouldpass @ program while true do   for foo in { 42 } do end;                                end; end;
+§2.4.6¶2 @ shouldpass @ program use row   (42  ) foo; in for bar in foo    do            end; end; end;
+§2.4.6¶2 @ shouldpass @ program use col   (42  ) foo; in for bar in foo    do            end; end; end;
+§2.4.6¶2 @ shouldpass @ program use matrix(2, 2) foo; in for bar in foo    do            end; end; end;
+§2.4.6¶2 @ shouldpass @ program use row   (42  ) foo; in for foo in foo    do            end; end; end;
+§2.4.6¶2 @ shouldpass @ program use col   (42  ) foo; in for foo in foo    do            end; end; end;
+§2.4.6¶2 @ shouldpass @ program use matrix(2, 2) foo; in for foo in foo    do            end; end; end;
+§2.4.6¶2 @ shouldpass @ program use boolean      foo; in for foo in { 42 } do foo < foo; end; end; end;
+
+§2.4.6¶2 @ contexterr @ program                     for foo in true      do          end;      end;
+§2.4.6¶2 @ contexterr @ program                     for foo in 42        do          end;      end;
+§2.4.6¶2 @ contexterr @ program                     for foo in 42 + 42   do          end;      end;
+§2.4.6¶2 @ contexterr @ program                     for foo in bar       do          end;      end;
+§2.4.6¶2 @ contexterr @ program                     for foo in foo       do          end;      end;
+§2.4.6¶2 @ contexterr @ program                     for foo in { 42 }    do not foo; end;      end;
+§2.4.6¶2 @ contexterr @ program                     for foo in { 42 }    do foo'   ; end;      end;
+§2.4.6¶2 @ contexterr @ program use boolean foo; in for foo in { 42 }    do not foo; end; end; end;
+§2.4.6¶2 @ contexterr @ program use row(42) foo; in for foo in { 42 }    do foo'   ; end; end; end;
+§2.4.6¶2 @ contexterr @ program use number  foo; in for bar in foo + foo do          end; end; end;
+
+§2.4.6¶2 @ shouldfail @ program     foo in { 42 } do end; end;
+§2.4.6¶2 @ shouldfail @ program for     in { 42 } do end; end;
+§2.4.6¶2 @ shouldfail @ program for foo    { 42 } do end; end;
+§2.4.6¶2 @ shouldfail @ program for foo in        do end; end;
+§2.4.6¶2 @ shouldfail @ program for foo in { 42 }    end; end;
+§2.4.6¶2 @ shouldfail @ program for foo in { 42 } do    ; end;
+§2.4.6¶2 @ shouldfail @ program for foo in { 42 } do end  end;
+§2.4.6¶2 @ shouldfail @ program use boolean for; in end; end;
+
+
+
+# §2.4.7¶2: Especificación de función
+
 # TODO: shouldpass
 
 # TODO: contexterr
@@ -1040,6 +1179,22 @@ main <<'EOF'
 
 
 
-# TODO: funciones
+# §2.4.7¶5: Expresión de llamada a función
+
+# TODO: shouldpass
+
+# TODO: contexterr
+
+# TODO: shouldfail
+
+
+
+# §2.4.7¶6: Expresión de retorno
+
+# TODO: shouldpass
+
+# TODO: contexterr
+
+# TODO: shouldfail
 
 EOF
