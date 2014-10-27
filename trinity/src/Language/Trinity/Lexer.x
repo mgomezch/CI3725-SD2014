@@ -21,22 +21,14 @@ import Language.Trinity.Lexer.Token
 
 %wrapper "posn"
 
-$digit = 0-9
-
-$large = [A-Z]
-$small = [a-z \_]
-$alpha = [$small $large]
-
-$idchar = [$alpha $digit]
-
 -- Alex won't work if we write it directly in the @inside_string
 $backslash = ["\\n]
 
 @inside_string  = ($printable # ["\\] | \\$backslash)
 
-@iden  = $idchar+
+@iden  = [a-zA-Z][a-zA-Z_0-9]*
 
-@number         = $digit+(\.$digit+)?
+@number         = [0-9]+(\.[0-9]+)?
 @char           = \'$printable\'
 
 @string         = \"@inside_string*\"

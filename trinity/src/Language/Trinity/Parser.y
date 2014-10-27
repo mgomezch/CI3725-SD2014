@@ -75,8 +75,8 @@ import Language.Trinity.Lexer.Token
   "'"        { TkTranspose       }
 
 
-%nonassoc "|"
-%nonassoc "&"
+%left "|"
+%left "&"
 %nonassoc "==" "/=" "<" ">" "<=" ">="
 %right    "not"
 %left     "+" "-" ".+." ".-."
