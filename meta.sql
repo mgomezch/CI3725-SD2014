@@ -1,8 +1,3 @@
--- Semilla seleccionada aleatoriamente:
-select setseed(0.42);
-
-
-
 create table "Evaluador"
   ( "nombre" text not null
   , primary key ("nombre")
@@ -164,40 +159,40 @@ with
   "Datos de entregas" as (
     select *
     from
-      ( values               (      1, 'Etapa 1 del proyecto', array['0436808'           ], 'Haskell' )
-      ,                      (      2, 'Etapa 1 del proyecto', array['0538087', '0910502'], 'Python'  )
-      ,                      (      3, 'Etapa 1 del proyecto', array['0740913', '0910894'], 'Python'  )
-      ,                      (      4, 'Etapa 1 del proyecto', array['0741206'           ], 'Haskell' )
-      ,                      (      5, 'Etapa 1 del proyecto', array['0741249'           ], 'Python'  )
-      ,                      (      6, 'Etapa 1 del proyecto', array['0741329'           ], 'Python'  )
-      ,                      (      7, 'Etapa 1 del proyecto', array['0741654', '0810462'], 'Python'  )
-      ,                      (      8, 'Etapa 1 del proyecto', array['0810223', '0810479'], 'Ruby'    )
-      ,                      (      9, 'Etapa 1 del proyecto', array['0810398', '0910430'], 'Haskell' )
-      ,                      (     10, 'Etapa 1 del proyecto', array['0910029', '0910794'], 'Python'  )
-      ,                      (     11, 'Etapa 1 del proyecto', array['0910123', '0910381'], 'Ruby'    )
-      ,                      (     12, 'Etapa 1 del proyecto', array['0910219', '0910832'], 'Python'  )
-      ,                      (     13, 'Etapa 1 del proyecto', array['0910236'           ], 'Python'  )
-      ,                      (     14, 'Etapa 1 del proyecto', array['0910270'           ], 'Python'  )
-      ,                      (     15, 'Etapa 1 del proyecto', array['0910329', '1010088'], 'Python'  )
-      ,                      (     16, 'Etapa 1 del proyecto', array['0910672', '0910971'], 'Python'  )
-      ,                      (     17, 'Etapa 1 del proyecto', array['0910797', '1010539'], 'Python'  )
-      ,                      (     18, 'Etapa 1 del proyecto', array['0911020'           ], 'Haskell' )
-      ,                      (     19, 'Etapa 1 del proyecto', array['0911207'           ], 'Python'  )
-      ,                      (     20, 'Etapa 1 del proyecto', array['1010132', '1010640'], 'Python'  )
-      ,                      (     21, 'Etapa 1 del proyecto', array['1010231', '1011247'], 'Python'  )
-      ,                      (     22, 'Etapa 1 del proyecto', array['1010353', '1010738'], 'Python'  )
-      ,                      (     23, 'Etapa 1 del proyecto', array['1010445', '1010534'], 'Python'  )
-      ,                      (     24, 'Etapa 1 del proyecto', array['1010608', '1010757'], 'Ruby'    )
-      ,                      (     25, 'Etapa 1 del proyecto', array['1010898'           ], 'Python'  )
-      ) as "Datos de entrega"("grupo", "evaluación"          , "integrantes"              , "lenguaje")
+      ( values               (      1, array['0436808'           ], 'Haskell' )
+      ,                      (      2, array['0538087', '0910502'], 'Python'  )
+      ,                      (      3, array['0740913', '0910894'], 'Python'  )
+      ,                      (      4, array['0741206'           ], 'Haskell' )
+      ,                      (      5, array['0741249'           ], 'Python'  )
+      ,                      (      6, array['0741329'           ], 'Python'  )
+      ,                      (      7, array['0741654', '0810462'], 'Python'  )
+      ,                      (      8, array['0810223', '0810479'], 'Ruby'    )
+      ,                      (      9, array['0810398', '0910430'], 'Haskell' )
+      ,                      (     10, array['0910029', '0910794'], 'Python'  )
+      ,                      (     11, array['0910123', '0910381'], 'Ruby'    )
+      ,                      (     12, array['0910219', '0910832'], 'Python'  )
+      ,                      (     13, array['0910236'           ], 'Python'  )
+      ,                      (     14, array['0910270'           ], 'Python'  )
+      ,                      (     15, array['0910329', '1010088'], 'Python'  )
+      ,                      (     16, array['0910672', '0910971'], 'Python'  )
+      ,                      (     17, array['0910797', '1010539'], 'Python'  )
+      ,                      (     18, array['0911020'           ], 'Haskell' )
+      ,                      (     19, array['0911207'           ], 'Python'  )
+      ,                      (     20, array['1010132', '1010640'], 'Python'  )
+      ,                      (     21, array['1010231', '1011247'], 'Python'  )
+      ,                      (     22, array['1010353', '1010738'], 'Python'  )
+      ,                      (     23, array['1010445', '1010534'], 'Python'  )
+      ,                      (     24, array['1010608', '1010757'], 'Ruby'    )
+      ,                      (     25, array['1010898'           ], 'Python'  )
+      ) as "Datos de entrega"("grupo", "integrantes"              , "lenguaje")
   ),
   "Insertar grupos" as (
     insert into "Grupo" ("número", "evaluación", "lenguaje")
-    select "grupo", "evaluación", "lenguaje" :: "lenguaje"
+    select "grupo", 'Etapa 1 del proyecto', "lenguaje" :: "lenguaje"
     from   "Datos de entregas"
   )
 insert into "Integrante" ("estudiante", "grupo", "evaluación")
-select "Datos de entregas"."integrantes"[i], "grupo", "evaluación"
+select "Datos de entregas"."integrantes"[i], "grupo", 'Etapa 1 del proyecto'
 from   "Datos de entregas"
 ,      generate_subscripts("Datos de entregas"."integrantes", 1) as i
 ;
@@ -214,62 +209,6 @@ create table "Asignación de evaluación"
   )
 ;
 
--- Matteo evalúa el proyecto de Reinaldo y Vanessa (entrega 1):
-insert into     "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
-select distinct "Grupo"."número", "Grupo"."evaluación", 'Matteo Ferrando'
-from
-  "Grupo"
-    inner join "Integrante" on true
-      and "Grupo"."número"     = "Integrante"."grupo"
-      and "Grupo"."evaluación" = "Integrante"."evaluación"
-      inner join "Estudiante" on true
-        and "Integrante"."estudiante" = "Estudiante"."carné"
-        and "Estudiante"."nombre" in
-          ( 'Reinaldo Enrique Verdugo Chávez'
-          , 'Vanessa Eleonora Rívas Serio'
-          )
-    inner join "Evaluación" on true
-      and "Grupo"."evaluación" = "Evaluación"."nombre"
-      and "Evaluación"."nombre" = 'Etapa 1 del proyecto'
-;
-
--- Los demás proyectos en Ruby son de David (entrega 1):
-insert into "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
-select "Grupo"."número", "Grupo"."evaluación", 'David Lilue'
-from
-  "Grupo"
-    inner join "Evaluación" on true
-      and "Grupo"."evaluación" = "Evaluación"."nombre"
-      and "Evaluación"."nombre" = 'Etapa 1 del proyecto'
-    left outer join "Asignación de evaluación" on true
-      and "Grupo"."número"     = "Asignación de evaluación"."grupo"
-      and "Grupo"."evaluación" = "Asignación de evaluación"."evaluación"
-where true
-  and "Grupo"."evaluación" = 'Etapa 1 del proyecto'
-  and "Grupo"."lenguaje"   = 'Ruby'
-  and "Asignación de evaluación"."evaluador" is null
-;
-
--- Los de Haskell son para Manuel y Matteo (entrega 1):
-insert into "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
-select
-  "Grupo"."número",
-  "Grupo"."evaluación",
-  case        row_number() over (order by random()) % 2
-  when 0 then 'Manuel Gómez'
-  else        'Matteo Ferrando'
-  end
-from
-  "Grupo"
-    left outer join "Asignación de evaluación" on true
-      and "Grupo"."número"     = "Asignación de evaluación"."grupo"
-      and "Grupo"."evaluación" = "Asignación de evaluación"."evaluación"
-where true
-  and "Grupo"."evaluación" = 'Etapa 1 del proyecto'
-  and "Grupo"."lenguaje"   = 'Haskell'
-;
-
--- Los demás se distribuyen hasta que todos tengan más o menos la misma cantidad:
 create function "Asignar evaluación"("evaluación" text)
 returns void
 language "plpgsql"
@@ -277,6 +216,62 @@ as $$
   declare
     "entrega" record;
   begin
+    -- Matteo evalúa el proyecto de Reinaldo y Vanessa (entrega 1):
+    insert into     "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
+    select distinct "Grupo"."número", "Grupo"."evaluación", 'Matteo Ferrando'
+    from
+      "Grupo"
+        inner join "Integrante" on true
+          and "Grupo"."número"     = "Integrante"."grupo"
+          and "Grupo"."evaluación" = "Integrante"."evaluación"
+          inner join "Estudiante" on true
+            and "Integrante"."estudiante" = "Estudiante"."carné"
+            and "Estudiante"."nombre" in
+              ( 'Reinaldo Enrique Verdugo Chávez'
+              , 'Vanessa Eleonora Rívas Serio'
+              )
+        inner join "Evaluación" on true
+          and "Grupo"."evaluación" = "Evaluación"."nombre"
+          and "Evaluación"."nombre" = $1
+    ;
+
+    -- Los demás proyectos en Ruby son de David (entrega 1):
+    insert into "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
+    select "Grupo"."número", "Grupo"."evaluación", 'David Lilue'
+    from
+      "Grupo"
+        inner join "Evaluación" on true
+          and "Grupo"."evaluación" = "Evaluación"."nombre"
+          and "Evaluación"."nombre" = $1
+        left outer join "Asignación de evaluación" on true
+          and "Grupo"."número"     = "Asignación de evaluación"."grupo"
+          and "Grupo"."evaluación" = "Asignación de evaluación"."evaluación"
+    where true
+      and "Grupo"."evaluación" = $1
+      and "Grupo"."lenguaje"   = 'Ruby'
+      and "Asignación de evaluación"."evaluador" is null
+    ;
+
+    -- Los de Haskell son para Manuel y Matteo (entrega 1):
+    insert into "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
+    select
+      "Grupo"."número",
+      "Grupo"."evaluación",
+      case        row_number() over (order by random()) % 2
+      when 0 then 'Manuel Gómez'
+      else        'Matteo Ferrando'
+      end
+    from
+      "Grupo"
+        left outer join "Asignación de evaluación" on true
+          and "Grupo"."número"     = "Asignación de evaluación"."grupo"
+          and "Grupo"."evaluación" = "Asignación de evaluación"."evaluación"
+    where true
+      and "Grupo"."evaluación" = $1
+      and "Grupo"."lenguaje"   = 'Haskell'
+    ;
+
+    -- Los demás se distribuyen hasta que todos tengan más o menos la misma cantidad:
     for "entrega" in
       select
         "Grupo"."número" as "grupo",
@@ -310,24 +305,154 @@ as $$
   end;
 $$;
 
+
+
+---
+
+
+
+-- Etapa 1 del proyecto:
+
+-- Semilla seleccionada aleatoriamente:
+select setseed(0.42);
+
 select "Asignar evaluación"('Etapa 1 del proyecto');
 
--- Mostrar asignación:
-select
-  string_agg("Integrante"."estudiante", ', ') as "Grupo",
-  "Asignación de evaluación"."evaluador" as "Evaluador"
+
+
+create table "Calificación"
+  ( "grupo"        integer      not null
+  , "evaluación"   text         not null
+  , "calificación" numeric(3,2) not null check (("calificación" * 4) % 1 = 0)
+  , primary key ("grupo", "evaluación")
+  , foreign key ("grupo", "evaluación") references "Grupo" ("número", "evaluación")
+  )
+;
+
+insert into "Calificación" ("grupo", "evaluación", "calificación")
+select "grupo", 'Etapa 1 del proyecto', "calificación"
 from
-  "Grupo"
-    inner join "Asignación de evaluación" on true
-      and "Grupo"."número" = "Asignación de evaluación"."grupo"
-      and "Grupo"."evaluación" = "Asignación de evaluación"."evaluación"
+  -- David Lilue
+  ( values     (      3,           1.25)
+  ,            (      8,           3.25)
+  ,            (     11,           4.75)
+  ,            (     14,           4.75)
+  ,            (     15,           5.00)
+  ,            (     17,           5.00)
+
+  -- Karen Troiano
+  ,            (      2,           4.25)
+  ,            (      5,           5.00)
+  ,            (     12,           4.50)
+  ,            (     19,           4.75)
+  ,            (     21,           5.00)
+  ,            (     23,           4.25)
+
+  -- Manuel Gómez
+  ,            (      6,           1.50)
+  ,            (      9,           4.75)
+  ,            (     10,           2.00)
+  ,            (     18,           4.75)
+  ,            (     20,           2.50)
+  ,            (     25,           3.25)
+
+  -- Matteo Ferrando
+  ,            (      1,           4.50)
+  ,            (      4,           5.00)
+  ,            (      7,           3.00)
+  ,            (     16,           4.50)
+  ,            (     13,           4.00)
+  ,            (     22,           4.25)
+  ,            (     24,           2.50)
+
+  ) as "Datos" ("grupo", "calificación")
+;
+
+
+
+---
+
+
+
+-- Etapa 2 del proyecto:
+/*
+with
+  "Datos de entregas" as (
+    select *
+    from
+      ( values               
+      ) as "Datos de entrega"("grupo", "integrantes"              , "lenguaje")
+  ),
+  "Insertar grupos" as (
+    insert into "Grupo" ("número", "evaluación", "lenguaje")
+    select "grupo", 'Etapa 2 del proyecto', "lenguaje" :: "lenguaje"
+    from   "Datos de entregas"
+  )
+insert into "Integrante" ("estudiante", "grupo", "evaluación")
+select "Datos de entregas"."integrantes"[i], "grupo", 'Etapa 2 del proyecto'
+from   "Datos de entregas"
+,      generate_subscripts("Datos de entregas"."integrantes", 1) as i
+;
+
+select "Asignar evaluación"('Etapa 2 del proyecto');
+*/
+
+
+---
+
+
+
+create view
+  "Calificaciones individuales"
+as
+  select
+    "Estudiante"."carné"                   as "Carné",
+    "Estudiante"."nombre"                  as "Nombre",
+    "Grupo"."número"                       as "Número de grupo",
+    "Asignación de evaluación"."evaluador" as "Evaluador",
+    "Grupo"."lenguaje"                     as "Lenguaje",
+    "Evaluación"."nombre"                  as "Evaluación",
+    "Calificación"."calificación"          as "Calificación"
+  from
+    "Grupo"
+      inner join "Evaluación" on true
+        and "Grupo"."evaluación" = "Evaluación"."nombre"
+      inner join "Asignación de evaluación" on true
+        and "Grupo"."número" = "Asignación de evaluación"."grupo"
+        and "Grupo"."evaluación" = "Asignación de evaluación"."evaluación"
       inner join "Integrante" on true
         and "Grupo"."número" = "Integrante"."grupo"
         and "Grupo"."evaluación" = "Integrante"."evaluación"
-group by
-  "Grupo"."número",
-  "Grupo"."evaluación",
-  "Asignación de evaluación"."evaluador"
-order by
-  "Evaluador"
+          inner join "Estudiante" on true
+            and "Integrante"."estudiante" = "Estudiante"."carné"
+          left outer join "Calificación" on true
+            and "Grupo"."número" = "Calificación"."grupo"
+            and "Grupo"."evaluación" = "Calificación"."evaluación"
+  order by
+    "Carné",
+    "Evaluación"
+;
+
+create view
+  "Calificaciones grupales"
+as
+  select
+    "Número de grupo",
+    string_agg("Carné" , ', ') as "Grupo",
+    string_agg("Nombre", ', ') as "Nombres",
+    "Evaluador",
+    "Lenguaje",
+    "Evaluación",
+    "Calificación"
+  from
+    "Calificaciones individuales"
+  group by
+    "Número de grupo",
+    "Evaluador",
+    "Lenguaje",
+    "Evaluación",
+    "Calificación"
+  order by
+    "Número de grupo",
+    "Evaluación"
 ;
