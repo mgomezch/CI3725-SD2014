@@ -216,7 +216,7 @@ as $$
   declare
     "entrega" record;
   begin
-    -- Matteo evalúa el proyecto de Reinaldo y Vanessa (entrega 1):
+    -- Matteo evalúa el proyecto de Reinaldo y Vanessa:
     insert into     "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
     select distinct "Grupo"."número", "Grupo"."evaluación", 'Matteo Ferrando'
     from
@@ -235,7 +235,7 @@ as $$
           and "Evaluación"."nombre" = $1
     ;
 
-    -- Los demás proyectos en Ruby son de David (entrega 1):
+    -- Los demás proyectos en Ruby son de David:
     insert into "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
     select "Grupo"."número", "Grupo"."evaluación", 'David Lilue'
     from
@@ -252,7 +252,7 @@ as $$
       and "Asignación de evaluación"."evaluador" is null
     ;
 
-    -- Los de Haskell son para Manuel y Matteo (entrega 1):
+    -- Los de Haskell son para Manuel y Matteo:
     insert into "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
     select
       "Grupo"."número",
@@ -375,12 +375,30 @@ from
 
 
 -- Etapa 2 del proyecto:
-/*
 with
   "Datos de entregas" as (
     select *
     from
-      ( values               
+      ( values               (      1, array['0436808'           ], 'Haskell' )
+      ,                      (      2, array['0538087', '0910502'], 'Python'  )
+      ,                      (      4, array['0741206'           ], 'Haskell' )
+      ,                      (      7, array['0741654', '0810462'], 'Python'  )
+      ,                      (      8, array['0810223', '0810479'], 'Ruby'    )
+      ,                      (      9, array['0810398', '0910430'], 'Haskell' )
+      ,                      (     10, array['0910029', '0910794'], 'Python'  )
+      ,                      (     12, array['0910219', '0910832'], 'Python'  )
+      ,                      (     14, array['0910270'           ], 'Python'  )
+      ,                      (     15, array['0910329', '1010088'], 'Python'  )
+      ,                      (     16, array['0910672', '0910971'], 'Python'  )
+      ,                      (     17, array['0910797', '1010539'], 'Python'  )
+      ,                      (     18, array['0911020'           ], 'Haskell' )
+      ,                      (     19, array['0911207'           ], 'Python'  )
+      ,                      (     20, array['1010132', '1010640'], 'Python'  )
+      ,                      (     21, array['1010231', '1011247'], 'Python'  )
+      ,                      (     22, array['1010353', '1010738'], 'Python'  )
+      ,                      (     23, array['1010445', '1010534'], 'Python'  )
+      ,                      (     24, array['1010608', '1010757'], 'Ruby'    )
+      ,                      (     25, array['1010898'           ], 'Python'  )
       ) as "Datos de entrega"("grupo", "integrantes"              , "lenguaje")
   ),
   "Insertar grupos" as (
@@ -395,7 +413,7 @@ from   "Datos de entregas"
 ;
 
 select "Asignar evaluación"('Etapa 2 del proyecto');
-*/
+
 
 
 ---
