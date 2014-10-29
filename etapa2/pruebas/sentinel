@@ -1171,30 +1171,149 @@ main <<'EOF'
 
 # §2.4.7¶2: Especificación de función
 
-# TODO: shouldpass
+§2.4.7¶2 @ shouldpass @ function foo(                                   ) return boolean      begin                         end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(                                   ) return number       begin                         end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(                                   ) return matrix(2, 2) begin                         end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(                                   ) return row(42)      begin                         end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(                                   ) return col(42)      begin                         end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(                                   ) return boolean      begin 42;                     end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(                                   ) return boolean      begin 42; 42;                 end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(                                   ) return boolean      begin 42; 42; 42;             end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(number bar                         ) return boolean      begin                         end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(number bar, number baz             ) return boolean      begin                         end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(number bar, number baz, number quux) return boolean      begin                         end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(number bar, number baz, number quux) return boolean      begin bar;                    end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(number bar, number baz, number quux) return boolean      begin bar + baz;              end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(number bar, number baz, number quux) return boolean      begin bar + baz + quux;       end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(number foo                         ) return boolean      begin                         end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(number foo                         ) return boolean      begin -foo;                   end; program end;
+§2.4.7¶2 @ shouldpass @ function foo(number foo                         ) return boolean      begin use number foo; in end; end; program end;
 
-# TODO: contexterr
+§2.4.7¶2 @ contexterr @ function foo(number bar, number bar             ) return boolean      begin                         end; program end;
+§2.4.7¶2 @ contexterr @ function foo(boolean      bar                   ) return boolean      begin -bar;                   end; program end;
+§2.4.7¶2 @ contexterr @ function foo(number       bar                   ) return boolean      begin not bar;                end; program end;
+§2.4.7¶2 @ contexterr @ function foo(row(42)      bar                   ) return boolean      begin not bar;                end; program end;
+§2.4.7¶2 @ contexterr @ function foo(col(42)      bar                   ) return boolean      begin not bar;                end; program end;
+§2.4.7¶2 @ contexterr @ function foo(matrix(2, 2) bar                   ) return boolean      begin not bar;                end; program end;
 
-# TODO: shouldfail
+§2.4.7¶2 @ shouldfail @ function foo(42                         ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(foo                        ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(boolean                    ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(number                     ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(row(c)                     ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(col(r)                     ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(row(42)                    ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(col(42)                    ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(  boolean foo  boolean bar ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(, boolean foo, boolean bar ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(  boolean foo, boolean bar,) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @          foo() return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function    () return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo ) return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo(  return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo   return boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo()        boolean begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo() return         begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo()                begin end; program end;
+§2.4.7¶2 @ shouldfail @ function foo() return boolean       end; program end;
+§2.4.7¶2 @ shouldfail @ function foo() return boolean begin    ; program end;
+§2.4.7¶2 @ shouldfail @ function foo() return boolean          ; program end;
+§2.4.7¶2 @ shouldfail @ function foo() return boolean begin function bar() return boolean begin end; end; program end;
+§2.4.7¶2 @ shouldfail @ program function foo() return boolean begin end; end;
+§2.4.7¶2 @ shouldfail @ program use boolean function; in end; end;
+§2.4.7¶2 @ shouldfail @ program use boolean return  ; in end; end;
+§2.4.7¶2 @ shouldfail @ program use boolean begin   ; in end; end;
 
 
 
 # §2.4.7¶5: Expresión de llamada a función
 
-# TODO: shouldpass
+§2.4.7¶5 @ shouldpass @ function foo(                                         ) return boolean      begin not foo();                 end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(                                         ) return number       begin -   foo();                 end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(                                         ) return matrix(2, 2) begin foo()' + foo();            end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(                                         ) return row   (2   ) begin foo() + { 42 , 42 };       end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(                                         ) return col   (2   ) begin foo() + { 42 : 42 };       end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(number bar                               ) return boolean      begin not foo(42              ); end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(number bar, boolean baz                  ) return boolean      begin not foo(42, true        ); end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(number bar, boolean baz, matrix(1,1) quux) return boolean      begin not foo(42, true, { 42 }); end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(number bar, number  baz, number      quux) return boolean      begin not foo(42, 42, 42      ); end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(number bar                               ) return boolean      begin not foo(42 + 42         ); end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(number bar, number  baz                  ) return boolean      begin not foo(42 + 42, 42 + 42); end; program end;
+§2.4.7¶5 @ shouldpass @ function foo(number bar                               ) return number       begin -   foo(foo(42)         ); end; program end;
 
-# TODO: contexterr
+§2.4.7¶5 @ contexterr @ program foo(); end;
+§2.4.7¶5 @ contexterr @ function foo(                                         ) return boolean      begin -   foo();                 end; program end;
+§2.4.7¶5 @ contexterr @ function foo(                                         ) return number       begin not foo();                 end; program end;
+§2.4.7¶5 @ contexterr @ function foo(                                         ) return matrix(2, 3) begin foo()' + foo();            end; program end;
+§2.4.7¶5 @ contexterr @ function foo(                                         ) return row   (2   ) begin foo() + { 42 : 42 };       end; program end;
+§2.4.7¶5 @ contexterr @ function foo(                                         ) return col   (2   ) begin foo() + { 42 , 42 };       end; program end;
+§2.4.7¶5 @ contexterr @ function foo(number bar                               ) return boolean      begin not foo(true            ); end; program end;
+§2.4.7¶5 @ contexterr @ function foo(number bar, boolean baz                  ) return boolean      begin not foo(true, true      ); end; program end;
+§2.4.7¶5 @ contexterr @ function foo(number bar, boolean baz                  ) return boolean      begin not foo(42, true        ); end; program end;
+§2.4.7¶5 @ contexterr @ function foo(number bar, boolean baz, matrix(2,2) quux) return boolean      begin not foo(42, true, { 42 }); end; program end;
+§2.4.7¶5 @ contexterr @ function foo(number bar                               ) return boolean      begin not foo(42 < 42         ); end; program end;
+§2.4.7¶5 @ contexterr @ function foo(number bar, number  baz                  ) return boolean      begin not foo(42 < 42, 42 + 42); end; program end;
+§2.4.7¶5 @ contexterr @ function foo(number bar, number  baz                  ) return boolean      begin not foo(42 + 42, 42 < 42); end; program end;
+§2.4.7¶5 @ contexterr @ function foo(number bar                               ) return boolean      begin not foo(foo(42)         ); end; program end;
 
-# TODO: shouldfail
+§2.4.7¶5 @ shouldfail @ function foo(number bar, number baz, number quux) return boolean begin foo(  42  42  42 ); end; program end;
+§2.4.7¶5 @ shouldfail @ function foo(number bar, number baz, number quux) return boolean begin foo(, 42, 42, 42 ); end; program end;
+§2.4.7¶5 @ shouldfail @ function foo(number bar, number baz, number quux) return boolean begin foo(  42, 42  42 ); end; program end;
+§2.4.7¶5 @ shouldfail @ function foo(number bar                         ) return boolean begin foo(42            ; end; program end;
+§2.4.7¶5 @ shouldfail @ function foo(number bar                         ) return boolean begin foo 42)           ; end; program end;
+§2.4.7¶5 @ shouldfail @ function foo(number bar                         ) return boolean begin foo 42            ; end; program end;
 
 
 
 # §2.4.7¶6: Expresión de retorno
 
-# TODO: shouldpass
+§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin return true;                   end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin return not true;               end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return number       begin return 42;                     end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return number       begin return 42 + 42;                end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return matrix(1, 1) begin return { 42 };                 end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return matrix(1, 1) begin return { 42 } + { 42 };        end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return row   (2   ) begin return { 42 , 42 };            end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return col   (2   ) begin return { 42 : 42 };            end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin return true; return true;      end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin use in       return true; end; end; program end;
+§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin if true then return true; end; end; program end;
 
-# TODO: contexterr
+§2.4.7¶5 @ contexterr @ function foo() return number       begin return true;                   end; program end;
+§2.4.7¶5 @ contexterr @ function foo() return number       begin return not true;               end; program end;
+§2.4.7¶5 @ contexterr @ function foo() return boolean      begin return 42;                     end; program end;
+§2.4.7¶5 @ contexterr @ function foo() return boolean      begin return 42 + 42;                end; program end;
+§2.4.7¶5 @ contexterr @ function foo() return matrix(2, 2) begin return { 42 };                 end; program end;
+§2.4.7¶5 @ contexterr @ function foo() return matrix(2, 2) begin return { 42 } + { 42 };        end; program end;
+§2.4.7¶5 @ contexterr @ function foo() return row   (3   ) begin return { 42 , 42 };            end; program end;
+§2.4.7¶5 @ contexterr @ function foo() return col   (3   ) begin return { 42 : 42 };            end; program end;
+§2.4.7¶5 @ contexterr @ program return 42; end;
+§2.4.7¶5 @ contexterr @ program use in       return 42; end; end;
+§2.4.7¶5 @ contexterr @ program if true then return 42; end; end;
 
-# TODO: shouldfail
+§2.4.7¶5 @ shouldfail @ function foo() return boolean      begin return     ;                   end; program end;
+§2.4.7¶5 @ shouldfail @ function foo() return boolean      begin return true                    end; program end;
+§2.4.7¶5 @ shouldfail @ program use boolean return; in end; end;
+
+
+
+# §2.4.8¶1: Programa
+
+§2.4.8¶1 @ contexterr @ function foo() return boolean begin end; function foo(          ) return boolean begin end; program end;
+§2.4.8¶1 @ contexterr @ function foo() return boolean begin end; function foo(number bar) return boolean begin end; program end;
+§2.4.8¶1 @ contexterr @ function foo() return boolean begin end; function foo(          ) return number  begin end; program end;
+
+§2.4.8¶1 @ shouldfail @ 
+§2.4.8¶1 @ shouldfail @ program
+§2.4.8¶1 @ shouldfail @ program;
+§2.4.8¶1 @ shouldfail @ program 42
+§2.4.8¶1 @ shouldfail @ program 42;
+§2.4.8¶1 @ shouldfail @ program end
+§2.4.8¶1 @ shouldfail @ program 42; end
+§2.4.8¶1 @ shouldfail @ 42;
+§2.4.8¶1 @ shouldfail @ print 42;
+§2.4.8¶1 @ shouldfail @ ;
+§2.4.8¶1 @ shouldfail @ end;
+§2.4.8¶1 @ shouldfail @ program use boolean program; in end; end;
 
 EOF
