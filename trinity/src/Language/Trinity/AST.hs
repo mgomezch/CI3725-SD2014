@@ -64,6 +64,7 @@ data Instruction
   | IWhile            { condition :: Expression, body :: Instructions }
   | IFor              { counter :: Identifier, source :: Expression, body :: Instructions }
   | IBlock            { declarations :: Declarations, body :: Instructions }
+  | IReturn           { expression :: Expression }
   deriving (Eq, Read, Show)
 
 type Prints = Seq Print

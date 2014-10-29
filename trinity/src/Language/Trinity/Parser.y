@@ -100,6 +100,7 @@ Instruction: Expression                                                         
            | "while" Expression "do" Instructions "end"                                        { IWhile             $2 $4       }
            | "for" identifier "in" Expression "do" Instructions "end"                          { IFor               $2 $4 $6    }
            | "use" Declarations "in" Instructions "end"                                        { IBlock             $2 $4       }
+           | "return" Expression                                                               { IReturn            $2          }
 Declaration: Type identifier                                                                   { DDefault           $1 $2       }
            | Type identifier "=" Expression                                                    { DInitialize        $1 $2 $4    }
 Type       : "number"                                                                          { TNumber                        }
@@ -150,8 +151,8 @@ Arguments : Arguments1  { $1 } | { empty }
 Functions   : Functions        Function    ";" { $1 |> $2 } |            { empty        }
 Instructions: Instructions     Instruction ";" { $1 |> $2 } |            { empty        }
 Declarations: Declarations     Declaration ";" { $1 |> $2 } |            { empty        }
-Parameters1 : Parameters   "," Parameter       { $1 |> $3 } | Parameter  { singleton $1 }
-Arguments1  : Arguments    "," Expression      { $1 |> $3 } | Expression { singleton $1 }
+Parameters1 : Parameters1  "," Parameter       { $1 |> $3 } | Parameter  { singleton $1 }
+Arguments1  : Arguments1   "," Expression      { $1 |> $3 } | Expression { singleton $1 }
 Prints      : Prints       "," Print           { $1 |> $3 } | Print      { singleton $1 }
 Rows        : Rows         ":" Columns         { $1 |> $3 } | Columns    { singleton $1 }
 Columns     : Columns      "," Expression      { $1 |> $3 } | Expression { singleton $1 }
