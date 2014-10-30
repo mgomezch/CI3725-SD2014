@@ -1,6 +1,6 @@
 % Trinity
 % Analizador de contexto
-% Versión 1 - \today
+% Versión 2 - \today
 
 - - -
 
@@ -17,7 +17,13 @@
 4.  Los requerimientos establecidos por este documento se dividen en dos secciones: los *requerimientos generales*, que aplican para el proyecto en general y en todas sus etapas, y los *requerimientos específicos*, que aplican únicamente para la etapa específica correspondiente a este documento.
 
 
+## Resumen de cambios
 
+### Versión 2
+
+1.  Se agregó el resumen de cambios.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+2.  Se agregó la §3.16 con la nueva fecha de entrega para la tercera etapa del proyecto.
 
 
 
@@ -257,3 +263,5 @@
         Error: La expresión `not true` tiene el tipo `boolean`, y se esperaba el tipo `number`.
 
 15. Tanto los códigos asociados a cada alcance, como el formato exacto de salida para la información de cada alcance y sus tablas de símbolos, y los mensajes asociados a cada tipo de error de contexto, quedan a su criterio — se requiere únicamente que contengan al menos la información requerida e ilustrada en estos ejemplos.
+
+16. Se ha prorrogado la entrega de la tercera etapa.  Deberá enviar su entrega antes de la medianoche al final del domingo 2014-11-02 en hora legal de Venezuela.
