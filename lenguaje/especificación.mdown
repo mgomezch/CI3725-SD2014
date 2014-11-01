@@ -1,6 +1,6 @@
 % Trinity
 % Especificación del lenguaje
-% Versión 5 — \today
+% Versión 6 — \today
 
 - - -
 
@@ -116,20 +116,35 @@
 
 ### Versión 4
 
-1.  El ejemplo en la §2.4.3 mostraba sintaxis inválida en declaraciones de la forma `number x, y;` y `boolean x, y;` que sugerían que era una construcción sintáctica válida en *Trinity* incluir múltiples nombres en una secuencia separada por comas en una misma declaración.  Esta sintaxis **no** es válida en *Trinity*, y el ejemplo fue corregido.
+1.  El ejemplo en la §2.4¶3 mostraba sintaxis inválida en declaraciones de la forma `number x, y;` y `boolean x, y;` que sugerían que era una construcción sintáctica válida en *Trinity* incluir múltiples nombres en una secuencia separada por comas en una misma declaración.  Esta sintaxis **no** es válida en *Trinity*, y el ejemplo fue corregido.
 
-2.  El ejemplo en la §2.4.3 mostraba sintaxis inválida en una declaración de la forma `bool x;` que sugería que era una construcción sintáctica válida en *Trinity* especificar el tipo booleano con la palabra clave `bool`.  Esta sintaxis **no** es válida en *Trinity*, `bool` **no** es una palabra reservada ni especifica un tipo, y el ejemplo fue corregido para usar la palabra reservada `boolean` que sí es correcta.
+2.  El ejemplo en la §2.4¶3 mostraba sintaxis inválida en una declaración de la forma `bool x;` que sugería que era una construcción sintáctica válida en *Trinity* especificar el tipo booleano con la palabra clave `bool`.  Esta sintaxis **no** es válida en *Trinity*, `bool` **no** es una palabra reservada ni especifica un tipo, y el ejemplo fue corregido para usar la palabra reservada `boolean` que sí es correcta.
 
 
 ### Versión 5
 
-1.  Se modificó la §2.3.2.6 para aclarar que la precedencia de los operadores sufijos es la misma.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+1.  Se modificó la §2.3.2¶6 para aclarar que la precedencia de los operadores sufijos es la misma.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
 
-2.  Se especificó que los operadores unarios son asociativos en la §2.3.1.1, la §2.3.2.2, la §2.3.2.6 y la §2.3.4.1.
+2.  Se especificó que los operadores unarios son asociativos en la §2.3.1¶1, la §2.3.2¶2, la §2.3.2¶6 y la §2.3.4¶1.
 
-3.  Se modificó la §2.3.1.2 y la §2.3.1.5 para especificar que los operadores de comparación tienen menor precedencia que el operador `not` y mayor precedencia que el operador `&`.
+3.  Se modificó la §2.3.1¶2 y la §2.3.1¶5 para especificar que los operadores de comparación tienen menor precedencia que el operador `not` y mayor precedencia que el operador `&`.
 
-4.  Se especificó en la §2.3.3.3 que los operadores cruzados tienen la misma precedencia y asociatividad que sus operadores escalares correspondientes.
+4.  Se especificó en la §2.3.3¶3 que los operadores cruzados tienen la misma precedencia y asociatividad que sus operadores escalares correspondientes.
+
+
+### Versión 6
+
+1.  Se cambió la notación para referencias a secciones y párrafos de este documento.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+2.  Se hicieron cambios menores de redacción en varias secciones (§2.3¶2, §2.4.1¶1, §2.4.1¶2, §2.4.2¶4, §2.4.2¶8).  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+3.  Se especificó la precedencia del operador definido en la §2.3.2¶2.
+
+4.  Se especificó el orden de evaluación de las expresiones en la secuencia de elementos de impresión en las instrucciones de impresión en la §2.4.1¶1.
+
+5.  Se corrigió el ejemplo de la §2.4.2¶6 que era inválido por faltarle un caracter punto y coma.
+
+6.  Se corrigió el criterio de correctitud de tipos de la multiplicación de matrices en la §2.3.2¶3.
 
 
 
@@ -189,7 +204,7 @@
 
 ## Composición
 
-1.  A partir de una expresión `e` de cualquier tipo, se puede formar la expresión `(e)` del mismo tipo, cuyo valor será el valor de `e`.  Por ejemplo, `42`, `(42)` y `((42))` son expresiones que valen lo mismo, al igual que `true` y `(true)`, y al igual que `{ 1, 2, 3 }` y `({ 1, (2), ((3)) })`.  La evaluación de `(e)` procede con la evaluación de `e`, y al ésta producir su valor, se calcula y produce el resultado correspondiente, que en este caso es el mismo.  Esta forma de evaluación será referida en el resto de este documento como «estricta».
+1.  A partir de una expresión `e` de cualquier tipo, se puede formar la expresión `(e)` del mismo tipo, cuyo valor será el valor de `e`.  Por ejemplo, `42`, `(42)` y `((42))` son expresiones que valen lo mismo, al igual que `true` y `(true)`, y al igual que `{ 1, 2, 3 }` y `({ 1, (2), ((3)) })`.  La evaluación de `(e)` procede con la evaluación de `e`, y al ésta producir su valor, produce el resultado correspondiente, que en este caso es el mismo.  Esta forma de evaluación será referida en el resto de este documento como «estricta».
 
 
 ### Operadores lógicos
@@ -249,9 +264,9 @@
 
         { 1, 2 } + { 2, 1 } == { 3, 3 }
 
-2.  A partir de una expresión `e` de un tipo aritmético, se puede formar la expresión `- e` del mismo tipo, cuyo valor será el inverso aditivo de `e`.  Este operador es asociativo.  La evaluación de `- e` es estricta.  Por ejemplo, `-3 + 3 == 0`.
+2.  A partir de una expresión `e` de un tipo aritmético, se puede formar la expresión `- e` del mismo tipo, cuyo valor será el inverso aditivo de `e`.  Este operador es asociativo.  La precedencia de este operador es mayor que la del operador `*`.  La evaluación de `- e` es estricta.  Por ejemplo, `-3 + 3 == 0`.
 
-3.  A partir de expresiones `e`~1~ del tipo especificado por `matrix(r, c)` y `e`~2~ del tipo especificado por `matrix(r, p)`, se puede formar la expresión `e`~1~ `*` `e`~2~ del tipo especificado por `matrix(c, p)`, cuyo valor se calculará como el producto matricial de los valores de `e`~1~ y `e`~2~.  Por otra parte, a partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se puede formar la expresión `e`~1~ `*` `e`~2~ del tipo numérico, cuyo valor será el producto (escalar) de los valores de `e`~1~ y `e`~2~.  El operador `*` tiene asociatividad izquierda y mayor precedencia que los operadores `+` y `-`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+3.  A partir de expresiones `e`~1~ del tipo especificado por `matrix(r, c)` y `e`~2~ del tipo especificado por `matrix(c, p)`, se puede formar la expresión `e`~1~ `*` `e`~2~ del tipo especificado por `matrix(r, p)`, cuyo valor se calculará como el producto matricial de los valores de `e`~1~ y `e`~2~.  Por otra parte, a partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se puede formar la expresión `e`~1~ `*` `e`~2~ del tipo numérico, cuyo valor será el producto (escalar) de los valores de `e`~1~ y `e`~2~.  El operador `*` tiene asociatividad izquierda y mayor precedencia que los operadores `+` y `-`.  La evaluación de estas expresiones es estricta de izquierda a derecha.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
@@ -294,7 +309,7 @@
 
 2.  Cada operador binario entre cantidades escalares que resulte en otra cantidad escalar tiene un operador cruzado correspondiente.  Los operadores cruzados `.+.`, `.-.`, `.*.`, `./.`, `.%.`, `.div.` y `.mod.` corresponden a los operadores escalares `+`, `-`, `*`, `/`, `%`, `div` y `mod`, respectivamente.
 
-3.  A partir de expresiones `e`~1~ del tipo numérico y `e`~2~ de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e`~1~ `.op.` `e`~2~ y `e`~2~ `.op.` `e`~1~ del mismo tipo de `e`~2~, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `x`~uv~ de `e`~2~ por `e`~i~ `op` `x`~uv~ o `x`~uv~ `op` `e`~i~, respectivamente, donde `op` es el operador escalar correspondiente a `.op.`.  Las precedencias y asociatividades de los operadores cruzados son iguales a las de los operadores escalares correspondientes.  La evaluación de estas expresiones es estricta de izquierda a derecha.
+3.  A partir de expresiones `e`~1~ del tipo numérico y `e`~2~ de un tipo matricial, y para cada operador cruzado `.op.`, se pueden formar las expresiones `e`~1~ `.op.` `e`~2~ y `e`~2~ `.op.` `e`~1~ del mismo tipo de `e`~2~, cuyos valores son la cantidad matricial obtenida al sustituir cada componente `x`~uv~ de `e`~2~ por `e`~i~ `op` `x`~uv~ o `x`~uv~ `op` `e`~i~, respectivamente, donde `op` es el operador escalar correspondiente a `.op.`.  Las precedencias y asociatividades de los operadores cruzados son iguales a las de los operadores escalares correspondientes.  La evaluación de estas expresiones es estricta de izquierda a derecha.  <!-- TODO: Y la evaluación de las operaciones internas, en qué orden se hace?  Igual el único efecto que pueden tener es el de alguna de las operaciones es `/`, `%`, `div` o `mod`, y que el operando derecho de alguna sea cero, así que el programa abortaría.  No hay distinción entre estos efectos así que no importaría mucho especificar un orden. -->
 
 4.  Por ejemplo,
 
@@ -368,7 +383,7 @@
 
 ### Impresión
 
-1.  A partir de una o más expresiones `e`~1~, `e`~2~. …, `e`~n~ de tipos cualesquiera, o literales de cadena de caracteres, se puede formar la instrucción de impresión `print e`~1~`, e`~2~` … e`~n~`;`.  La ejecución de esta instrucción procede con la evaluación de `e`~1~, `e`~2~ … `e`~n~ en el orden de aparición, exceptuando aquellas que no sean expresiones sino literales de cadena de caracteres,  y al todas haber producido sus valores, se escribe a la salida estándar del programa una representación textual de los valores obtenidos, o el texto representado por los literales de cadena de caracteres, en el mismo orden de aparición.  El lexema `print` es una palabra reservada.
+1.  A partir de una o más expresiones `e`~1~, `e`~2~. …, `e`~n~ de tipos cualesquiera, o literales de cadena de caracteres, se puede formar la instrucción de impresión `print e`~1~`, e`~2~`, …, e`~n~`;`.  La ejecución de esta instrucción procede con la evaluación de las expresiones `e`~1~, `e`~2~, …, `e`~n~ en el orden de aparición, exceptuando aquellas que no sean expresiones sino literales de cadena de caracteres, y al todas haber producido sus valores, se escribe a la salida estándar del programa una representación textual de los valores obtenidos, o el texto representado por los literales de cadena de caracteres, en el mismo orden de aparición.  La evaluación de una expresión en la secuencia no comienza hasta que hayan producido sus valores todas las que le preceden.  El lexema `print` es una palabra reservada.
 
     Por ejemplo,
 
@@ -376,7 +391,7 @@
 
     es una instrucción de impresión.
 
-2.  La instrucción de impresión **no imprime un salto de línea** después de haber impreso la lista completa de argumentos, ni entre la impresión correspondiente a cada uno de sus argumentos.
+2.  La instrucción de impresión **no imprime un salto de línea** después de haber impreso la lista completa de argumentos, ni entre la impresión correspondiente a cada una de las expresiones o literales de cadenas de caracteres en la secuencia.
 
 3.  En un literal de cadena de caracteres, el caracter *backslash* solo puede ocurrir como parte de una secuencia de escape.  Una secuencia de escape es un caracter *backslash* seguido de una `n` (`\n`), otro *backslash* (`\\`), o una comilla doble (`\"`).  Una secuencia de escape representa texto: `\n` representa un fin de línea, `\\` representa un caracter *backslash*, y `\"` representa una comilla doble.
 
@@ -402,7 +417,7 @@
 
 3.  No es necesario que se reconozcan letras con tildes ni la letra eñe — *Trinity* solo requiere identificadores hechos de caracteres definidos por *Unicode* en el *script* [*Basic Latin*](http://www.unicode.org/charts/PDF/U0000.pdf) (equivalente a ASCII).
 
-4.  Una variable es una ubicación de memoria modificable que hace referencia a un valor.  Pueden hacerse disponibles variables en las instrucciones contenidas directa o indirectamente en una secuencia de instrucciones particular, así como en las expresiones que éstas contengan.  Para hacerlo, la secuencia de instrucciones se incluye en una instrucción de bloque que declare esa variable y la asocie a un nombre.  Las instrucciones incluidas en ese bloque, y las expresiones que contengan, podrán referirse a la variable a través del nombre que se le asoció en el bloque donde fue declarada.
+4.  Una variable es una ubicación de memoria modificable que almacena un valor.  Pueden hacerse disponibles variables en las instrucciones contenidas directa o indirectamente en una secuencia de instrucciones particular, así como en las expresiones que éstas contengan.  Para hacerlo, esa secuencia de instrucciones se incluye en una instrucción de bloque que declare esa variable y la asocie a un nombre.  Las instrucciones incluidas en ese bloque, y las instrucciones y expresiones que éstas contengan, podrán referirse a la variable a través del nombre que se le asoció en el bloque donde fue declarada.
 
 5.  A partir de un identificador `i`, una especificación de tipo `t` y una expresión `e` del tipo especificado por `t`, se puede formar una declaración de variable `t i;` o una declaración de variable con inicialización `t i = e;`.  A partir de cero o más declaraciones `d`~1~, `d`~2~, …, `d`~n~ donde no se declare el mismo identificador en más de una declaración, se puede formar una secuencia de declaraciones `d`~1~ `d`~2~ … `d`~n~ simplemente escribiéndolas en secuencia.
 
@@ -425,7 +440,7 @@
           number tau = 6.2831853;
           matrix(2, 2) m = { 4, 2 : 1, 1/2 };
         in
-          print tau, m[2, 1]
+          print tau, m[2, 1];
         end;
 
     Los lexemas `use`, `in` y `end` son palabras reservadas.
@@ -458,13 +473,12 @@
     *   Las instrucciones de impresión que imprimen 1, 2, 8 y 9 no están dentro de la extensión del contexto de ninguna declaración.
 
     *   Las instrucciones que imprimen 3, 4 y 7 están dentro de la extensión del contexto en el cual los identificadores `foo` y `bar` están asociados a un número y a una matriz, respectivamente.
-:w
 
     *   Las instrucciones que imprimen 5 y 6 están dentro de la extensión del contexto antes mencionado, y también dentro de la extensión del contexto establecido por la declaración `boolean foo;`.
 
     Debido a la regla de sustitución, en el alcance del contexto interior (establecido por la declaración `boolean foo;`), la asociación del identificador `foo` con una variable del tipo booleano *sustituye* a la asociación del contexto exterior de `foo` con una variable del tipo numérico.  Esa sustitución *únicamente* aplica para las instrucciones que imprimen 5 y 6.
 
-8.  A partir de un identificador `i`, puede utilizarse `i` como una expresión de uso de variable, que es del tipo `t`, en la extensión de un contexto producido por una declaración que asocie al identificador `i` con el tipo `t`.
+8.  A partir de un identificador `i`, puede utilizarse `i` como una expresión de uso de variable, que es del tipo `t`, en la extensión de un contexto producido por una declaración que asocie al identificador `i` con el tipo `t` donde ese sea el contexto más interior de una declaración con ese identificador.
 
     Por ejemplo, el programa
 
@@ -818,7 +832,7 @@ Sin embargo, una especificación de esta forma podría sugerir una implantación
 
     así que los usos de `bar` como expresión del tipo numérico y `baz` como expresión del tipo booleano son válidos.
 
-4.  A partir de cero o más expresiones `e`~1~, `e`~2~, … `e`~n~, se puede formar una secuencia de argumentos `e`~1~`,` `e`~2~`,` … `e`~n~ escribiéndolas en secuencia separadas por comas.
+4.  A partir de cero o más expresiones `e`~1~, `e`~2~, …, `e`~n~, se puede formar una secuencia de argumentos `e`~1~`,` `e`~2~`,` …`,` `e`~n~ escribiéndolas en secuencia separadas por comas.
 
 5.  Si en un programa ocurre una especificación de función con el identificador `f`, la secuencia de especificaciones de parámetros `ps`, la especificación de tipo `r` (llamada su especificación de tipo de retorno) y la secuencia de instrucciones `is`, se puede formar la expresión de llamada a función `f(as)` del tipo `r` a partir de una secuencia de argumentos `as` cuyas expresiones son de igual número y con tipos iguales a los de las especificaciones de parámetros en las posiciones respectivas de `ps`.
 
