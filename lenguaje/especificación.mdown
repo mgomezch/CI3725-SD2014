@@ -1,6 +1,6 @@
 % Trinity
 % Especificación del lenguaje
-% Versión 6 — \today
+% Versión 7 — \today
 
 - - -
 
@@ -145,6 +145,11 @@
 5.  Se corrigió el ejemplo de la §2.4.2¶6 que era inválido por faltarle un caracter punto y coma.
 
 6.  Se corrigió el criterio de correctitud de tipos de la multiplicación de matrices en la §2.3.2¶3.
+
+
+### Versión 7
+
+1.  Se corrigieron dos errores de sintaxis en el código usado para especificar el comportamiento de la iteración determinada en la §2.4.6¶2.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
 
 
 
@@ -630,7 +635,7 @@
         use
           number n;
         in
-        set x = 27;
+          set x = 27;
           use
             number n;
           in
@@ -766,11 +771,11 @@
                   in
                     is
                   end;
-                  fresh_c = fresh_c + 1;
+                  set fresh_c = fresh_c + 1;
                 end;
               end;
             end;
-            fresh_r = fresh_r + 1;
+            set fresh_r = fresh_r + 1;
           end;
         end;
 
