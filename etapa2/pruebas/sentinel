@@ -1,21 +1,31 @@
 #!/usr/bin/env bash
 
-trinity="${1}"
+trinity="${1:-./trinity}"
+quiet="${quiet:-false}"
 
 function main() {
   rm -rf   shouldpass contexterr shouldfail
   mkdir -p shouldpass contexterr shouldfail
 
-  awk 'BEGIN { FS = " @ "; NR = 29 }; /^\s*[^#]/ { print $3 > $2 "/" NR "-" $1 }'
+  awk 'BEGIN { FS = " @ "; NR = 39 }; /^\s*[^#]/ { print $3 > $2 "/" NR "-" $1 }'
 
-  good=0; total=0;
-  for test in shouldpass/* contexterr/*; do if ! "${trinity}" "${test}" &> /dev/null; then echo "Unexpected failure: ${test}"; else good="$((${good} + 1))"; fi; total="$((${total} + 1))"; done
-  for test in shouldfail/*             ; do if   "${trinity}" "${test}" &> /dev/null; then echo "Unexpected pass:    ${test}"; else good="$((${good} + 1))"; fi; total="$((${total} + 1))"; done
+  shouldpass="$(ls shouldpass | sort -n | sed 's@^@shouldpass/@')"
+  contexterr="$(ls contexterr | sort -n | sed 's@^@contexterr/@')"
+  shouldfail="$(ls shouldfail | sort -n | sed 's@^@shouldfail/@')"
+
+  total=0
+  expect_pass=0; passed_as_expected=0; for test in ${shouldpass}              ; do echo -ne "\r\e[K[${total}] Running: ${test}…"; if ! "${trinity}" "${test}" &> /dev/null; then [[ "${quiet}" == 'true' ]] || echo ' unexpected failure'; else passed_as_expected="$((${passed_as_expected} + 1))"; fi; total="$((${total} + 1))"; expect_pass="$((${expect_pass} + 1))"; done
+  expect_fail=0; failed_as_expected=0; for test in ${shouldfail} ${contexterr}; do echo -ne "\r\e[K[${total}] Running: ${test}…"; if   "${trinity}" "${test}" &> /dev/null; then [[ "${quiet}" == 'true' ]] || echo ' unexpected pass'   ; else failed_as_expected="$((${failed_as_expected} + 1))"; fi; total="$((${total} + 1))"; expect_fail="$((${expect_fail} + 1))"; done
+  good="$((${passed_as_expected} + ${failed_as_expected}))"
+  total="$((${expect_pass} + ${expect_fail}))"
 
   column -t <<EOF
-total: ${total}
-good: ${good} ($((100*${good}/${total}))%)
-bad: $((${total} - ${good})) ($((100*(${total}-${good})/${total}))%)
+
+total tests: ${total}
+good tests: ${good} ($((100*${good}/${total}))%)
+bad tests: $((${total} - ${good})) ($((100*(${total}-${good})/${total}))%)
+expected passes:   ${passed_as_expected}/${expect_pass} ($((100*${passed_as_expected}/${expect_pass}))%)
+expected failures: ${failed_as_expected}/${expect_fail} ($((100*${failed_as_expected}/${expect_fail}))%)
 EOF
 
   if [[ ${good} == ${total} ]]
@@ -412,16 +422,6 @@ main <<'EOF'
 §2.3.2¶1 @ contexterr @ program 42                - { 42 }           ; end;
 §2.3.2¶1 @ contexterr @ program { 42 }            + 42               ; end;
 §2.3.2¶1 @ contexterr @ program { 42 }            - 42               ; end;
-§2.3.2¶1 @ contexterr @ program { 42 }            + { 42 }           ; end;
-§2.3.2¶1 @ contexterr @ program { 42 }            - { 42 }           ; end;
-§2.3.2¶1 @ contexterr @ program ({ 42 } + { 42 }) + { 42 }           ; end;
-§2.3.2¶1 @ contexterr @ program ({ 42 } + { 42 }) - { 42 }           ; end;
-§2.3.2¶1 @ contexterr @ program ({ 42 } - { 42 }) + { 42 }           ; end;
-§2.3.2¶1 @ contexterr @ program ({ 42 } - { 42 }) - { 42 }           ; end;
-§2.3.2¶1 @ contexterr @ program { 42 }            + ({ 42 } + { 42 }); end;
-§2.3.2¶1 @ contexterr @ program { 42 }            + ({ 42 } - { 42 }); end;
-§2.3.2¶1 @ contexterr @ program { 42 }            - ({ 42 } + { 42 }); end;
-§2.3.2¶1 @ contexterr @ program { 42 }            - ({ 42 } - { 42 }); end;
 
 §2.3.2¶1 @ shouldfail @ program        +       ; end;
 §2.3.2¶1 @ shouldfail @ program 42     +       ; end;
@@ -809,14 +809,17 @@ main <<'EOF'
 
 # §2.4.2¶5: Secuencia de declaraciones
 
+# TODO: declaraciones con inicialización!
 §2.4.2¶5 @ shouldpass @ program use                                        in end; end;
 §2.4.2¶5 @ shouldpass @ program use boolean foo;                           in end; end;
 §2.4.2¶5 @ shouldpass @ program use              boolean bar;              in end; end;
 §2.4.2¶5 @ shouldpass @ program use boolean foo; boolean bar;              in end; end;
 §2.4.2¶5 @ shouldpass @ program use boolean foo; boolean bar; boolean baz; in end; end;
 
+# TODO: declaraciones con inicialización con errores de tipo!
 §2.4.2¶2 @ contexterr @ program use boolean  foo; boolean foo; in end; end;
 
+# TODO: declaraciones con inicialización con errores de sintaxis!
 §2.4.2¶5 @ shouldfail @ program use 42                 in end;
 §2.4.2¶5 @ shouldfail @ program use true               in end;
 §2.4.2¶5 @ shouldfail @ program use 42               ; in end;
@@ -1249,7 +1252,7 @@ main <<'EOF'
 §2.4.7¶5 @ contexterr @ function foo(                                         ) return col   (2   ) begin foo() + { 42 , 42 };       end; program end;
 §2.4.7¶5 @ contexterr @ function foo(number bar                               ) return boolean      begin not foo(true            ); end; program end;
 §2.4.7¶5 @ contexterr @ function foo(number bar, boolean baz                  ) return boolean      begin not foo(true, true      ); end; program end;
-§2.4.7¶5 @ contexterr @ function foo(number bar, boolean baz                  ) return boolean      begin not foo(42, true        ); end; program end;
+§2.4.7¶5 @ contexterr @ function foo(number bar, boolean baz                  ) return boolean      begin not foo(42, { 42 }      ); end; program end;
 §2.4.7¶5 @ contexterr @ function foo(number bar, boolean baz, matrix(2,2) quux) return boolean      begin not foo(42, true, { 42 }); end; program end;
 §2.4.7¶5 @ contexterr @ function foo(number bar                               ) return boolean      begin not foo(42 < 42         ); end; program end;
 §2.4.7¶5 @ contexterr @ function foo(number bar, number  baz                  ) return boolean      begin not foo(42 < 42, 42 + 42); end; program end;
@@ -1267,33 +1270,33 @@ main <<'EOF'
 
 # §2.4.7¶6: Expresión de retorno
 
-§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin return true;                   end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin return not true;               end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return number       begin return 42;                     end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return number       begin return 42 + 42;                end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return matrix(1, 1) begin return { 42 };                 end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return matrix(1, 1) begin return { 42 } + { 42 };        end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return row   (2   ) begin return { 42 , 42 };            end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return col   (2   ) begin return { 42 : 42 };            end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin return true; return true;      end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin use in       return true; end; end; program end;
-§2.4.7¶5 @ shouldpass @ function foo() return boolean      begin if true then return true; end; end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return boolean      begin return true;                   end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return boolean      begin return not true;               end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return number       begin return 42;                     end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return number       begin return 42 + 42;                end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return matrix(1, 1) begin return { 42 };                 end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return matrix(1, 1) begin return { 42 } + { 42 };        end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return row   (2   ) begin return { 42 , 42 };            end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return col   (2   ) begin return { 42 : 42 };            end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return boolean      begin return true; return true;      end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return boolean      begin use in       return true; end; end; program end;
+§2.4.7¶6 @ shouldpass @ function foo() return boolean      begin if true then return true; end; end; program end;
 
-§2.4.7¶5 @ contexterr @ function foo() return number       begin return true;                   end; program end;
-§2.4.7¶5 @ contexterr @ function foo() return number       begin return not true;               end; program end;
-§2.4.7¶5 @ contexterr @ function foo() return boolean      begin return 42;                     end; program end;
-§2.4.7¶5 @ contexterr @ function foo() return boolean      begin return 42 + 42;                end; program end;
-§2.4.7¶5 @ contexterr @ function foo() return matrix(2, 2) begin return { 42 };                 end; program end;
-§2.4.7¶5 @ contexterr @ function foo() return matrix(2, 2) begin return { 42 } + { 42 };        end; program end;
-§2.4.7¶5 @ contexterr @ function foo() return row   (3   ) begin return { 42 , 42 };            end; program end;
-§2.4.7¶5 @ contexterr @ function foo() return col   (3   ) begin return { 42 : 42 };            end; program end;
-§2.4.7¶5 @ contexterr @ program return 42; end;
-§2.4.7¶5 @ contexterr @ program use in       return 42; end; end;
-§2.4.7¶5 @ contexterr @ program if true then return 42; end; end;
+§2.4.7¶6 @ contexterr @ function foo() return number       begin return true;                   end; program end;
+§2.4.7¶6 @ contexterr @ function foo() return number       begin return not true;               end; program end;
+§2.4.7¶6 @ contexterr @ function foo() return boolean      begin return 42;                     end; program end;
+§2.4.7¶6 @ contexterr @ function foo() return boolean      begin return 42 + 42;                end; program end;
+§2.4.7¶6 @ contexterr @ function foo() return matrix(2, 2) begin return { 42 };                 end; program end;
+§2.4.7¶6 @ contexterr @ function foo() return matrix(2, 2) begin return { 42 } + { 42 };        end; program end;
+§2.4.7¶6 @ contexterr @ function foo() return row   (3   ) begin return { 42 , 42 };            end; program end;
+§2.4.7¶6 @ contexterr @ function foo() return col   (3   ) begin return { 42 : 42 };            end; program end;
+§2.4.7¶6 @ contexterr @ program return 42; end;
+§2.4.7¶6 @ contexterr @ program use in       return 42; end; end;
+§2.4.7¶6 @ contexterr @ program if true then return 42; end; end;
 
-§2.4.7¶5 @ shouldfail @ function foo() return boolean      begin return     ;                   end; program end;
-§2.4.7¶5 @ shouldfail @ function foo() return boolean      begin return true                    end; program end;
-§2.4.7¶5 @ shouldfail @ program use boolean return; in end; end;
+§2.4.7¶6 @ shouldfail @ function foo() return boolean      begin return     ;                   end; program end;
+§2.4.7¶6 @ shouldfail @ function foo() return boolean      begin return true                    end; program end;
+§2.4.7¶6 @ shouldfail @ program use boolean return; in end; end;
 
 
 
