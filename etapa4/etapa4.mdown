@@ -1,0 +1,97 @@
+% Trinity
+% Intérprete
+% Versión 1 - \today
+
+- - -
+
+# Introducción
+
+*Esta sección es informativa.*
+
+1.  Este documento especifica los requerimientos para la cuarta etapa del desarrollo de un intérprete para el lenguaje de programación *Trinity*.
+
+2.  Todas las versiones publicadas de este documento, incluyendo la más reciente y vigente, se encontrarán siempre disponibles en la página de la práctica, en <http://ldc.usb.ve/~05-38235/cursos/CI3725/2014SD/>.
+
+3.  La especificación del lenguaje de programación *Trinity* **no** es parte de este documento — la definición del lenguaje se encuentra en un documento separado.  Solo una parte de lo especificado en *ese* documento debe ser implantada para la etapa especificada en *este* documento.  La especificación del lenguaje está disponible en la página del curso.
+
+4.  Los requerimientos establecidos por este documento se dividen en dos secciones: los *requerimientos generales*, que aplican para el proyecto en general y en todas sus etapas, y los *requerimientos específicos*, que aplican únicamente para la etapa específica correspondiente a este documento.
+
+
+
+
+
+# Requerimientos generales
+
+*Esta sección es normativa.*
+
+1.  En este curso, Ud. debe escribir un intérprete para el lenguaje de programación *Trinity* según lo especificado en el documento de especificación del lenguaje, este documento, y los documentos de requerimientos para las demás etapas del proyecto.
+
+2.  El proyecto se desarrollará en cuatro partes, a saber:
+
+    1.  El analizador lexicográfico,
+
+    2.  el analizador sintáctico,
+
+    3.  la tabla de símbolos y el análisis estático, y
+
+    4.  la ejecución de programas en forma interpretada.
+
+3.  Debe desarrollar su proyecto usando **uno** de los tres conjuntos de herramientas seleccionados para el curso:
+
+    1.  El lenguaje de programación *Haskell*, junto con el generador de analizadores lexicográficos *Alex* y el generador de analizadores sintácticos *Happy*.
+
+    2.  El lenguaje de programación *Ruby*, junto con el generador de analizadores sintácticos *Racc*.
+
+    3.  El lenguaje de programación *Python*, junto con el generador de analizadores sintácticos *PLY*.
+
+    Una vez seleccione un conjunto de herramientas para realizar su proyecto, deberá realizar las entregas de todas las etapas del proyecto con el mismo conjunto de herramientas.  No es factible y no se aceptará que se combinen herramientas ni que cambien sus herramientas una vez realizada la primera entrega.
+
+4.  Las entregas deben realizarse vía correo electrónico a los encargados de la práctica en un archivo adjunto de nombre `CI3725-2014SD-n-gg.tar.gz`, donde `gg` es su número de grupo con dos dígitos decimales, y `n` es el número de la etapa (entre 1 y 4).  El archivo deberá contener un directorio con todo lo necesario para compilar su proyecto y ejecutarlo.
+
+5.  No incluya en su entrega archivos producidos por herramientas generadoras de código ni compiladores que Ud. utilice para su proyecto, sino los archivos de fuente que Ud. escribió para suministrarle a esas herramientas.
+
+6.  Su proyecto debe incluir un `Makefile` que permita generar todo lo necesario para su ejecución al ejecutar el comando `make` en el directorio contenido en su entrega.  Si Ud. elige realizar su proyecto en *Haskell*, se acepta y se recomienda que utilice *Cabal* en vez de Make para especificar lo necesario para que su proyecto compile.
+
+7.  Es **deseable** que su proyecto funcione sin modificaciones en las computadoras del Laboratorio Docente de Computación.  Si su proyecto requiere alguna dependencia adicional por alguna situación excepcional, debe indicar las razones claramente al realizar su entrega y justificarlo en la documentación de su proyecto.
+
+8.  Una vez efectuada la generación de código y compilación correspondiente a su proyecto, éste debe poder ejecutarse con la orden `./trinity archivo.ty` desde el directorio raíz de su proyecto, donde `archivo.ty` será la ruta (relativa o absoluta) de un archivo de entrada para su proyecto.  En caso de que utilice *Cabal* para compilar su proyecto usando las herramientas de *Haskell*, es esperado y aceptable que el ejecutable se genere en las ubicaciones usuales de esa herramienta, y no es necesario que pueda ejecutarse con ese comando exacto.
+
+9.  Es un hecho común y natural del diseño y la implantación de lenguajes de programación que el diseño se modifique durante el desarrollo para adaptarse al contexto en el cual el lenguaje se utilizará, el cual es, en este caso, el curso.  En función de esto, tanto el documento de especificación del lenguaje como la especficación de cada etapa y entrega estarán sujetos a cambios y aclaratorias.  Los encargados de la práctica le notificarán de tales cambios y aclaratorias y actualizarán los documentos relevantes siempre que ocurran tales modificaciones a la especificación original.
+
+10. Se acostumbra a hacer públicas las respuestas a consultas hechas por el equipo de la práctica referentes a la especificación del lenguaje y a las condiciones de entrega de cada etapa, lo cual beneficia al resto de los alumnos.  Si Ud. hace una consulta y no desea que se publique, notifíquelo al hacer su consulta.  **Todas las consultas que se publiquen serán anónimas.**
+
+11. Deberá enviar sus entregas antes de la medianoche al final del día especificado para las entregas de cada etapa del proyecto, en hora legal de Venezuela.  Las entregas se realizarán siempre los viernes de la semana indicada para cada etapa.  Cualquier modificación al cronograma de entregas será notificada por los encargados de la práctica en la página del curso y en las horas de práctica.
+
+12. Las entregas de cada etapa se realizarán en las siguientes semanas y tendrán la siguiente ponderación correspondiente en la evaluación del curso:
+
+    Etapa Semana Valor (puntos) Asignación
+    ----- ------ -------------- ---------------------------------------------
+    1     3      5              Analizador lexicográfico
+    2     5      5              Analizador sintáctico
+    3     8      9              Tabla de símbolos y verificaciones estáticas
+    4     11     11             Ejecución con verificaciones dinámicas
+
+13. Deberá realizar el proyecto individualmente o en equipos de dos integrantes que estén actualmente cursando `CI3725`.
+
+
+# Requerimientos específicos
+
+*Esta sección es normativa.*
+
+1.  Para esta etapa del proyecto, Ud. debe escribir las rutinas necesarias para que su intérprete pueda ejecutar programas escritos en el lenguaje de programación *Trinity*.
+
+2.  Su intérprete debe poder ejecutar cualquier programa válido de *Trinity* según la semántica definida en la especificación del lenguaje.  Para realizar la ejecución, debe recorrer el árbol de sintaxis abstracta del programa a interpretar, y efectuar el comportamiento especificado por cada fragmento del programa en el orden correcto.
+
+3.  Al ejecutarse, su programa debe abrir el archivo de entrada e intentar efectuar el comportamiento especificado por el programa escrito en el archivo.  El archivo de entrada se encontrará en la ruta especificada en el primer y único argumento de línea de comando suministrado a su programa.
+
+4.  Su intérprete debe operar sobre un árbol de sintaxis abstracta obtenido de su analizador sintáctico y verificado como correcto por su analizador de contexto.
+
+5.  En caso de que el programa a interpretar tenga errores lexicográficos, debe reportarlos **todos** al igual que en la primera etapa; sin embargo, no debe indicar qué lexemas válidos fueron reconocidos.  En caso de que el programa a analizar no tenga errores lexicográficos y no tenga sintaxis válida, solo debe reportar el **primer** error de sintaxis que encuentre al igual que en la segunda etapa, y abortar la ejecución.  En caso de que el programa a analizar tenga sintaxis válida pero tenga errores de contexto, solo debe reportar el **primer** error de contexto que encuentre al igual que en la tercera etapa, y abortar la ejecución.
+
+6.  Únicamente debe iniciar la ejecución de programas de *Trinity* una vez que haya determinado que **no** contienen errores lexicográficos, de sintaxis ni de contexto.
+
+7.  Su intérprete no debe generar **ninguna** salida que no sea parte de un mensaje de error en la etapa de verificación estática, o de la salida producida por instrucciones de impresión ejecutadas durante la interpretación del programa.
+
+8.  Su programa debe terminar con un estado de salida distinto de cero si se encontraron errores **antes** del inicio de la ejecución del programa, durante el análisis lexicográfico, sintáctico o de contexto, y si no se encuentran errores en estas fases de la ejecución de su intérprete, entonces debe terminar **siempre** con el estado de salida cero.
+
+9.  El formato de salida exacto producido por la ejecución de instrucciones de impresión con cantidades matriciales se deja a su criterio.
