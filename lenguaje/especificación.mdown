@@ -1,6 +1,6 @@
 % Trinity
 % Especificación del lenguaje
-% Versión 7 — \today
+% Versión 8 — \today
 
 - - -
 
@@ -150,6 +150,11 @@
 ### Versión 7
 
 1.  Se corrigieron dos errores de sintaxis en el código usado para especificar el comportamiento de la iteración determinada en la §2.4.6¶2.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
+
+### Versión 8
+
+1.  El segundo ejemplo de la §2.4.4¶8 indicaba que podía hacerse una instrucción de asignación vectorial válida con un identificador asociado al tipo `matrix(2, 3)`, pero según la especificación de las instrucciones de asignación vectorial en la §2.4.4¶7, esa es una instrucción mal formada, ya que el identificador usado en una asignación vectorial debe estar asociado a un tipo que pueda ser especificado por `row(c)` o `col(r)` para algún `c` o `r`.  Se corrigió el ejemplo y se agregaron ejemplos adicionales a esa sección.
 
 
 
@@ -585,7 +590,7 @@
 
     a pesar de que la condición del ciclo no está sintacticamente después de la asignación, sigue estando la condición dentro de la extensión del contexto establecido por la declaración, así que la asociación del valor computado de `false & true` (que es igual al de `false`) aplica para la condición del ciclo, por lo cual el cuerpo del ciclo solo es ejecutado una vez.
 
-4.  Las declaraciones de variable con inicialización se comportan como asignaciones: ejecutar la instrucción donde ocurren ejecuta una asignación implícita al identificador de la declaración con la expresión dada en la inicialización.  Las asignaciones de inicialización se ejecutan en el mismo orden en que ocurren en la secuencia.
+3.  Las declaraciones de variable con inicialización se comportan como asignaciones: ejecutar la instrucción donde ocurren ejecuta una asignación implícita al identificador de la declaración con la expresión dada en la inicialización.  Las asignaciones de inicialización se ejecutan en el mismo orden en que ocurren en la secuencia.
 
     Por ejemplo, en
 
@@ -602,7 +607,7 @@
 
     el programa aborta antes de imprimir, ya que se ejecuta la asignación `set r = q[p] == 0`, lo cual evalúa la expresión `q[p] == 0`, que comienza por evaluar `q[p]`, pero `p` está asociada al valor de la expresión `42`, que sobrepasa los límites de la cantidad matricial de la cual se desea obtener un elemento.
 
-5.  Las declaraciones de variable sin inicialización se comportan como declaraciones de variable con inicialización donde la expresión de inicialización es un literal del tipo apropiado con valores por defecto.  La inicialización por defecto para el tipo booleano es con el literal `false`, para el tipo numérico es con el literal `0`, y para tipos matriciales, es un literal matricial de las dimensiones adecuadas al tipo y con `0` en todas las componentes.
+4.  Las declaraciones de variable sin inicialización se comportan como declaraciones de variable con inicialización donde la expresión de inicialización es un literal del tipo apropiado con valores por defecto.  La inicialización por defecto para el tipo booleano es con el literal `false`, para el tipo numérico es con el literal `0`, y para tipos matriciales, es un literal matricial de las dimensiones adecuadas al tipo y con `0` en todas las componentes.
 
     Por ejemplo, en
 
@@ -616,7 +621,7 @@
 
     el programa imprime `false`, `0`, y un representación textual de una matriz 3×2 llena de ceros.
 
-6.  La evaluación de una expresión de uso de variable con el identificador `i` produce como valor el último valor que se asociara a `i` en una instrucción de asignación en el mismo contexto más interior en ese punto que la declare, sea esa asignación implícita o explícita, y no tiene otros efectos.
+5.  La evaluación de una expresión de uso de variable con el identificador `i` produce como valor el último valor que se asociara a `i` en una instrucción de asignación en el mismo contexto más interior en ese punto que la declare, sea esa asignación implícita o explícita, y no tiene otros efectos.
 
     Por ejemplo, en
 
@@ -651,31 +656,51 @@
 
     el programa imprime `42` a pesar de que en el punto de ocurrencia del uso de variable con el identificador `n`, la última instrucción de asignación ejecutada le asoció el valor `54` — esa asignación, sin embargo, no es relevante para ese uso de variable, ya que el contexto más interior en esa asignación es distinto del contexto más interior en el uso de variable.
 
-7.  A partir de un identificador `m`, dos expresiones `i` y `j` del tipo numérico, y una expresión `e` del tipo numérico, puede utilizarse la instrucción de asignación matricial `set m[i, j] = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `m` con el tipo especificado por `matrix(r, c)`.
+6.  A partir de un identificador `m`, dos expresiones `i` y `j` del tipo numérico, y una expresión `e` del tipo numérico, puede utilizarse la instrucción de asignación matricial `set m[i, j] = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `m` con el tipo especificado por `matrix(r, c)`.
 
-8.  A partir de un identificador `v`, una expresión `i` del tipo numérico, y una expresión `e` del tipo numérico, puede formarse la instrucción de asignación vectorial `set v[i] = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `m` con el tipo especificado por `row(c)` o `col(r)`, y es equivalente a la instrucción de asignación matricial `set v[1, i] = e;` o `set v[i, 1] = e;`, respectivamente.
+7.  A partir de un identificador `v`, una expresión `i` del tipo numérico, y una expresión `e` del tipo numérico, puede formarse la instrucción de asignación vectorial `set v[i] = e;` como instrucción en la extensión de un contexto producido por una declaración que asocie al identificador `m` con el tipo especificado por `row(c)` o `col(r)`, y es equivalente a la instrucción de asignación matricial `set v[1, i] = e;` o `set v[i, 1] = e;`, respectivamente.
 
-9.  Por ejemplo,
+8.  Por ejemplo,
 
         use
           number n;
         in
-          set n[1] = 2;
+          set n[42] = 2;
         end;
 
-    es un programa mal formado, porque el identificador `n` se asocia con el tipo numérico en el contexto establecido por la declaración `number n;`, pero el tipo numérico no es especificado por una especificación de tipo de la forma `matrix(r, c)` —es decir, no es una variable matricial— así que no puede utilizarse en una instrucción de asignación matricial en la extensión de ese contexto.
+    es una instrucción mal formada, porque el identificador `n` se asocia con el tipo numérico en el contexto establecido por la declaración `number n;`, pero el tipo numérico no es especificado por una especificación de tipo de la forma `matrix(r, c)`, ni `row(c)` ni `col(r)` —es decir, no es una variable matricial—, así que no puede utilizarse como el identificador de una instrucción de asignación matricial en la región del programa donde ese sea el contexto más interior que asocie un tipo al identificador `n`.
 
-    En cambio,
+    Además,
 
         use
           matrix(2, 3) n;
         in
-          set n[1] = 2;
+          set n[42] = 2;
         end;
 
-    sí es un programa bien formado.
+    también es una instrucción mal formada, porque el identificador `n` se asocia con el tipo especificado por `matrix(2, 3)`, que no es un tipo especificado por `row(c)` ni por `col(r)` para ningún valor de `r` o `c`, así que no puede utilizarse como el identificador de una instrucción de asignación vectorial.
 
-10. La ejecución de `set m[i, j] = e` sigue los siguientes pasos:
+    Por otra parte,
+
+        use
+          matrix(1, 3) n;
+        in
+          set n[42] = 2;
+        end;
+
+    es una instrucción bien formada, ya que el tipo especificado por `matrix(1, 3)` es el tipo especificado por `row(3)`.
+
+    Por la misma razón,
+
+        use
+          row(3) n;
+        in
+          set n[42] = 2;
+        end;
+
+    también es una instrucción bien formada.
+
+9.  La ejecución de `set m[i, j] = e` sigue los siguientes pasos:
 
     1.  Se procede con la evaluación de `i`.
 
@@ -689,7 +714,7 @@
 
     6.  Una vez terminada y producido su valor, se asocia al identificador `m` un valor igual al que tuviera asociado en el momento de la asignación, salvo por el valor en la componente en la fila y columna especificadas por los valores producidos en la evaluación de las expresiones `i` y `j`.  El valor de esa componente del valor nuevo asociado a `m` será el valor producido por la evaluación de la expresión `e`.
 
-11. Por ejemplo, en
+10. Por ejemplo, en
 
         use
           matrix(2, 3) m = { 1, 2, 3 : 4, 5, 6 };
@@ -709,7 +734,7 @@
         |  1  2  3 |
         |  4  5 42 |
 
-12. Esta definición de asignación tiene como consecuencia que *Trinity* utiliza el modelo de valor.  Por ejemplo, en
+11. Esta definición de asignación tiene como consecuencia que *Trinity* utiliza el modelo de valor.  Por ejemplo, en
 
         use
           row(1) box1;
