@@ -1,0 +1,13 @@
+# A comment
+# Dat pun tho
+
+program
+  use
+    number n;
+  in
+    for n in {42} do
+      set n = 27;
+    end;
+  print "0 == ", n, "\n";
+  end;
+end;

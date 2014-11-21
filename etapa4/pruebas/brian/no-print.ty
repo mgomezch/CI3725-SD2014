@@ -1,0 +1,4 @@
+program
+  {42, 27}[1.5];
+  print "Esto no deberia imprimirse por indice no entero en la proyeccion\n";
+end;

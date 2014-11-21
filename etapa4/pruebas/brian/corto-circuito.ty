@@ -1,0 +1,12 @@
+function foo()
+return boolean
+begin
+  print "Esto no deberia imprimirse\n";
+  return true;
+end;
+
+program
+  print "No se deberia imprimir mas que esto\n";
+  true | foo();
+  false & foo();
+end;

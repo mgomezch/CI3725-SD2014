@@ -1,0 +1,12 @@
+program
+  use
+    matrix (1, 1) box1;
+  in
+    use
+      matrix (1, 1) box2 = box1;
+    in
+      set box1[1, 1] = 42;
+      print "0 == ", box2[1,1], "\n";
+    end;
+  end;
+end;

@@ -1,0 +1,11 @@
+program 
+  use 
+    number n; 
+  in 
+    for i in { 1, 2, 3 } do 
+      set n = n + 1; 
+      print n, "\n"; 
+    end; 
+    print n, "\n"; 
+  end; 
+end;

@@ -1,0 +1,9 @@
+function welp()
+return number
+begin
+  print "welp ", welp(); 
+end; 
+
+program
+  welp();
+end;

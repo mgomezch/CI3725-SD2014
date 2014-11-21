@@ -1,0 +1,57 @@
+function printer ()
+return number
+begin
+  print "Hola desde la funcion printer!\n";
+  return 42;
+end;
+
+program
+  print "Se probaran distintos tipos de instrucciones\n";
+  use
+    matrix(2,2) m = { 10,20 : 30,40 };
+    number n = 1;
+    boolean b = true;
+    number d = 2.36;
+  in
+    print "El while terminara cuando n = 4\n";
+    while b do
+      print n;
+      print "\n";
+      set n = n+1;
+      if n >= 4
+        then set b = false;
+      end;
+    end;
+    print "Termino el while\n", "Se invocara la funcion printer\n";
+    printer();
+    print "Se mostrara m operado con 2.36 usando los operadores cruzados\n";
+    print "La matriz m es:\n", m;
+    print "\n";
+    print "Suma\n",m.+.d;
+    print "\n";
+    print "Resta\n",m.-.d;
+    print "\n";
+    print "Multiplicacion\n",m.*.d;
+    print "\n";
+    print "Division Exacta\n",m./.d;
+    print "\n";
+    print "Resto Exacto\n",m.%.d;
+    print "\n";
+    print "Division Entera\n",m.div.d;
+    print "\n";
+    print "Resto Entero\n",m.mod.d;
+    print "\n";
+    print "Se mostrara los elementos de m usando proyeccion\n";
+    print m[1,1], "\n", m[1,2], "\n", m[2,1], "\n", m[2,2], "\n";
+    print "Se cambiara el elemento (1,2) a 3.14 de m usando proyeccion\n";
+    set m[1,2] = 3.14;
+    print m;
+    print "\n";
+    print "Se imprimira la suma de 20+10+5+5+1+1\n";
+    print 20+10+5+5+1+1;
+    print "\n";
+    print "\nSe imprimira la traspuesta de m\n\n", m';
+    print "\n";
+    print "Esto es una prueba para los distintos \"escapes\" en los strings\nAqui deberia haber un solo backslash \\\n";
+  end;
+end;

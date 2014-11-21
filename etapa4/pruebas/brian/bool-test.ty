@@ -1,0 +1,28 @@
+program
+  use
+    number m = 1;
+    number n = 2;
+    number r = 1.5;
+  in
+    print "Se probaran las operaciones booleanas\n";
+    if true & true
+      then if true | false
+            then if not false
+                  then if n > m & m < n & n >= r & r <= n
+                        then if -n < r
+                              then if not (n == m) & n /= m
+                                    then print "Todos las operaciones booleanas funcionan!\n";
+                                    else print "Fallo algun operador de igualdad\n";
+                                   end;
+                              else print "Fallo -n\n";
+                             end;
+                        else print "Fallo algun comparador aritmetico\n";
+                       end;
+                  else print "Not fallo\n";
+                 end;
+            else print "Or fallo\n";
+           end;
+      else print "And fallo\n";
+    end;
+  end;
+end;

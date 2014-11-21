@@ -1,0 +1,27 @@
+
+program
+  print "Going in\n";
+  use
+    boolean b = true;
+  in
+    print "b is: ", b;
+    use
+      number n;
+    in
+      print "1 level down\n";
+      use
+        number m;
+      in
+        print "We need to go deeper\n";
+        use
+          number l;
+        in
+          print "In too deep, we need to go back\n";
+          set b = false;
+          print "b is now: ", b;
+        end;
+      end;
+    end;
+    print "b is now: ", b;
+  end;
+end;

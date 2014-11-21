@@ -1,0 +1,30 @@
+function doMath(number x, number y, number z)
+return number
+begin
+  print "n+m-r: ",x+y-z,"\n";
+  print "n-m+r: ",x-y+z,"\n";
+  print "n+m*r: ",x+y*z,"\n";
+  print "(n+m)/r: ",(x+y)/z,"\n";
+  print "(n+m) div r: ",(x+y) div z,"\n";
+  print "(n+m)%r: ",(x+y)%z,"\n";
+  print "(n+m) mod r: ",(x+y) mod z,"\n";
+  return 42;
+end;
+
+program
+  use
+    number m;
+    number n;
+    number r;
+  in
+    print "What time is it?\nMath time!\n";
+    print "Valor para n: ";
+    read n;
+    print "\nValor para m: ";
+    read m;
+    print "\nValor para r: ";
+    read r;
+    print "\n";
+    doMath(n,m,r);
+  end;
+end;

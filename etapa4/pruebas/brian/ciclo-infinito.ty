@@ -1,0 +1,10 @@
+program
+  print "Uh oh\n";
+  use
+    boolean b = true;
+  in
+    while b do
+      print "Estoy atrapado en un ciclo infinito!\n";
+    end;
+  end;
+end;

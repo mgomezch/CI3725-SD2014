@@ -1,0 +1,32 @@
+function fib (number n, number res, number next)
+return number
+begin
+  if n == 1
+    then return res;
+  end;
+  return fib(n-1, next, res + next);
+end;
+
+program
+  print "Puede calcular cinco numeros de Fibonacci\n\n";
+  use
+    row(5) v;
+    number n;
+    number f;
+  in
+    for i in v do
+      print "Fibonacci de: ";
+      read n;
+      print "\nEligio ", n, "\n";
+      if n < 1
+        then print "\nEl numero debe ser mayor o igual a 1\n";
+        else use
+             in
+                set f = fib(n,0,1);
+                print "El numero de Fibonacci para el n escogido es ", f, "\n\n";
+             end;
+      end;
+    end;
+    print "Finalizando la ejecucion.\n";
+  end;
+end;

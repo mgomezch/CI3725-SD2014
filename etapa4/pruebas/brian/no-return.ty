@@ -1,0 +1,9 @@
+function foo()
+return number
+begin
+end;
+
+program
+  foo();
+  print "not reached\n";
+end;

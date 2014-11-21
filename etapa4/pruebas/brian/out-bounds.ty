@@ -1,0 +1,4 @@
+program
+  {42}[2];
+  print "index out of bounds";
+end;

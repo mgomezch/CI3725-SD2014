@@ -1,0 +1,12 @@
+program
+  use
+    number n;
+  in
+    use
+      number n;
+    in
+      set n = 42;
+    end;
+    print "Se deberia imprimir 0\n",n;
+  end;
+end;
