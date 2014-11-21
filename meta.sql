@@ -252,14 +252,20 @@ as $$
       and "Asignación de evaluación"."evaluador" is null
     ;
 
-    -- Los de Haskell son para Manuel y Matteo:
+    -- Los de Haskell son para Manuel y Matteo, excepto en las últimas dos etapas donde son solo para Manuel:
     insert into "Asignación de evaluación" ("grupo", "evaluación", "evaluador")
     select
       "Grupo"."número",
       "Grupo"."evaluación",
       case        row_number() over (order by random()) % 2
       when 0 then 'Manuel Gómez'
-      else        'Matteo Ferrando'
+      else (
+        case $1
+        when 'Etapa 1 del proyecto' then 'Matteo Ferrando'
+        when 'Etapa 2 del proyecto' then 'Matteo Ferrando'
+        else 'Manuel Gómez'
+        end
+      )
       end
     from
       "Grupo"
@@ -271,7 +277,7 @@ as $$
       and "Grupo"."lenguaje"   = 'Haskell'
     ;
 
-    -- Los demás se distribuyen hasta que todos tengan más o menos la misma cantidad:
+    -- Los demás se distribuyen hasta que todos tengan más o menos la misma cantidad, excepto en las últimas dos etapas donde Matteo no participa:
     for "entrega" in
       select
         "Grupo"."número" as "grupo",
@@ -296,6 +302,10 @@ as $$
             and "Asignación de evaluación"."evaluación" = $1
       group by
         "Evaluador"."nombre"
+      having false
+        or $1 = 'Etapa 1 del proyecto'
+        or $1 = 'Etapa 2 del proyecto'
+        or "Evaluador"."nombre" <> 'Matteo Ferrando'
       order by
         count("Asignación de evaluación"."evaluador") asc
       limit
@@ -416,6 +426,91 @@ select "Asignar evaluación"('Etapa 2 del proyecto');
 
 
 
+insert into "Calificación" ("grupo", "evaluación", "calificación")
+select "grupo", 'Etapa 2 del proyecto', "calificación"
+from
+  -- David Lilue
+  ( values     (      7,           2.25)
+  ,            (      8,           1.50)
+  ,            (     16,           2.50)
+  ,            (     17,           1.25)
+  ,            (     23,           1.75)
+
+  -- Karen Troiano
+  ,            (      2,           5.00)
+  ,            (     12,           2.00)
+  ,            (     15,           4.50)
+  ,            (     21,           4.25)
+  ,            (     22,           3.50)
+
+  -- Manuel Gómez
+  ,            (      4,           5.00)
+  ,            (      9,           4.75)
+  ,            (     20,           2.75)
+  ,            (     14,           0.00)
+  ,            (     25,           2.50)
+
+  -- Matteo Ferrando
+  ,            (      1,           4.75)
+  ,            (     10,           4.50)
+  ,            (     18,           4.00)
+  ,            (     19,           1.75)
+  ,            (     24,           1.50)
+
+  ) as "Datos" ("grupo", "calificación")
+;
+
+
+
+---
+
+
+
+-- Etapa 3 del proyecto:
+with
+  "Datos de entregas" as (
+    select *
+    from
+      ( values               (      2, array['0538087', '0910502'], 'Python'  )
+      ,                      (      4, array['0741206'           ], 'Haskell' )
+      ,                      (      8, array['0810223', '0810479'], 'Ruby'    )
+      ,                      (      9, array['0810398', '0910430'], 'Haskell' )
+      ,                      (     10, array['0910029', '0910794'], 'Python'  )
+      ,                      (     11, array['0910123', '0910381'], 'Ruby'    )
+      ,                      (     12, array['0910219', '0910832'], 'Python'  )
+      ,                      (     15, array['0910329', '1010088'], 'Python'  )
+      ,                      (     19, array['0911207'           ], 'Python'  )
+      ,                      (     20, array['1010132', '1010640'], 'Python'  )
+      ,                      (     21, array['1010231', '1011247'], 'Python'  )
+      ,                      (     22, array['1010353', '1010738'], 'Python'  )
+      ,                      (     23, array['1010445', '1010534'], 'Python'  )
+      ,                      (     24, array['1010608', '1010757'], 'Ruby'    )
+      ) as "Datos de entrega"("grupo", "integrantes"              , "lenguaje")
+  ),
+  "Insertar grupos" as (
+    insert into "Grupo" ("número", "evaluación", "lenguaje")
+    select "grupo", 'Etapa 3 del proyecto', "lenguaje" :: "lenguaje"
+    from   "Datos de entregas"
+  )
+insert into "Integrante" ("estudiante", "grupo", "evaluación")
+select "Datos de entregas"."integrantes"[i], "grupo", 'Etapa 3 del proyecto'
+from   "Datos de entregas"
+,      generate_subscripts("Datos de entregas"."integrantes", 1) as i
+;
+
+-- Manuel evaluó la tercera entrega del grupo 20:
+insert into "Asignación de evaluación"
+  ("grupo", "evaluación"          , "evaluador"   ) values
+  (     20, 'Etapa 3 del proyecto', 'Manuel Gómez')
+;
+
+select "Asignar evaluación"('Etapa 3 del proyecto');
+
+-- Notas de Fabio Alexánder Castro Martinez y Donato Rolo:
+-- Etapa 3: 6.50/9.00
+
+
+
 ---
 
 
@@ -474,3 +569,4 @@ as
     "Número de grupo",
     "Evaluación"
 ;
+
