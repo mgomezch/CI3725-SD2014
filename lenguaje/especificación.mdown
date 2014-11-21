@@ -1,6 +1,6 @@
 % Trinity
 % Especificación del lenguaje
-% Versión 8 — \today
+% Versión 9 — \today
 
 - - -
 
@@ -156,6 +156,10 @@
 
 1.  El segundo ejemplo de la §2.4.4¶8 indicaba que podía hacerse una instrucción de asignación vectorial válida con un identificador asociado al tipo `matrix(2, 3)`, pero según la especificación de las instrucciones de asignación vectorial en la §2.4.4¶7, esa es una instrucción mal formada, ya que el identificador usado en una asignación vectorial debe estar asociado a un tipo que pueda ser especificado por `row(c)` o `col(r)` para algún `c` o `r`.  Se corrigió el ejemplo y se agregaron ejemplos adicionales a esa sección.
 
+### Versión 9
+
+1.  Se agregaron ejemplos a las §2.3.2¶4–5, y se agregó una palabra a la especificación de la operación `mod`, para aclarar la diferencia entre las operaciones `%` y `mod`.  **Este cambio no modifica requerimientos previamente establecidos ni introduce nuevos.**
+
 
 
 - - -
@@ -292,13 +296,25 @@
 
         10.2 % 2 == 0.2
 
-5.  A partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e`~1~ `div` `e`~2~ y `e`~1~ `mod` `e`~2~, ambas del tipo numérico, cuyos valores serán, respectivamente, la división entera y el resto entero de la división entre los valores de `e`~1~ y `e`~2~.  Los operadores `div` y `mod` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha, salvo porque si el valor producido por la expresión en el operando derecho es cero, el programa abortará.  Los lexemas `div` y `mod` son palabras reservadas.
+        11.2 % 2 == 1.2
+
+        5 % 2.5 == 0
+
+        5.1 % 2.5 == 0.1
+
+        6.1 % 2.5 == 1.1
+
+5.  A partir de expresiones `e`~1~ y `e`~2~ del tipo numérico, se pueden formar las expresiones `e`~1~ `div` `e`~2~ y `e`~1~ `mod` `e`~2~, ambas del tipo numérico, cuyos valores serán, respectivamente, la división entera y el resto entero de la división entera entre los valores de `e`~1~ y `e`~2~.  Los operadores `div` y `mod` tienen asociatividad izquierda y ambos tienen la misma precedencia que el operador `*`.  La evaluación de estas expresiones es estricta de izquierda a derecha, salvo porque si el valor producido por la expresión en el operando derecho es cero, el programa abortará.  Los lexemas `div` y `mod` son palabras reservadas.
 
     Por ejemplo, las siguientes expresiones tienen el mismo valor que la expresión `true`:
 
         5 div 2 == 2
 
         10.2 mod 2 == 0
+
+        11.2 mod 2 == 1
+
+        11.2 mod 2.5 == 1
 
 6.  A partir de una expresión `e` del tipo especificado `matrix(r, c)`, se puede formar la expresión `e'` del tipo especificado por `matrix(c, r)`, cuyo valor será la traspuesta del valor de `e`.  El operador `'` tiene la máxima precedencia y es asociativo.  La evaluación de estas expresiones es estricta.
 
