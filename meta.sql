@@ -333,7 +333,7 @@ select "Asignar evaluación"('Etapa 1 del proyecto');
 create table "Calificación"
   ( "grupo"        integer      not null
   , "evaluación"   text         not null
-  , "calificación" numeric(3,2) not null check (("calificación" * 4) % 1 = 0)
+  , "calificación" numeric(4,2) not null check (("calificación" * 4) % 1 = 0)
   , primary key ("grupo", "evaluación")
   , foreign key ("grupo", "evaluación") references "Grupo" ("número", "evaluación")
   )
@@ -506,8 +506,161 @@ insert into "Asignación de evaluación"
 
 select "Asignar evaluación"('Etapa 3 del proyecto');
 
--- Notas de Fabio Alexánder Castro Martinez y Donato Rolo:
--- Etapa 3: 6.50/9.00
+
+
+insert into "Calificación" ("grupo", "evaluación", "calificación")
+select "grupo", 'Etapa 3 del proyecto', "calificación"
+from
+  -- David Lilue
+  ( values     (      8,           9.00)
+  ,            (     11,           6.75)
+  ,            (     12,           6.00)
+  ,            (     23,           6.75)
+
+  -- Karen Troiano
+  ,            (      2,           3.50)
+  ,            (     10,           9.00)
+  ,            (     15,           8.50)
+  ,            (     19,           5.50)
+  ,            (     21,           6.50)
+
+
+  -- Manuel Gómez
+  ,            (      4,           9.00)
+  ,            (      9,           6.50)
+  ,            (     20,           6.50)
+  ,            (     22,           5.50)
+
+  -- Matteo Ferrando
+  ,            (     24,           5.00)
+
+  ) as "Datos" ("grupo", "calificación")
+;
+
+
+
+---
+
+
+
+-- Etapa 4 del proyecto:
+with
+  "Datos de entregas" as (
+    select *
+    from
+      ( values               (      1, array['0436808'           ], 'Haskell' )
+      ,                      (      2, array['0538087', '0910502'], 'Python'  )
+      ,                      (      4, array['0741206'           ], 'Haskell' )
+      ,                      (      8, array['0810223', '0810479'], 'Ruby'    )
+      ,                      (      9, array['0810398', '0910430'], 'Haskell' )
+      ,                      (     10, array['0910029', '0910794'], 'Python'  )
+      ,                      (     11, array['0910123', '0910381'], 'Ruby'    )
+      ,                      (     12, array['0910219', '0910832'], 'Python'  )
+      ,                      (     15, array['0910329', '1010088'], 'Python'  )
+      ,                      (     19, array['0911207'           ], 'Python'  )
+      ,                      (     20, array['1010132', '1010640'], 'Python'  )
+      ,                      (     21, array['1010231', '1011247'], 'Python'  )
+      ,                      (     22, array['1010353', '1010738'], 'Python'  )
+      ,                      (     23, array['1010445', '1010534'], 'Python'  )
+      ) as "Datos de entrega"("grupo", "integrantes"              , "lenguaje")
+  ),
+  "Insertar grupos" as (
+    insert into "Grupo" ("número", "evaluación", "lenguaje")
+    select "grupo", 'Etapa 4 del proyecto', "lenguaje" :: "lenguaje"
+    from   "Datos de entregas"
+  )
+insert into "Integrante" ("estudiante", "grupo", "evaluación")
+select "Datos de entregas"."integrantes"[i], "grupo", 'Etapa 4 del proyecto'
+from   "Datos de entregas"
+,      generate_subscripts("Datos de entregas"."integrantes", 1) as i
+;
+
+select "Asignar evaluación"('Etapa 4 del proyecto');
+
+
+
+insert into "Calificación" ("grupo", "evaluación", "calificación")
+select "grupo", 'Etapa 4 del proyecto', "calificación"
+from
+  -- David Lilue
+  ( values     (      8,           6.50)
+  ,            (     11,          11.00)
+  ,            (     12,           6.50)
+  ,            (     15,           8.00)
+
+  -- Karen Troiano
+  ,            (      2,           2.75)
+  ,            (     19,           5.50)
+  ,            (     21,           9.50)
+  ,            (     22,           4.25)
+  ,            (     23,           9.00)
+
+  -- Manuel Gómez
+  ,            (      1,           0.00)
+  ,            (      4,          11.00)
+  ,            (      9,           7.25)
+  ,            (     10,           9.25)
+  ,            (     20,           8.00)
+
+  ) as "Datos" ("grupo", "calificación")
+;
+
+
+
+---
+
+
+
+-- Las entregas 3 y 4 del grupo 16 no se habían registrado.  Oops.
+
+with
+  "Datos de entregas" as (
+    select *
+    from
+      ( values               (     16, array['0910672', '0910971'], 'Python'  )
+      ) as "Datos de entrega"("grupo", "integrantes"              , "lenguaje")
+  ),
+  "Insertar grupos" as (
+    insert into "Grupo" ("número", "evaluación", "lenguaje")
+    select "grupo", 'Etapa 3 del proyecto', "lenguaje" :: "lenguaje"
+    from   "Datos de entregas"
+  )
+insert into "Integrante" ("estudiante", "grupo", "evaluación")
+select "Datos de entregas"."integrantes"[i], "grupo", 'Etapa 3 del proyecto'
+from   "Datos de entregas"
+,      generate_subscripts("Datos de entregas"."integrantes", 1) as i
+;
+
+with
+  "Datos de entregas" as (
+    select *
+    from
+      ( values               (     16, array['0910672', '0910971'], 'Python'  )
+      ) as "Datos de entrega"("grupo", "integrantes"              , "lenguaje")
+  ),
+  "Insertar grupos" as (
+    insert into "Grupo" ("número", "evaluación", "lenguaje")
+    select "grupo", 'Etapa 4 del proyecto', "lenguaje" :: "lenguaje"
+    from   "Datos de entregas"
+  )
+insert into "Integrante" ("estudiante", "grupo", "evaluación")
+select "Datos de entregas"."integrantes"[i], "grupo", 'Etapa 4 del proyecto'
+from   "Datos de entregas"
+,      generate_subscripts("Datos de entregas"."integrantes", 1) as i
+;
+
+-- Manuel las evaluó.
+insert into "Asignación de evaluación"
+  ("grupo", "evaluación"          , "evaluador"   ) values
+  (     16, 'Etapa 3 del proyecto', 'Manuel Gómez')
+, (     16, 'Etapa 4 del proyecto', 'Manuel Gómez')
+;
+
+insert into "Calificación"
+  ("grupo", "evaluación"          , "calificación") values
+  (     16, 'Etapa 3 del proyecto',           8.50)
+, (     16, 'Etapa 4 del proyecto',          10.50)
+;
 
 
 
@@ -542,8 +695,8 @@ as
             and "Grupo"."número" = "Calificación"."grupo"
             and "Grupo"."evaluación" = "Calificación"."evaluación"
   order by
-    "Carné",
-    "Evaluación"
+    "Carné"      asc,
+    "Evaluación" asc
 ;
 
 create view
@@ -551,8 +704,8 @@ create view
 as
   select
     "Número de grupo",
-    string_agg("Carné" , ', ') as "Grupo",
-    string_agg("Nombre", ', ') as "Nombres",
+    string_agg("Carné" , ', ' order by "Carné" asc) as "Grupo",
+    string_agg("Nombre", ', ' order by "Carné" asc) as "Nombres",
     "Evaluador",
     "Lenguaje",
     "Evaluación",
@@ -566,7 +719,56 @@ as
     "Evaluación",
     "Calificación"
   order by
-    "Número de grupo",
-    "Evaluación"
+    "Número de grupo" asc,
+    "Evaluación"      asc
 ;
 
+create view
+  "Totales individuales"
+as
+  select
+    "Carné",
+    "Nombre",
+    sum("Calificación") as "Total",
+    count(*) || '/4 (' || string_agg(
+      case "Evaluación"
+        when 'Etapa 1 del proyecto' then '1'
+        when 'Etapa 2 del proyecto' then '2'
+        when 'Etapa 3 del proyecto' then '3'
+        when 'Etapa 4 del proyecto' then '4'
+      end,
+      ', '
+    ) || ')' as "Entregas realizadas"
+  from
+    "Calificaciones individuales"
+  group by
+    "Carné",
+    "Nombre"
+  order by
+    "Carné" asc
+;
+
+create view
+  "Totales grupales"
+as
+  select
+    "Número de grupo",
+    "Grupo",
+    sum("Calificación") as "Total",
+    count(*) || '/4 (' || string_agg(
+      case "Evaluación"
+        when 'Etapa 1 del proyecto' then '1'
+        when 'Etapa 2 del proyecto' then '2'
+        when 'Etapa 3 del proyecto' then '3'
+        when 'Etapa 4 del proyecto' then '4'
+      end,
+      ', '
+    ) || ')' as "Entregas realizadas"
+  from
+    "Calificaciones grupales"
+  group by
+    "Número de grupo",
+    "Grupo"
+  order by
+    "Número de grupo" asc
+;
